@@ -1,14 +1,13 @@
-  <script setup lang="ts">
+<script setup lang="ts">
 
-  import { ref } from "vue";
-  import { invoke } from "@tauri-apps/api/core";
-  import BaseWidget from "./components/BaseWidget.vue"
+import { ref } from "vue";
+import { invoke } from "@tauri-apps/api/core";
 
-  const pictoImagesImport = import.meta.glob('./assets/picto/*.{gif,png}', { eager: true });
-  const pictoImages = Object.values(pictoImagesImport).map(module => (module as { default: string }).default || (module as string));
-  //const currentPictoIndex = ref(0)
-  //const currentPictoImage = ref(pictoImages[currentPictoIndex.value])
-  console.log(pictoImages)
+const pictoImagesImport = import.meta.glob('./assets/picto/*.{gif,png}', { eager: true });
+const pictoImages = Object.values(pictoImagesImport).map(module => (module as { default: string }).default || (module as string));
+//const currentPictoIndex = ref(0)
+//const currentPictoImage = ref(pictoImages[currentPictoIndex.value])
+console.log(pictoImages)
 
 </script>
 
