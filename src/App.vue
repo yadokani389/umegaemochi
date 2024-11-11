@@ -1,160 +1,123 @@
 <script setup lang="ts">
+
 import { ref } from "vue";
 import { invoke } from "@tauri-apps/api/core";
 
-const greetMsg = ref("");
-const name = ref("");
+const pictoImagesImport = import.meta.glob('./assets/picto/*.png', { eager: true });
+const pictoImages = Object.values(pictoImagesImport).map(module => (module as { default: string }).default || (module as string));
+//const currentPictoIndex = ref(0)
+//const currentPictoImage = ref(pictoImages[currentPictoIndex.value])
+console.log(pictoImages)
 
-async function greet() {
-  // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-  greetMsg.value = await invoke("greet", { name: name.value });
-}
 </script>
 
 <template>
-  <main class="container">
-    <h1>Welcome to Tauri + Vue</h1>
-
-    <div class="row">
-      <a href="https://vitejs.dev" target="_blank">
-        <img src="/vite.svg" class="logo vite" alt="Vite logo" />
-      </a>
-      <a href="https://tauri.app" target="_blank">
-        <img src="/tauri.svg" class="logo tauri" alt="Tauri logo" />
-      </a>
-      <a href="https://vuejs.org/" target="_blank">
-        <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-      </a>
-    </div>
-    <p>Click on the Tauri, Vite, and Vue logos to learn more.</p>
-
-    <form class="row" @submit.prevent="greet">
-      <input id="greet-input" v-model="name" placeholder="Enter a name..." />
-      <button type="submit">Greet</button>
-    </form>
-    <p>{{ greetMsg }}</p>
-  </main>
+    <main class="container">
+        <div class="left-side"></div>
+        <div class="right-side">
+            <ul class="cube">
+                <li class="front">
+                    <div class="image-box">
+                        <img :src="pictoImages[0]" alt="front" />
+                    </div>
+                </li>
+                <li class="right">
+                    <div class="image-box">
+                        <img :src="pictoImages[1]" alt="right" />
+                    </div>
+                </li>
+                <li class="back">
+                    <div class="image-box">
+                        <img :src="pictoImages[2]" alt="back" />
+                    </div>
+                </li>
+                <li class="left">
+                    <div class="image-box">
+                        <img :src="pictoImages[3]" alt="left" />
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </main>
 </template>
 
 <style scoped>
-.logo.vite:hover {
-  filter: drop-shadow(0 0 2em #747bff);
-}
-
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #249b73);
-}
-
-</style>
-<style>
-:root {
-  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 400;
-
-  color: #0f0f0f;
-  background-color: #f6f6f6;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-text-size-adjust: 100%;
-}
-
 .container {
-  margin: 0;
-  padding-top: 10vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  text-align: center;
+    display: flex;
+    width: 100%;
+    height: 100vh;
+    flex-direction: row;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: 0.75s;
+.left-side {
+    width: 50%;
+    background-color: #f0f0f0;
 }
 
-.logo.tauri:hover {
-  filter: drop-shadow(0 0 2em #24c8db);
+.right-side {
+    width: 50%;
+    display: flex;
+    background-color: #f0f0f0;
+    align-items: center;
 }
 
-.row {
-  display: flex;
-  justify-content: center;
+.cube {
+    position: relative;
+    margin: 30px auto;
+    width: 200px;
+    height: 200px;
+    transform-style: preserve-3d;
+    animation: rotate 20s linear infinite;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
+@keyframes rotate {
+    from {
+        transform: rotateY(20deg);
+    }
+
+    to {
+        transform: rotateY(-340deg);
+    }
 }
 
-a:hover {
-  color: #535bf2;
+.cube li {
+    position: absolute;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    list-style: none;
 }
 
-h1 {
-  text-align: center;
+.front {
+    transform: translate3d(0, 0, -100px);
 }
 
-input,
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  color: #0f0f0f;
-  background-color: #ffffff;
-  transition: border-color 0.25s;
-  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+.right {
+    transform: translate3d(-100px, 0, 0) rotateY(90deg);
 }
 
-button {
-  cursor: pointer;
+.back {
+    transform: translate3d(0px, 0px, 100px) rotateY(180deg);
 }
 
-button:hover {
-  border-color: #396cd8;
-}
-button:active {
-  border-color: #396cd8;
-  background-color: #e8e8e8;
+.left {
+    transform: translate3d(100px, 0, 0) rotateY(-90deg);
 }
 
-input,
-button {
-  outline: none;
+.image-box {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    overflow: hidden;
 }
 
-#greet-input {
-  margin-right: 5px;
+img {
+    max-width: 200px;
+    height: auto;
+    object-fit: contain;
+    transition: all 1s ease;
+    background-color: rgba(240, 240, 240, 0.8); 
+    /* #f0f0f0 = rgb (240, 240, 240)*/
 }
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    color: #f6f6f6;
-    background-color: #2f2f2f;
-  }
-
-  a:hover {
-    color: #24c8db;
-  }
-
-  input,
-  button {
-    color: #ffffff;
-    background-color: #0f0f0f98;
-  }
-  button:active {
-    background-color: #0f0f0f69;
-  }
-}
-
 </style>
