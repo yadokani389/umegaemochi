@@ -18,7 +18,9 @@ console.log(pictoImages)
     <div class="left-side">
       <div class="left-top-side">
         <!--ここに左上に表示するwidgetを追加-->
-        <WidgetWeather />
+        <Suspense>
+          <WidgetWeather />
+        </Suspense>
       </div>
       <div class="left-bottom-side">
         <!--ここに左下に表示するwidgetを追加-->

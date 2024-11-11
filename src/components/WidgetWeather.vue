@@ -1,18 +1,7 @@
-<script lang="ts">
+<script setup lang="ts">
 import BaseWidget from "./BaseWidget.vue";
 
-export default {
-  data() {
-    return {
-      weather: null,
-    };
-  },
-  async created() {
-    const response = await fetch("https://weather.tsukumijima.net/api/forecast/city/130010");
-    const data = await response.json();
-    this.weather = data;
-  },
-}
+const weather = await (await fetch("https://weather.tsukumijima.net/api/forecast/city/130010")).json();
 </script>
 
 <template>
