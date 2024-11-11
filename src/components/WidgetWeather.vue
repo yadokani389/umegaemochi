@@ -6,15 +6,12 @@ const weather = await (await fetch("https://weather.tsukumijima.net/api/forecast
 
 <template>
   <BaseWidget>
-    <div v-if="weather">
+    <div>
       <h1>{{ weather.location.city + "の" + weather.forecasts[1].dateLabel + "の天気" }}</h1>
       <p>Weather: {{ weather.forecasts[1].telop }}</p>
       <p>Temperature: {{ weather.forecasts[1].temperature.min.celsius }}°C - {{
         weather.forecasts[1].temperature.max.celsius }}°C</p>
       <img :src="weather.forecasts[1].image.url" :alt="'weather image:' + weather.forecasts[1].image.title" />
-    </div>
-    <div v-else>
-      <p>Loading...</p>
     </div>
   </BaseWidget>
 </template>

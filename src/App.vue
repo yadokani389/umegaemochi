@@ -3,6 +3,7 @@
 // import { defineAsyncComponent } from "vue";
 // import { invoke } from "@tauri-apps/api/core";
 // const WidgetWeather = defineAsyncComponent(() => import("./components/WidgetWeather.vue"));
+import BaseWidget from "./components/BaseWidget.vue";
 import WidgetWeather from "./components/WidgetWeather.vue";
 
 const pictoImagesImport = import.meta.glob('./assets/picto/*.{gif,png}', { eager: true });
@@ -20,6 +21,13 @@ console.log(pictoImages)
         <!--ここに左上に表示するwidgetを追加-->
         <Suspense>
           <WidgetWeather />
+          <template #fallback>
+            <BaseWidget>
+              <div>
+                <h1>Loading...</h1>
+              </div>
+            </BaseWidget>
+          </template>
         </Suspense>
       </div>
       <div class="left-bottom-side">
