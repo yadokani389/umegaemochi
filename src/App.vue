@@ -4,6 +4,7 @@
 // import { invoke } from "@tauri-apps/api/core";
 // const WidgetWeather = defineAsyncComponent(() => import("./components/WidgetWeather.vue"));
 import BaseWidget from "./components/BaseWidget.vue";
+import NewsWidget from "./components/NewsWidget.vue";
 import WidgetWeather from "./components/WidgetWeather.vue";
 
 const pictoImagesImport = import.meta.glob('./assets/picto/*.{gif,png}', { eager: true });
