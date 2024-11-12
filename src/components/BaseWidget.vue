@@ -2,20 +2,26 @@
 </script>
 
 <template>
-    <div class="widgetFlame">
-        <slot>
-
-        </slot>
+  <div class="widget-flame">
+    <div class="widget-content">
+      <slot></slot>
     </div>
+  </div>
 </template>
 
 <style scoped>
-.widgetFlame {
-    width: 80%;
-    height: 80%;
-    display: flex;
-    background-color: #f0f0f0;
-    align-items: center;
-    border-radius: 10%;
+.widget-flame {
+  width: 80%;
+  height: 80%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f0f0f0;
+  border-radius: 40px;
+}
+
+.widget-content {
+  width: 90%;
+  height: 90%;
 }
 </style>
