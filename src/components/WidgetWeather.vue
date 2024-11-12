@@ -12,19 +12,19 @@ const weather = await (await fetch("https://weather.tsukumijima.net/api/forecast
       </div>
       <div class="weather-content">
         <div class="weather-info">
-          <p>Weather: {{ weather.forecasts[1].telop }}</p>
-          <p>Temperature: {{ weather.forecasts[1].temperature.min.celsius }}°C - {{
-            weather.forecasts[1].temperature.max.celsius }}°C</p>
+          <h3>天気: {{ weather.forecasts[1].telop }}</h3>
+          <h3>気温: {{ weather.forecasts[1].temperature.min.celsius }}°C - {{
+            weather.forecasts[1].temperature.max.celsius }}°C</h3>
         </div>
-        <img class="weather-image" :src="weather.forecasts[1].image.url"
-          :alt="'weather image:' + weather.forecasts[1].image.title" />
+        <div class="weather-image">
+          <img :src="weather.forecasts[1].image.url" :alt="'weather image:' + weather.forecasts[1].image.title" />
+        </div>
       </div>
     </div>
   </BaseWidget>
 </template>
 
 <style scoped>
-
 @font-face {
   font-family: "Koruri";
   src: url('../assets/fonts/Koruri-Semibold.ttf') format('truetype');
@@ -34,6 +34,7 @@ const weather = await (await fetch("https://weather.tsukumijima.net/api/forecast
 
 .weather-container {
   width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -57,18 +58,23 @@ const weather = await (await fetch("https://weather.tsukumijima.net/api/forecast
   display: flex;
   justify-content: space-between;
   width: 100%;
+  height: 100%;
   align-items: center;
 }
 
 .weather-info {
   text-align: left;
-  flex: 1;
-  margin-left: 10px;
+  flex: 3;
 }
 
 .weather-image {
-  width: 45%;
-  height: auto;
-  margin-left: 1rem;
+  height: 100%;
+  flex: 2;
+}
+
+img {
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
 }
 </style>
