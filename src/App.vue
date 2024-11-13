@@ -71,6 +71,14 @@ console.log(pictoImages)
   </main>
 </template>
 
+<style>
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+</style>
+
 <style scoped>
 .container {
   display: flex;
@@ -90,7 +98,7 @@ console.log(pictoImages)
 
 .left-top-side,
 .left-bottom-side {
-  flex: 1;
+  height: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
