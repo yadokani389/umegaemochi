@@ -4,14 +4,9 @@ import { invoke } from "@tauri-apps/api/core";
 import { ref } from "vue";
 
 let newsList = ref(['Loading...']);
-let newsTitle = ref('Loading...');
 invoke('get_yahoo_news', { url: 'https://news.yahoo.co.jp/rss/topics/top-picks.xml' }).then((response) => {
   newsList.value = [];
-  response.forEach((news, i) => {
-    if (i === 0) {
-      newsTitle.value = news;
-      return;
-    }
+  (response as string[]).toSpliced(0, 1).forEach((news) => {
     newsList.value.push(news);
   })
 }).catch((error) => {
@@ -21,9 +16,9 @@ invoke('get_yahoo_news', { url: 'https://news.yahoo.co.jp/rss/topics/top-picks.x
 
 <template>
   <BaseWidget>
-    <div class="container">
-      <h3>{{ newsTitle }}</h3>
-      <ul>
+    <div :class="$style.container">
+      <h1>Yahoo!ニュース</h1>
+      <ul :class="$style.news">
         <li v-for="(news, index) in newsList" :key="index">
           {{ news }}
         </li>
@@ -32,30 +27,19 @@ invoke('get_yahoo_news', { url: 'https://news.yahoo.co.jp/rss/topics/top-picks.x
   </BaseWidget>
 </template>
 
-<style scoped>
-@font-face {
-  font-family: "Koruri";
-  src: url('../assets/fonts/Koruri-Semibold.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-}
-
+<style module>
 .container {
+  width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  font-family: "Koruri";
+  gap: 10px;
+  padding: 10px;
 }
 
-h3 {
-  font-size: 2vmax;
-}
-
-ul {
-  height: 80%;
+.news {
   overflow-y: auto;
-  font-size: 2vmax;
 }
 </style>
