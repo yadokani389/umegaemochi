@@ -2,26 +2,33 @@
 </script>
 
 <template>
-  <div class="widget-flame">
-    <div class="widget-content">
-      <slot></slot>
+  <div :class="$style.widgetFlame">
+    <div :class="$style.widgetContent">
+      <Suspense>
+        <slot></slot>
+        <template #fallback>
+          <div>
+            <h1>Loading...</h1>
+          </div>
+        </template>
+      </Suspense>
     </div>
   </div>
 </template>
 
-<style scoped>
-.widget-flame {
-  width: 80%;
-  height: 80%;
+<style module>
+.widgetFlame {
+  width: 100%;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: #f0f0f0;
-  border-radius: 40px;
+  border-radius: 30px;
 }
 
-.widget-content {
-  width: 90%;
-  height: 90%;
+.widgetContent {
+  width: 98%;
+  height: 98%;
 }
 </style>
