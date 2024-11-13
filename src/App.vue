@@ -1,19 +1,8 @@
 <script setup lang="ts">
-
-// import { defineAsyncComponent } from "vue";
-// import { invoke } from "@tauri-apps/api/core";
-// const WidgetWeather = defineAsyncComponent(() => import("./components/WidgetWeather.vue"));
 import BaseWidget from "./components/BaseWidget.vue";
 import WidgetWeather from "./components/WidgetWeather.vue";
 import WidgetNews from "./components/WidgetNews.vue";
 import WidgetPicto from "./components/WidgetPicto.vue";
-
-const pictoImagesImport = import.meta.glob('./assets/picto/*.{gif,png}', { eager: true });
-const pictoImages = Object.values(pictoImagesImport).map(module => (module as { default: string }).default || (module as string));
-//const currentPictoIndex = ref(0)
-//const currentPictoImage = ref(pictoImages[currentPictoIndex.value])
-console.log(pictoImages)
-
 </script>
 
 <template>
@@ -56,10 +45,10 @@ h1 {
   display: grid;
   width: 100vw;
   height: 100vh;
-  padding: 10px;
-  grid-template-columns: 50% 50%;
-  grid-template-rows: 50% 50%;
-  gap: 10px;
+  padding: 40px;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 45% 45%;
+  gap: 60px;
 }
 
 .weather {

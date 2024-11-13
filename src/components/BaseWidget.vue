@@ -24,11 +24,11 @@
   justify-content: center;
   align-items: center;
   background-color: #f0f0f0;
-  border-radius: 10px;
+  border-radius: 30px;
 }
 
 .widgetContent {
-  width: 90%;
-  height: 90%;
+  width: 98%;
+  height: 98%;
 }
 </style>

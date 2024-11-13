@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import BaseWidget from "./BaseWidget.vue";
 import { invoke } from "@tauri-apps/api/core";
 import { ref } from "vue";
 
@@ -9,25 +8,26 @@ invoke('get_yahoo_news', { url: 'https://news.yahoo.co.jp/rss/topics/top-picks.x
   (response as string[]).toSpliced(0, 1).forEach((news) => {
     newsList.value.push(news);
   })
+  newsList.value = newsList.value.concat(newsList.value);
 }).catch((error) => {
   newsList.value = ['Error: ' + error];
 });
 </script>
 
 <template>
-  <BaseWidget>
-    <div :class="$style.container">
-      <h1>Yahoo!ニュース</h1>
-      <ul :class="$style.news">
-        <li v-for="(news, index) in newsList" :key="index">
+  <div :class="$style.container">
+    <h1>Yahoo!ニュース</h1>
+    <div :class="$style.content">
+      <div :class="$style.scrollTrack">
+        <h2 v-for="(news, index) in newsList" :key="index" :class="$style.news">
           {{ news }}
-        </li>
-      </ul>
+        </h2>
+      </div>
     </div>
-  </BaseWidget>
+  </div>
 </template>
 
-<style module>
+<style module scoped>
 .container {
   width: 100%;
   height: 100%;
@@ -39,7 +39,26 @@ invoke('get_yahoo_news', { url: 'https://news.yahoo.co.jp/rss/topics/top-picks.x
   padding: 10px;
 }
 
-.news {
+.content {
   overflow-y: auto;
+}
+
+@keyframes infiniteScroll {
+  0% {
+    transform: translateY(0);
+  }
+
+  100% {
+    transform: translateY(-50%);
+  }
+}
+
+.scrollTrack {
+  animation: infiniteScroll 20s linear infinite;
+}
+
+.news {
+  font-size: 4vmin;
+  padding: 30px;
 }
 </style>
