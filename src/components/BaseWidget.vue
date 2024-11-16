@@ -2,8 +2,8 @@
 </script>
 
 <template>
-  <div :class="$style.widgetFlame">
-    <div :class="$style.widgetContent">
+  <div :class="$style.container">
+    <div :class="$style.content">
       <Suspense>
         <slot></slot>
         <template #fallback>
@@ -17,7 +17,7 @@
 </template>
 
 <style module>
-.widgetFlame {
+.container {
   width: 100%;
   height: 100%;
   display: flex;
@@ -25,9 +25,11 @@
   align-items: center;
   background-color: #f0f0f0;
   border-radius: 30px;
+  min-width: 0;
+  min-height: 0;
 }
 
-.widgetContent {
+.content {
   width: 98%;
   height: 98%;
 }

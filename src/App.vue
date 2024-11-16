@@ -45,10 +45,10 @@ h1 {
   display: grid;
   width: 100vw;
   height: 100vh;
-  padding: 40px;
+  padding: 10vmin;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: 45% 45%;
-  gap: 60px;
+  grid-template-rows: 1fr 1fr;
+  gap: 8vmin;
 }
 
 .weather {
