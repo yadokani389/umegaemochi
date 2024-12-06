@@ -27,7 +27,7 @@ invoke('get_yahoo_news', { url: 'https://news.yahoo.co.jp/rss/topics/top-picks.x
   </div>
 </template>
 
-<style module scoped>
+<style module>
 .container {
   width: 100%;
   height: 100%;
