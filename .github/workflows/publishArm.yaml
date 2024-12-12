@@ -12,7 +12,7 @@ jobs:
 
     strategy:
       matrix:
-        arch: [aarch64, armv7l]
+        arch: [aarch64]
         include:
           - arch: aarch64
             cpu: cortex-a72
@@ -20,12 +20,6 @@ jobs:
             deb: arm64
             rpm: aarch64
             appimage: aarch64
-          - arch: armv7l
-            cpu: cortex-a53
-            deb: armhfp
-            rpm: arm
-            appimage: armhf
-            base_image: https://dietpi.com/downloads/images/DietPi_RPi-ARMv7-Bookworm.img.xz
 
     steps:
       - uses: actions/checkout@v3
@@ -62,29 +56,43 @@ jobs:
             apt-get install -y nodejs
 
             # Install frontend dependencies
-            npm install
+            npm install -g pnpm
+            pnpm install
 
             # Build the application
-            npm run tauri build -- --verbose
+            pnpm run tauri build -- --verbose
 
       - name: Get app version
         run: echo "APP_VERSION=$(jq -r .version src-tauri/tauri.conf.json)" >> $GITHUB_ENV
 
       # TODO: Combine this with the basic workflow and upload the files to the Release.
       - name: Upload deb bundle
-        uses: actions/upload-artifact@v3
+        uses: softprops/action-gh-release@v1
         with:
-          name: Debian Bundle
-          path: ${{ github.workspace }}/src-tauri/target/release/bundle/deb/appname_${{ env.APP_VERSION }}_${{ matrix.deb }}.deb
-
+          draft: true
+          prerelease: false
+          tag_name: v${{ env.APP_VERSION }}
+          release_name: 'v${{ env.APP_VERSION }}'
+          files: ${{ github.workspace }}/src-tauri/target/release/bundle/deb/umegaemochi_${{ env.APP_VERSION }}_${{ matrix.deb }}.deb
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Upload rpm bundle
-        uses: actions/upload-artifact@v3
+        uses: softprops/action-gh-release@v1
         with:
-          name: RPM Bundle
-          path: ${{ github.workspace }}/src-tauri/target/release/bundle/rpm/appname-${{ env.APP_VERSION }}-1.${{ matrix.rpm }}.rpm
-
+          draft: true
+          prerelease: false
+          tag_name: v${{ env.APP_VERSION }}
+          release_name: 'v${{ env.APP_VERSION }}'
+          files: ${{ github.workspace }}/src-tauri/target/release/bundle/rpm/umegaemochi-${{ env.APP_VERSION }}-1.${{ matrix.rpm }}.rpm
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Upload appimage bundle
-        uses: actions/upload-artifact@v3
+        uses: softprops/action-gh-release@v1
         with:
-          name: AppImage Bundle
-          path: ${{ github.workspace }}/src-tauri/target/release/bundle/appimage/appname_${{ env.APP_VERSION }}_${{ matrix.appimage }}.AppImage
+          draft: true
+          prerelease: false
+          tag_name: v${{ env.APP_VERSION }}
+          release_name: 'v${{ env.APP_VERSION }}'
+          files: ${{ github.workspace }}/src-tauri/target/release/bundle/appimage/umegaemochi_${{ env.APP_VERSION }}_${{ matrix.appimage }}.AppImage
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
