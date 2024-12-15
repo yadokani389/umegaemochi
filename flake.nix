@@ -17,5 +17,12 @@
             })
           ];
         };
-      in { defaultPackage = pkgs.callPackage ./package.nix { }; });
+      in rec {
+        defaultPackage = pkgs.callPackage ./package.nix { };
+        devShell = pkgs.mkShell {
+          inherit (defaultPackage) buildInputs;
+          nativeBuildInputs = defaultPackage.nativeBuildInputs
+            ++ (with pkgs; [ rustc gcc rustfmt clippy ]);
+        };
+      });
 }
