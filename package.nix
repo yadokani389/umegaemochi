@@ -1,5 +1,5 @@
-{ lib, stdenv, cargo-tauri, libsoup, nodejs, openssl, pkg-config, pnpm
-, rustPlatform, webkitgtk_4_1, wrapGAppsHook3, }:
+{ lib, stdenv, cargo-tauri, libsoup_3, nodejs, openssl, pkg-config, pnpm
+, rustPlatform, webkitgtk_4_1, wrapGAppsHook4, }:
 
 stdenv.mkDerivation (finalAttrs: {
   pname = "umegaemochi";
@@ -35,10 +35,10 @@ stdenv.mkDerivation (finalAttrs: {
     pkg-config
     pnpm.configHook
     rustPlatform.cargoSetupHook
-    wrapGAppsHook3
+    wrapGAppsHook4
   ];
 
-  buildInputs = [ libsoup openssl webkitgtk_4_1 ];
+  buildInputs = [ libsoup_3 openssl webkitgtk_4_1 ];
 
   meta = {
     license = lib.licenses.mit;
