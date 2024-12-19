@@ -22,7 +22,7 @@ import WidgetAtCoder from "./components/WidgetAtCoder.vue";
 <style>
 @font-face {
   font-family: "Koruri";
-  src: url('../assets/fonts/Koruri-Semibold.ttf') format('truetype');
+  src: url('/src/assets/fonts/Koruri-Semibold.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
