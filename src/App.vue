@@ -2,7 +2,7 @@
 import BaseWidget from "./components/BaseWidget.vue";
 import WidgetWeather from "./components/WidgetWeather.vue";
 import WidgetNews from "./components/WidgetNews.vue";
-import WidgetPicto from "./components/WidgetPicto.vue";
+import WidgetAtCoder from "./components/WidgetAtCoder.vue";
 </script>
 
 <template>
@@ -13,8 +13,8 @@ import WidgetPicto from "./components/WidgetPicto.vue";
     <BaseWidget :class="$style.news">
       <WidgetNews />
     </BaseWidget>
-    <BaseWidget :class="$style.picto">
-      <WidgetPicto />
+    <BaseWidget :class="$style.atcoder">
+      <WidgetAtCoder/>
     </BaseWidget>
   </main>
 </template>
@@ -61,7 +61,7 @@ h1 {
   grid-row: 2 / 3;
 }
 
-.picto {
+.atcoder {
   grid-column: 2 / 3;
   grid-row: 1 / 3;
 }
