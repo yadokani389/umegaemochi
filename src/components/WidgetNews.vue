@@ -18,11 +18,12 @@ invoke('get_yahoo_news', { url: 'https://news.yahoo.co.jp/rss/topics/top-picks.x
   <div :class="$style.container">
     <h1>Yahoo!ニュース</h1>
     <div :class="$style.content">
-      <div :class="$style.scrollTrack">
+      <div v-if="1 < newsList.length" :class="$style.scrollTrack">
         <h2 v-for="(news, index) in newsList" :key="index" :class="$style.news">
           {{ news }}
         </h2>
       </div>
+      <h2 v-else>Loading...</h2>
     </div>
   </div>
 </template>
