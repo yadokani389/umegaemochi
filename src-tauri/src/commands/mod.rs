@@ -1,2 +1,3 @@
-pub mod utils;
 pub mod phone;
+pub mod settings;
+pub mod utils;

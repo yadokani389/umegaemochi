@@ -2,7 +2,7 @@
 import BaseWidget from "./components/BaseWidget.vue";
 import WidgetWeather from "./components/WidgetWeather.vue";
 import WidgetAtCoder from "./components/WidgetAtCoder.vue";
-import WidgetPhone from "./components/WidgetPhone.vue";
+import WidgetSettings from "./components/WidgetSettings.vue";
 </script>
 
 <template>
@@ -13,8 +13,8 @@ import WidgetPhone from "./components/WidgetPhone.vue";
     <BaseWidget :class="$style.atcoder">
       <WidgetAtCoder />
     </BaseWidget>
-    <BaseWidget :class="$style.phone">
-      <WidgetPhone />
+    <BaseWidget :class="$style.settings">
+      <WidgetSettings />
     </BaseWidget>
   </main>
 </template>
@@ -61,7 +61,7 @@ h1 {
   grid-row: 2 / 3;
 }
 
-.phone {
+.settings {
   grid-column: 2 / 3;
   grid-row: 1 / 3;
 }

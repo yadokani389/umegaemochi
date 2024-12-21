@@ -1,5 +1,21 @@
 <script setup lang="ts">
-const weather = await(await fetch("https://weather.tsukumijima.net/api/forecast/city/130010")).json();
+import { invoke } from "@tauri-apps/api/core";
+
+type Settings = {
+  weather_city_id: String;
+  atcoder_id: String;
+};
+
+const cityId = await (async () => {
+  try {
+    return (await invoke("get_settings") as Settings).weather_city_id;
+  } catch (error) {
+    console.error(error);
+    return 130010;
+  }
+})();
+
+const weather = await (await fetch("https://weather.tsukumijima.net/api/forecast/city/" + cityId)).json();
 </script>
 
 <template>

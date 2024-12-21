@@ -1,3 +1,4 @@
+use crate::commands::utils::stringify;
 use std::{
     io::{Read, Write},
     net::{Ipv4Addr, Shutdown, SocketAddrV4, TcpListener},
@@ -7,11 +8,11 @@ use std::{
 pub async fn start_server() -> Result<(), String> {
     let port_number = 33117;
     let listener = TcpListener::bind(SocketAddrV4::new(Ipv4Addr::UNSPECIFIED, port_number))
-        .map_err(|e| format!("Failed to bind to port: {}", e))?;
+        .map_err(stringify)?;
 
     println!(
         "Listening on  {}:{}",
-        localip::get_local_ip().map_err(|e| format!("{}", e))?,
+        localip::get_local_ip().map_err(stringify)?,
         port_number
     );
 

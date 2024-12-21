@@ -37,3 +37,7 @@ pub async fn get_yahoo_news(url: String) -> Result<Vec<String>, String> {
 
     Ok(ret)
 }
+
+pub fn stringify(e: impl ToString) -> String {
+    e.to_string()
+}
