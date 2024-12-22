@@ -1,4 +1,4 @@
-use crate::commands::settings::Settings;
+use crate::settings::Settings;
 use std::sync::Mutex;
 
 #[derive(Debug)]
