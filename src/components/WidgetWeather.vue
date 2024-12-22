@@ -1,25 +1,37 @@
 <script setup lang="ts">
 import { invoke } from "@tauri-apps/api/core";
+import { listen } from '@tauri-apps/api/event';
+import { ref } from "vue";
 
 type Settings = {
   weather_city_id: String;
   atcoder_id: String;
 };
 
-const cityId = await (async () => {
-  try {
-    return (await invoke("get_settings") as Settings).weather_city_id;
-  } catch (error) {
-    console.error(error);
-    return 130010;
-  }
-})();
+async function setup() {
+  const cityId = await (async () => {
+    try {
+      return (await invoke("get_settings") as Settings).weather_city_id;
+    } catch (error) {
+      console.error(error);
+      return 130010;
+    }
+  })();
 
-const weather = await (await fetch("https://weather.tsukumijima.net/api/forecast/city/" + cityId)).json();
+  console.log(await (await fetch("https://weather.tsukumijima.net/api/forecast/city/" + cityId)).json());
+  const weather = await (await fetch("https://weather.tsukumijima.net/api/forecast/city/" + cityId)).json();
+  return weather;
+}
+
+listen("settings_changed", async () => {
+  weather.value = await setup();
+});
+
+let weather = ref(await setup());
 </script>
 
 <template>
-  <div :class="$style.container">
+  <div :class="$style.container" v-if="weather">
     <h1>{{ weather.location.city }}の{{ weather.forecasts[1].dateLabel }}の天気</h1>
     <div :class="$style.content">
       <div>

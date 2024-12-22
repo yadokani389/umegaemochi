@@ -1,4 +1,4 @@
-use tauri::Manager;
+use tauri::{Emitter, Manager};
 
 // https://qiita.com/takavfx/items/5c27d22df50be45a8968
 use crate::commands::utils::stringify;
@@ -100,10 +100,7 @@ pub fn set_weather_city_id(
         .lock()
         .map_err(stringify)?
         .set_weather_city_id(city_id)?;
-    app.get_webview_window("main")
-        .unwrap()
-        .eval("window.location.reload()")
-        .unwrap();
+    let _ = app.emit("settings_changed", ());
     Ok(())
 }
 
@@ -118,10 +115,7 @@ pub fn set_atcoder_id(
         .lock()
         .map_err(stringify)?
         .set_atcoder_id(atcoder_id)?;
-    app.get_webview_window("main")
-        .unwrap()
-        .eval("window.location.reload()")
-        .unwrap();
+    let _ = app.emit("settings_changed", ());
     Ok(())
 }
 
