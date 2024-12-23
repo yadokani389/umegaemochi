@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import BaseWidget from "./components/BaseWidget.vue";
 import WidgetWeather from "./components/WidgetWeather.vue";
-import WidgetNews from "./components/WidgetNews.vue";
 import WidgetAtCoder from "./components/WidgetAtCoder.vue";
+import WidgetSettings from "./components/WidgetSettings.vue";
 </script>
 
 <template>
@@ -10,11 +10,11 @@ import WidgetAtCoder from "./components/WidgetAtCoder.vue";
     <BaseWidget :class="$style.weather">
       <WidgetWeather />
     </BaseWidget>
-    <BaseWidget :class="$style.news">
-      <WidgetNews />
-    </BaseWidget>
     <BaseWidget :class="$style.atcoder">
-      <WidgetAtCoder/>
+      <WidgetAtCoder />
+    </BaseWidget>
+    <BaseWidget :class="$style.settings">
+      <WidgetSettings />
     </BaseWidget>
   </main>
 </template>
@@ -56,12 +56,12 @@ h1 {
   grid-row: 1 / 2;
 }
 
-.news {
+.atcoder {
   grid-column: 1 / 2;
   grid-row: 2 / 3;
 }
 
-.atcoder {
+.settings {
   grid-column: 2 / 3;
   grid-row: 1 / 3;
 }

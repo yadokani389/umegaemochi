@@ -17,7 +17,7 @@ stdenv.mkDerivation (finalAttrs: {
 
   pnpmDeps = pnpm.fetchDeps {
     inherit (finalAttrs) src pname version;
-    hash = "sha256-AtY97KFXctIVJ0a15CBgefWPYagvIGGWfC6jWkjU+zk=";
+    hash = "sha256-HVT/80FOfcja+TF9uq5qkpaaUzR9jQhqiwVxC3Z86qs=";
   };
 
   cargoRoot = "src-tauri";
@@ -26,7 +26,7 @@ stdenv.mkDerivation (finalAttrs: {
   cargoDeps = rustPlatform.fetchCargoTarball {
     inherit (finalAttrs) pname version src;
     sourceRoot = "${finalAttrs.src.name}/${finalAttrs.cargoRoot}";
-    hash = "sha256-KuNx/fhkLNIrP3+AXJRT6d27ygZWYrSr7OrDXaQm0SA=";
+    hash = "sha256-MCxRX+EGVWEfsUgZ2bBpmNdbqcSfVfSj0WAAvi1FnYw=";
   };
 
   nativeBuildInputs = [

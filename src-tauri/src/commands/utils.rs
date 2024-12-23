@@ -1,6 +1,5 @@
-// Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 #[tauri::command]
-async fn get_yahoo_news(url: String) -> Result<Vec<String>, String> {
+pub async fn get_yahoo_news(url: String) -> Result<Vec<String>, String> {
     let client = reqwest::Client::new();
     let Ok(response) = client.get(&url).send().await else {
         return Err("Failed to fetch the URL".to_string());
@@ -39,11 +38,21 @@ async fn get_yahoo_news(url: String) -> Result<Vec<String>, String> {
     Ok(ret)
 }
 
-#[cfg_attr(mobile, tauri::mobile_entry_point)]
-pub fn run() {
-    tauri::Builder::default()
-        .plugin(tauri_plugin_shell::init())
-        .invoke_handler(tauri::generate_handler![get_yahoo_news])
-        .run(tauri::generate_context!())
-        .expect("error while running tauri application");
+#[tauri::command]
+pub fn get_server_address() -> Result<String, String> {
+    let port_number = 33117;
+
+    let local_addr = format!(
+        "{}:{}",
+        localip::get_local_ip().map_err(stringify)?,
+        port_number
+    );
+
+    println!("Listening on {}", local_addr);
+
+    Ok(local_addr)
+}
+
+pub fn stringify(e: impl ToString) -> String {
+    e.to_string()
 }
