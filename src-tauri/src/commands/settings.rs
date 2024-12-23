@@ -1,5 +1,5 @@
-use crate::settings::Settings;
 use crate::commands::utils::stringify;
+use crate::settings::Settings;
 use crate::state::AppState;
 use tauri::Emitter;
 

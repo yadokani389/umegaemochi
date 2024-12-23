@@ -38,6 +38,21 @@ pub async fn get_yahoo_news(url: String) -> Result<Vec<String>, String> {
     Ok(ret)
 }
 
+#[tauri::command]
+pub fn get_server_address() -> Result<String, String> {
+    let port_number = 33117;
+
+    let local_addr = format!(
+        "{}:{}",
+        localip::get_local_ip().map_err(stringify)?,
+        port_number
+    );
+
+    println!("Listening on {}", local_addr);
+
+    Ok(local_addr)
+}
+
 pub fn stringify(e: impl ToString) -> String {
     e.to_string()
 }

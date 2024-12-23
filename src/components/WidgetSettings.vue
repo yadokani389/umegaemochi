@@ -1,9 +1,13 @@
 <script setup lang="ts">
 import { invoke } from "@tauri-apps/api/core";
+import { ref } from "vue";
+import QRCode from "qrcode";
 
-function startServer() {
-  invoke("start_server").then((response) => {
-    console.log(response);
+function getServerAddress() {
+  invoke<string>("get_server_address").then(async (address) => {
+    localIp.value = address;
+    await QRCode.toCanvas(document.getElementById("qr"), address, { scale: 3, errorCorrectionLevel: "L" });
+    showQR.value = true;
   }).catch((error) => {
     console.error(error);
   });
@@ -19,12 +23,15 @@ function getSettings() {
 
 let cityId = "";
 let atcoderId = "";
+let localIp = ref("");
+let showQR = ref(false);
 </script>
 
 <template>
   <div :class="$style.container">
-    <h1>Phone connection</h1>
-    <button @click="startServer">Start server</button>
+    <button @click="getServerAddress">Get server address</button>
+    <canvas v-show="showQR" id="qr" />
+    <div>{{ localIp }}</div>
     <button @click="getSettings">Settings</button>
     <input v-model="cityId" placeholder="City id" />
     <button @click="invoke('set_weather_city_id', { cityId: cityId })">set cityId</button>

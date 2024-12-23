@@ -5,10 +5,10 @@ use std::io::Write;
 
 const SETTINGS_FILE_PATH: &str = "umegaemochi/settings.toml";
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, PartialEq, serde::Serialize, serde::Deserialize)]
 pub struct Settings {
-    weather_city_id: String,
-    atcoder_id: String,
+    pub weather_city_id: String,
+    pub atcoder_id: String,
 }
 
 impl Default for Settings {
@@ -65,7 +65,7 @@ impl Config for Settings {
             std::fs::create_dir_all(parent).map_err(stringify)?;
         }
         let mut file = File::create(config_path).map_err(stringify)?;
-        let toml = toml::to_string(self).map_err(stringify)?;
+        let toml = serde_json::to_string(self).map_err(stringify)?;
 
         file.write_all(toml.as_bytes()).map_err(stringify)?;
         file.flush().map_err(stringify)?;
@@ -80,7 +80,7 @@ impl Config for Settings {
 
         config_path.push(SETTINGS_FILE_PATH);
         let s = std::fs::read_to_string(&config_path).map_err(stringify)?;
-        *self = toml::from_str(&s).map_err(stringify)?;
+        *self = serde_json::from_str(&s).map_err(stringify)?;
 
         Ok(())
     }

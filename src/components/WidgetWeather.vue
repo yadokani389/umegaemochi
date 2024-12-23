@@ -18,7 +18,6 @@ async function setup() {
     }
   })();
 
-  console.log(await (await fetch("https://weather.tsukumijima.net/api/forecast/city/" + cityId)).json());
   const weather = await (await fetch("https://weather.tsukumijima.net/api/forecast/city/" + cityId)).json();
   return weather;
 }

@@ -15,7 +15,9 @@
   },
   "devDependencies": {
     "@tauri-apps/cli": "^2",
+    "@types/qrcode": "^1.5.5",
     "@vitejs/plugin-vue": "^5.0.5",
+    "qrcode": "^1.5.4",
     "typescript": "^5.2.2",
     "vite": "^5.3.1",
     "vue-tsc": "^2.0.22"

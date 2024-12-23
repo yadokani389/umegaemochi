@@ -13,10 +13,9 @@ tauri-build = { version = "2", features = [] }
 [dependencies]
 tauri = { version = "2", features = [] }
 serde = { version = "1", features = ["derive"] }
-serde_json = "1"
 reqwest = "0.12.9"
 quick-xml = "0.37.0"
 localip = "0.2.1"
 tauri-api = "0.7.6"
-toml = "0.8.19"
-
+warp = "0.3.7"
+serde_json = "1.0.134"
