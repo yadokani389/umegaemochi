@@ -35,5 +35,5 @@ pub fn set_atcoder_id(
 
 #[tauri::command]
 pub fn get_settings(app_state: tauri::State<AppState>) -> Result<Settings, String> {
-    Ok(app_state.settings.lock().map_err(stringify)?.clone())
+    Ok(app_state.settings.lock().map_err(stringify)?.data.clone())
 }

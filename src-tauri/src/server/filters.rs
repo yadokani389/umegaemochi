@@ -20,7 +20,7 @@ fn get_settings(
         let handle = handle.clone();
         async move {
             Ok::<warp::reply::Json, Infallible>(warp::reply::json(
-                &handle.state::<AppState>().settings.lock().unwrap().clone(),
+                &handle.state::<AppState>().settings.lock().unwrap().data.clone(),
             ))
         }
     })

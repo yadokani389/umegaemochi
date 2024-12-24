@@ -1,15 +1,15 @@
-use crate::settings::Settings;
-use std::sync::Mutex;
+use crate::settings::{Config, Settings};
+use std::{path::PathBuf, sync::Mutex};
 
 #[derive(Debug)]
 pub struct AppState {
-    pub settings: Mutex<Settings>,
+    pub settings: Mutex<Config<Settings>>,
 }
 
 impl AppState {
-    pub fn try_new() -> Result<Self, String> {
+    pub fn try_new(config_path: PathBuf) -> Result<Self, String> {
         Ok(Self {
-            settings: Mutex::from(Settings::try_new()?),
+            settings: Mutex::from(Config::<Settings>::try_new(config_path)?),
         })
     }
 }

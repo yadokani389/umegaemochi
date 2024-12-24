@@ -2,8 +2,7 @@
 use crate::commands::utils::stringify;
 use std::fs::File;
 use std::io::Write;
-
-const SETTINGS_FILE_PATH: &str = "umegaemochi/settings.toml";
+use std::path::PathBuf;
 
 #[derive(Debug, Clone, PartialEq, serde::Serialize, serde::Deserialize)]
 pub struct Settings {
@@ -20,52 +19,42 @@ impl Default for Settings {
     }
 }
 
-impl Settings {
-    pub fn try_new() -> Result<Self, String> {
-        let config_path = if let Some(config_path) = tauri_api::path::config_dir() {
-            config_path.join(SETTINGS_FILE_PATH)
-        } else {
-            return Err("Failed to get config directory".into());
-        };
+#[derive(Debug, Clone)]
+pub struct Config<T> {
+    config_path: PathBuf,
+    pub data: T,
+}
 
-        if !config_path.exists() {
-            Settings::default().write_file()?;
-            Ok(Settings::default())
+impl Config<Settings> {
+    pub fn try_new(config_path: PathBuf) -> Result<Self, String> {
+        let mut config = Config {
+            config_path,
+            data: Settings::default(),
+        };
+        if config.config_path.exists() {
+            config.read_file()?;
         } else {
-            let mut settings = Settings::default();
-            settings.read_file()?;
-            Ok(settings)
+            config.write_file()?;
         }
+        Ok(config)
     }
 
     pub fn set_weather_city_id(&mut self, city_id: String) -> Result<(), String> {
-        self.weather_city_id = city_id;
+        self.data.weather_city_id = city_id;
         self.write_file()
     }
 
     pub fn set_atcoder_id(&mut self, atcoder_id: String) -> Result<(), String> {
-        self.atcoder_id = atcoder_id;
+        self.data.atcoder_id = atcoder_id;
         self.write_file()
     }
-}
 
-trait Config {
-    fn write_file(&self) -> Result<(), String>;
-    fn read_file(&mut self) -> Result<(), String>;
-}
-
-impl Config for Settings {
     fn write_file(&self) -> Result<(), String> {
-        let Some(mut config_path) = tauri_api::path::config_dir() else {
-            return Err("Failed to get config directory".into());
-        };
-
-        config_path.push(SETTINGS_FILE_PATH);
-        if let Some(parent) = config_path.parent() {
+        if let Some(parent) = self.config_path.parent() {
             std::fs::create_dir_all(parent).map_err(stringify)?;
         }
-        let mut file = File::create(config_path).map_err(stringify)?;
-        let toml = serde_json::to_string(self).map_err(stringify)?;
+        let mut file = File::create(&self.config_path).map_err(stringify)?;
+        let toml = serde_json::to_string(&self.data).map_err(stringify)?;
 
         file.write_all(toml.as_bytes()).map_err(stringify)?;
         file.flush().map_err(stringify)?;
@@ -74,13 +63,8 @@ impl Config for Settings {
     }
 
     fn read_file(&mut self) -> Result<(), String> {
-        let Some(mut config_path) = tauri_api::path::config_dir() else {
-            return Err("Failed to get config directory".into());
-        };
-
-        config_path.push(SETTINGS_FILE_PATH);
-        let s = std::fs::read_to_string(&config_path).map_err(stringify)?;
-        *self = serde_json::from_str(&s).map_err(stringify)?;
+        let s = std::fs::read_to_string(&self.config_path).map_err(stringify)?;
+        self.data = serde_json::from_str(&s).map_err(stringify)?;
 
         Ok(())
     }
