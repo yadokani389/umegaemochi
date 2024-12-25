@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from '@tauri-apps/api/event';
+import { computedAsync } from "@vueuse/core";
 import { ref } from "vue";
 
 type Settings = {
@@ -8,25 +9,39 @@ type Settings = {
   atcoder_id: String;
 };
 
-async function setup() {
-  const cityId = await (async () => {
-    try {
-      return (await invoke("get_settings") as Settings).weather_city_id;
-    } catch (error) {
-      console.error(error);
-      return 130010;
-    }
-  })();
+type Weather = {
+  location: {
+    city: string;
+  };
+  forecasts: {
+    dateLabel: string;
+    telop: string;
+    temperature: {
+      min: {
+        celsius: string;
+      };
+      max: {
+        celsius: string;
+      };
+    };
+    image: {
+      url: string;
+      title: string;
+    };
+  }[];
+};
 
-  const weather = await (await fetch("https://weather.tsukumijima.net/api/forecast/city/" + cityId)).json();
-  return weather;
-}
+const cityId = ref((await invoke<Settings>("get_settings")).weather_city_id);
+const weather = computedAsync(async () => {
+  console.log(cityId.value);
+  let a = await (await fetch("https://weather.tsukumijima.net/api/forecast/city/" + cityId.value)).json();
+  console.log(a);
+  return await (await fetch("https://weather.tsukumijima.net/api/forecast/city/" + cityId.value)).json() as Weather;
+}, null, { lazy: true });
 
 listen("settings_changed", async () => {
-  weather.value = await setup();
+  cityId.value = (await invoke<Settings>("get_settings")).weather_city_id;
 });
-
-let weather = ref(await setup());
 </script>
 
 <template>

@@ -1,42 +1,39 @@
 <script setup lang="ts">
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from '@tauri-apps/api/event';
-import { ref } from "vue";
+import { computedAsync } from "@vueuse/core";
+import { computed, ref } from "vue";
 
 type Settings = {
   weather_city_id: string;
   atcoder_id: string;
 };
 
-async function setup() {
-  await invoke<Settings>("get_settings").then((settings) => {
-    userName.value = settings.atcoder_id;
-  }).catch((error) => {
-    console.error(error);
-  });
-
-  let oneDayAgo = Math.trunc(new Date().getTime() / 1000) - 86400;
-  let url = `https://kenkoooo.com/atcoder/atcoder-api/v3/user/submissions?user=${userName.value}&from_second=${oneDayAgo}`;
-
-  let submissions = await (await fetch(url)).json();
-  submissions = submissions.concat(submissions);
-
-  return submissions;
+type Submission = {
+  problem_id: string;
+  language: string;
+  result: string;
 }
 
-listen("settings_changed", async () => {
-  submissions.value = await setup();
-});
+const userName = ref((await invoke<Settings>("get_settings")).atcoder_id);
+const oneDayAgo = ref(Math.trunc(new Date().getTime() / 1000) - 86400);
+const url = computed(() => `https://kenkoooo.com/atcoder/atcoder-api/v3/user/submissions?user=${userName.value}&from_second=${oneDayAgo.value}`);
+const submissions = computedAsync(async () => {
+  const data = await (await fetch(url.value)).json() as Submission[];
+  return [...data, ...data];
+}, [], { lazy: true });
 
-let userName = ref("1step621");
-let submissions = ref(await setup());
+listen("settings_changed", async () => {
+  userName.value = (await invoke<Settings>("get_settings")).atcoder_id;
+  oneDayAgo.value = Math.trunc(new Date().getTime() / 1000) - 86400;
+});
 </script>
 
 <template>
   <div :class="$style.container" v-if="submissions">
     <h1>{{ userName }}の最近の提出</h1>
     <div :class="$style.content">
-      <div v-if="1 < submissions.length" :class="$style.scrollTrack">
+      <div :class="$style.scrollTrack">
         <div v-for="(submission, index) in submissions" :key="index" :class="$style.submission">
           <h2>問題: {{ submission.problem_id }}</h2>
           <h2>言語: {{ submission.language }}</h2>

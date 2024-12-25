@@ -23,8 +23,8 @@ function getSettings() {
 
 let cityId = "";
 let atcoderId = "";
-let localIp = ref("");
-let showQR = ref(false);
+const localIp = ref("");
+const showQR = ref(false);
 </script>
 
 <template>

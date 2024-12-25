@@ -2,13 +2,10 @@
 import { invoke } from "@tauri-apps/api/core";
 import { ref } from "vue";
 
-let newsList = ref(['Loading...']);
-invoke('get_yahoo_news', { url: 'https://news.yahoo.co.jp/rss/topics/top-picks.xml' }).then((response) => {
-  newsList.value = [];
-  (response as string[]).toSpliced(0, 1).forEach((news) => {
-    newsList.value.push(news);
-  })
-  newsList.value = newsList.value.concat(newsList.value);
+const newsList = ref(['Loading...']);
+invoke<string[]>('get_yahoo_news', { url: 'https://news.yahoo.co.jp/rss/topics/top-picks.xml' }).then((response) => {
+  const data = response.toSpliced(0, 1);
+  newsList.value = [...data, ...data];
 }).catch((error) => {
   newsList.value = ['Error: ' + error];
 });
