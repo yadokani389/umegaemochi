@@ -1,19 +1,31 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import BaseWidget from "./components/BaseWidget.vue";
 import WidgetWeather from "./components/WidgetWeather.vue";
 import WidgetAtCoder from "./components/WidgetAtCoder.vue";
 import WidgetSettings from "./components/WidgetSettings.vue";
+import ButtonSettings from "./components/ButtonSettings.vue";
+
+
+const JudgeSetting = ref(false)
+
+const SettingsDisplay = (args: any) => {
+  JudgeSetting.value = args.arg1
+}
 </script>
 
 <template>
-  <main :class="$style.container">
-    <BaseWidget :class="$style.weather">
-      <WidgetWeather />
-    </BaseWidget>
-    <BaseWidget :class="$style.atcoder">
-      <WidgetAtCoder />
-    </BaseWidget>
-    <BaseWidget :class="$style.settings">
+  <main>
+    <ButtonSettings :class="$style.buttonsettings" @childEvent="SettingsDisplay" :JudgeSetting=JudgeSetting />
+    <dev :class="$style.container">
+      <BaseWidget :class="$style.weather">
+        <WidgetWeather />
+      </BaseWidget>
+      <BaseWidget :class="$style.atcoder">
+        <WidgetAtCoder />
+      </BaseWidget>
+    </dev>
+    <BaseWidget :class="$style.settings" v-if="JudgeSetting">
       <WidgetSettings />
     </BaseWidget>
   </main>
@@ -57,12 +69,24 @@ h1 {
 }
 
 .atcoder {
-  grid-column: 1 / 2;
-  grid-row: 2 / 3;
+  grid-column: 2 / 2;
+  grid-row: 1;
+}
+
+main {
+  position: relative;
 }
 
 .settings {
-  grid-column: 2 / 3;
-  grid-row: 1 / 3;
+  position: absolute;
+  top: 0vmin;
+  right: 0vmin;
+  transform: scale(0.8);
+}
+
+.buttonsettings {
+  position: absolute;
+  top: -44vmin;
+  right: -59vmin;
 }
 </style>
