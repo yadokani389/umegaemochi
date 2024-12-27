@@ -18,10 +18,10 @@ type Submission = {
 const userName = ref((await invoke<Settings>("get_settings")).atcoder_id);
 const oneDayAgo = ref(Math.trunc(new Date().getTime() / 1000) - 86400);
 const url = computed(() => `https://kenkoooo.com/atcoder/atcoder-api/v3/user/submissions?user=${userName.value}&from_second=${oneDayAgo.value}`);
+const evaluating = ref(false);
 const submissions = computedAsync(async () => {
-  const data = await (await fetch(url.value)).json() as Submission[];
-  return [...data, ...data];
-}, [], { lazy: true });
+  return await (await fetch(url.value)).json() as Submission[];
+}, [], evaluating);
 
 listen("settings_changed", async () => {
   userName.value = (await invoke<Settings>("get_settings")).atcoder_id;
@@ -33,8 +33,8 @@ listen("settings_changed", async () => {
   <div :class="$style.container" v-if="submissions">
     <h1>{{ userName }}の最近の提出</h1>
     <div :class="$style.content">
-      <div :class="$style.scrollTrack">
-        <div v-for="(submission, index) in submissions" :key="index" :class="$style.submission">
+      <div v-if="!evaluating" :class="$style.scrollTrack">
+        <div v-for="(submission, index) in [...submissions, ...submissions]" :key="index" :class="$style.submission">
           <h2>問題: {{ submission.problem_id }}</h2>
           <h2>言語: {{ submission.language }}</h2>
           <h2>結果: {{ submission.result }}</h2>

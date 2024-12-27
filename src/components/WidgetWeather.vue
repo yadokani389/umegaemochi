@@ -80,7 +80,9 @@ listen("settings_changed", async () => {
 }
 
 .image {
-  flex: 0.7;
-  object-fit: cover;
+  width: 40%;
+  height: auto;
+  max-height: 100%;
+  object-fit: contain;
 }
 </style>

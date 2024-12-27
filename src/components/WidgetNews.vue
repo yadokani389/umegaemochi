@@ -1,14 +1,10 @@
 <script setup lang="ts">
 import { invoke } from "@tauri-apps/api/core";
-import { ref } from "vue";
+import { useAsyncState } from "@vueuse/core";
 
-const newsList = ref(['Loading...']);
-invoke<string[]>('get_yahoo_news', { url: 'https://news.yahoo.co.jp/rss/topics/top-picks.xml' }).then((response) => {
-  const data = response.toSpliced(0, 1);
-  newsList.value = [...data, ...data];
-}).catch((error) => {
-  newsList.value = ['Error: ' + error];
-});
+const newsList = useAsyncState(async () => {
+  return (await invoke<string[]>('get_yahoo_news', { url: 'https://news.yahoo.co.jp/rss/topics/top-picks.xml' })).toSpliced(0, 1);
+}, [], { onError: (e) => console.error(e) }).state;
 </script>
 
 <template>
@@ -16,7 +12,7 @@ invoke<string[]>('get_yahoo_news', { url: 'https://news.yahoo.co.jp/rss/topics/t
     <h1>Yahoo!ニュース</h1>
     <div :class="$style.content">
       <div v-if="1 < newsList.length" :class="$style.scrollTrack">
-        <h2 v-for="(news, index) in newsList" :key="index" :class="$style.news">
+        <h2 v-for="(news, index) in [...newsList, ...newsList]" :key="index" :class="$style.news">
           {{ news }}
         </h2>
       </div>
