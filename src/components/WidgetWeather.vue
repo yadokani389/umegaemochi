@@ -29,15 +29,12 @@ type Weather = {
       title: string;
     };
   }[];
-};
+} | { error: string; };
 
 const cityId = ref((await invoke<Settings>("get_settings")).weather_city_id);
 const weather = computedAsync(async () => {
-  console.log(cityId.value);
-  let a = await (await fetch("https://weather.tsukumijima.net/api/forecast/city/" + cityId.value)).json();
-  console.log(a);
   return await (await fetch("https://weather.tsukumijima.net/api/forecast/city/" + cityId.value)).json() as Weather;
-}, null, { lazy: true });
+}, null, { onError: (e) => console.error(e) });
 
 listen("settings_changed", async () => {
   cityId.value = (await invoke<Settings>("get_settings")).weather_city_id;
@@ -46,16 +43,22 @@ listen("settings_changed", async () => {
 
 <template>
   <div :class="$style.container" v-if="weather">
-    <h1>{{ weather.location.city }}の{{ weather.forecasts[1].dateLabel }}の天気</h1>
-    <div :class="$style.content">
-      <div>
-        <h2>天気: {{ weather.forecasts[1].telop }}</h2>
-        <h2>気温: {{ weather.forecasts[1].temperature.min.celsius }}°C - {{
-          weather.forecasts[1].temperature.max.celsius }}°C</h2>
+    <template v-if="!('error' in weather)">
+      <h1>{{ weather.location.city }}の{{ weather.forecasts[1].dateLabel }}の天気</h1>
+      <div :class="$style.content">
+        <div>
+          <h2>天気: {{ weather.forecasts[1].telop }}</h2>
+          <h2>気温: {{ weather.forecasts[1].temperature.min.celsius }}°C - {{
+            weather.forecasts[1].temperature.max.celsius }}°C</h2>
+        </div>
+        <img :class="$style.image" :src="weather.forecasts[1].image.url"
+          :alt="'weather image:' + weather.forecasts[1].image.title" />
       </div>
-      <img :class="$style.image" :src="weather.forecasts[1].image.url"
-        :alt="'weather image:' + weather.forecasts[1].image.title" />
-    </div>
+    </template>
+    <template v-else>
+      <h1>天気情報の取得に失敗しました</h1>
+      <h2>{{ weather.error }}</h2>
+    </template>
   </div>
 </template>
 
@@ -80,7 +83,9 @@ listen("settings_changed", async () => {
 }
 
 .image {
-  flex: 0.7;
-  object-fit: cover;
+  width: 40%;
+  height: auto;
+  max-height: 100%;
+  object-fit: contain;
 }
 </style>
