@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
 
 const weeks = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 const todayDate = new Date()
@@ -21,8 +21,9 @@ const weeksInMonth = computed(() => {
   let week: Array<{ date: Date; isToday: boolean; isCurrentMonth: boolean }> = []
 
   const startDay = firstDayOfMonth.getDay()
-  for (let i = startDay - 1; i >= 0; i--) {
-    const date = new Date(currentYear, currentMonth - 1, lastDateOfPrevMonth - i)
+
+  for (let i = startDay; i > 0; i--) {
+    const date = new Date(currentYear, currentMonth - 1, lastDateOfPrevMonth - i + 1)
     week.push({
       date,
       isToday: isSameDate(date, todayDate),
@@ -81,8 +82,13 @@ const isSameDate = (date1: Date, date2: Date): boolean => {
       </thead>
       <tbody>
         <tr v-for="(week, index) in weeksInMonth" :key="index">
-          <td v-for="day in week" :key="day.date.getTime()" :class="{ today: day.isToday }">
-            {{ day.isCurrentMonth ? day.date.getDate() : '' }}
+          <td v-for="day in week" :key="day.date.getTime()" :class="{
+            today: day.isToday,
+            sunday: day.date.getDay() === 0,
+            saturday: day.date.getDay() === 6,
+            'is-current-month': day.isCurrentMonth
+          }">
+            {{ day.date.getDate() }}
           </td>
         </tr>
       </tbody>
@@ -118,7 +124,7 @@ th {
 
 td {
   font-size: medium;
-  width: 14%;
+  width: 14.28%;
   text-align: center;
   vertical-align: middle;
   box-sizing: border-box;
@@ -131,11 +137,20 @@ td.today {
   font-weight: bold;
 }
 
-td:not(.today) {
+
+td.is-current-month {
   color: #333;
 }
 
-td:not(.isCurrentMonth) {
+td.sunday {
+  color: red;
+}
+
+td.saturday {
+  color: blue;
+}
+
+td:not(.is-current-month) {
   color: #aaa;
 }
 </style>
