@@ -1,40 +1,24 @@
 <script setup lang="ts">
-import { ref } from "vue";
 
-const JudgeSetting = ref(false)
-
-const emit = defineEmits(['childEvent']);
+const isSettingsOpen = defineModel()
 
 function viewsettings() {
-  JudgeSetting.value = !JudgeSetting.value
-  emit('childEvent', { arg1: JudgeSetting.value });
+  isSettingsOpen.value = !isSettingsOpen.value
 }
 </script>
 
 <template>
-  <div :class="$style.container">
     <button :class="$style.content" @click="viewsettings">
-      <div v-if="JudgeSetting">
+      <div v-if="isSettingsOpen">
         <img :class="$style.image" src="../assets/icons/batu_icon.png" />
       </div>
       <div v-else>
         <img :class="$style.image" src="../assets/icons/setting_icon.png" />
       </div>
     </button>
-  </div>
 </template>
 
 <style module>
-.container {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-}
-
 .content {
   background: none;
   border: none;
@@ -46,9 +30,8 @@ function viewsettings() {
 }
 
 .image {
-  max-width: 60px;
-  max-height: 60px;
-  flex: 0.7;
+  width: 50px;
+  height: auto;
   object-fit: cover;
 }
 </style>

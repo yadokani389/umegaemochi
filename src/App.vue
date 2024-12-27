@@ -7,16 +7,12 @@ import WidgetSettings from "./components/WidgetSettings.vue";
 import ButtonSettings from "./components/ButtonSettings.vue";
 
 
-const JudgeSetting = ref(false)
-
-const SettingsDisplay = (args: any) => {
-  JudgeSetting.value = args.arg1
-}
+const isSettingsOpen = ref(false)
 </script>
 
 <template>
   <main>
-    <ButtonSettings :class="$style.buttonsettings" @childEvent="SettingsDisplay" :JudgeSetting=JudgeSetting />
+    <ButtonSettings :class="$style.buttonsettings" v-model="isSettingsOpen" />
     <dev :class="$style.container">
       <BaseWidget :class="$style.weather">
         <WidgetWeather />
@@ -25,7 +21,7 @@ const SettingsDisplay = (args: any) => {
         <WidgetAtCoder />
       </BaseWidget>
     </dev>
-    <BaseWidget :class="$style.settings" v-if="JudgeSetting">
+    <BaseWidget :class="$style.settings" v-if="isSettingsOpen">
       <WidgetSettings />
     </BaseWidget>
   </main>
@@ -79,6 +75,8 @@ main {
 
 .settings {
   position: absolute;
+  border-style: solid;
+  border-color: rgb(78, 78, 78);
   top: 0vmin;
   right: 0vmin;
   transform: scale(0.8);
@@ -86,7 +84,7 @@ main {
 
 .buttonsettings {
   position: absolute;
-  top: -44vmin;
-  right: -59vmin;
+  top: 5px;
+  right: 5px;
 }
 </style>
