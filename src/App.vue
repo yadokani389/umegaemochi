@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import BaseWidget from "./components/BaseWidget.vue";
 import WidgetWeather from "./components/WidgetWeather.vue";
 import WidgetAtCoder from "./components/WidgetAtCoder.vue";
-import WidgetSettings from "./components/WidgetSettings.vue";
+import WindowSettings from "./components/WindowSettings.vue";
 import ButtonSettings from "./components/ButtonSettings.vue";
 
 
@@ -22,7 +22,7 @@ const isSettingsOpen = ref(false)
       </BaseWidget>
     </dev>
     <BaseWidget :class="$style.settings" v-if="isSettingsOpen">
-      <WidgetSettings />
+      <WindowSettings />
     </BaseWidget>
   </main>
 </template>
@@ -65,8 +65,8 @@ h1 {
 }
 
 .atcoder {
-  grid-column: 2 / 2;
-  grid-row: 1;
+  grid-column: 2 / 3;
+  grid-row: 1 / 2;
 }
 
 main {
