@@ -1,34 +1,34 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 
-const weeks = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-const todayDate = new Date()
-const currentYear = todayDate.getFullYear()
-const currentMonth = todayDate.getMonth()
+const weeks = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const todayDate = new Date();
+const currentYear = todayDate.getFullYear();
+const currentMonth = todayDate.getMonth();
 
 const formattedMonthYear = computed(() => {
-  const options: Intl.DateTimeFormatOptions = { month: 'short', year: 'numeric' }
-  return todayDate.toLocaleDateString(undefined, options)
-})
+  const options: Intl.DateTimeFormatOptions = { month: 'short', year: 'numeric' };
+  return todayDate.toLocaleDateString(undefined, options);
+});
 
-const firstDayOfMonth = new Date(currentYear, currentMonth, 1)
-const lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0)
+const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
+const lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0);
 
-const lastDateOfPrevMonth = new Date(currentYear, currentMonth, 0).getDate()
+const lastDateOfPrevMonth = new Date(currentYear, currentMonth, 0).getDate();
 
 const weeksInMonth = computed(() => {
-  const weeksArray: Array<Array<{ date: Date; isToday: boolean; isCurrentMonth: boolean }>> = []
-  let week: Array<{ date: Date; isToday: boolean; isCurrentMonth: boolean }> = []
+  const weeksArray: Array<Array<{ date: Date; isToday: boolean; isCurrentMonth: boolean }>> = [];
+  let week: Array<{ date: Date; isToday: boolean; isCurrentMonth: boolean }> = [];
 
-  const startDay = firstDayOfMonth.getDay()
+  const startDay = firstDayOfMonth.getDay();
 
   for (let i = startDay; i > 0; i--) {
-    const date = new Date(currentYear, currentMonth - 1, lastDateOfPrevMonth - i + 1)
+    const date = new Date(currentYear, currentMonth - 1, lastDateOfPrevMonth - i + 1);
     week.push({
       date,
       isToday: isSameDate(date, todayDate),
       isCurrentMonth: false
-    })
+    });
   }
 
   for (let i = 1; i <= lastDayOfMonth.getDate(); i++) {
@@ -37,27 +37,27 @@ const weeksInMonth = computed(() => {
       date,
       isToday: isSameDate(date, todayDate),
       isCurrentMonth: true
-    })
+    });
 
     if (week.length === 7) {
-      weeksArray.push(week)
-      week = []
-    }
+      weeksArray.push(week);
+      week = [];
+    };
   }
 
   if (week.length > 0) {
     for (let i = 1; week.length < 7; i++) {
-      const date = new Date(currentYear, currentMonth + 1, i)
+      const date = new Date(currentYear, currentMonth + 1, i);
       week.push({
         date,
         isToday: isSameDate(date, todayDate),
         isCurrentMonth: false
-      })
+      });
     }
-    weeksArray.push(week)
+    weeksArray.push(week);
   }
 
-  return weeksArray
+  return weeksArray;
 })
 
 const isSameDate = (date1: Date, date2: Date): boolean => {
@@ -65,7 +65,7 @@ const isSameDate = (date1: Date, date2: Date): boolean => {
     date1.getFullYear() === date2.getFullYear() &&
     date1.getMonth() === date2.getMonth() &&
     date1.getDate() === date2.getDate()
-  )
+  );
 }
 </script>
 
