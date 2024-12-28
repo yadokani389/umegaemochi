@@ -1,20 +1,28 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import BaseWidget from "./components/BaseWidget.vue";
 import WidgetWeather from "./components/WidgetWeather.vue";
 import WidgetAtCoder from "./components/WidgetAtCoder.vue";
-import WidgetSettings from "./components/WidgetSettings.vue";
+import WindowSettings from "./components/WindowSettings.vue";
+import ButtonSettings from "./components/ButtonSettings.vue";
+
+
+const isSettingsOpen = ref(false)
 </script>
 
 <template>
-  <main :class="$style.container">
-    <BaseWidget :class="$style.weather">
-      <WidgetWeather />
-    </BaseWidget>
-    <BaseWidget :class="$style.atcoder">
-      <WidgetAtCoder />
-    </BaseWidget>
-    <BaseWidget :class="$style.settings">
-      <WidgetSettings />
+  <main>
+    <ButtonSettings :class="$style.buttonsettings" v-model="isSettingsOpen" />
+    <dev :class="$style.container">
+      <BaseWidget :class="$style.weather">
+        <WidgetWeather />
+      </BaseWidget>
+      <BaseWidget :class="$style.atcoder">
+        <WidgetAtCoder />
+      </BaseWidget>
+    </dev>
+    <BaseWidget :class="$style.settings" v-if="isSettingsOpen">
+      <WindowSettings />
     </BaseWidget>
   </main>
 </template>
@@ -57,12 +65,26 @@ h1 {
 }
 
 .atcoder {
-  grid-column: 1 / 2;
-  grid-row: 2 / 3;
+  grid-column: 2 / 3;
+  grid-row: 1 / 2;
+}
+
+main {
+  position: relative;
 }
 
 .settings {
-  grid-column: 2 / 3;
-  grid-row: 1 / 3;
+  position: absolute;
+  border-style: solid;
+  border-color: rgb(78, 78, 78);
+  top: 0vmin;
+  right: 0vmin;
+  transform: scale(0.8);
+}
+
+.buttonsettings {
+  position: absolute;
+  top: 5px;
+  right: 5px;
 }
 </style>
