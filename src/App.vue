@@ -2,12 +2,12 @@
 import { ref } from 'vue'
 import BaseWidget from "./components/BaseWidget.vue";
 import WidgetWeather from "./components/WidgetWeather.vue";
+import WidgetNews from "./components/WidgetNews.vue";
 import WidgetAtCoder from "./components/WidgetAtCoder.vue";
 import WindowSettings from "./components/WindowSettings.vue";
 import ButtonSettings from "./components/ButtonSettings.vue";
 
-
-const isSettingsOpen = ref(false)
+const isSettingsOpen = ref(false);
 </script>
 
 <template>
@@ -16,6 +16,9 @@ const isSettingsOpen = ref(false)
     <dev :class="$style.container">
       <BaseWidget :class="$style.weather">
         <WidgetWeather />
+      </BaseWidget>
+      <BaseWidget :class="$style.news">
+        <WidgetNews />
       </BaseWidget>
       <BaseWidget :class="$style.atcoder">
         <WidgetAtCoder />
@@ -64,9 +67,14 @@ h1 {
   grid-row: 1 / 2;
 }
 
-.atcoder {
+.news {
   grid-column: 2 / 3;
-  grid-row: 1 / 2;
+  grid-row: 1 / 3;
+}
+
+.atcoder {
+  grid-column: 1 /2;
+  grid-row: 2 / 3;
 }
 
 main {
