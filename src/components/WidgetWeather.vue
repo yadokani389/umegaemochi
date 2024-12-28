@@ -1,19 +1,64 @@
 <script setup lang="ts">
-const weather = await(await fetch("https://weather.tsukumijima.net/api/forecast/city/130010")).json();
+import { invoke } from "@tauri-apps/api/core";
+import { listen } from '@tauri-apps/api/event';
+import { computedAsync } from "@vueuse/core";
+import { ref } from "vue";
+
+type Settings = {
+  weather_city_id: String;
+  atcoder_id: String;
+};
+
+type Weather = {
+  location: {
+    city: string;
+  };
+  forecasts: {
+    dateLabel: string;
+    telop: string;
+    temperature: {
+      min: {
+        celsius: string;
+      };
+      max: {
+        celsius: string;
+      };
+    };
+    image: {
+      url: string;
+      title: string;
+    };
+  }[];
+} | { error: string; };
+
+const cityId = ref((await invoke<Settings>("get_settings")).weather_city_id);
+const weather = computedAsync(async () => {
+  return await (await fetch("https://weather.tsukumijima.net/api/forecast/city/" + cityId.value)).json() as Weather;
+}, null, { onError: (e) => console.error(e) });
+
+listen("settings_changed", async () => {
+  cityId.value = (await invoke<Settings>("get_settings")).weather_city_id;
+});
 </script>
 
 <template>
-  <div :class="$style.container">
-    <h1>{{ weather.location.city }}の{{ weather.forecasts[1].dateLabel }}の天気</h1>
-    <div :class="$style.content">
-      <div>
-        <h2>天気: {{ weather.forecasts[1].telop }}</h2>
-        <h2>気温: {{ weather.forecasts[1].temperature.min.celsius }}°C - {{
-          weather.forecasts[1].temperature.max.celsius }}°C</h2>
+  <div :class="$style.container" v-if="weather">
+    <template v-if="!('error' in weather)">
+      <h1>{{ weather.location.city }}の{{ weather.forecasts[1].dateLabel }}の天気</h1>
+      <div :class="$style.content">
+        <div>
+          <h2>天気: {{ weather.forecasts[1].telop }}</h2>
+          <h2>気温: {{ weather.forecasts[1].temperature.min.celsius }}°C - {{
+            weather.forecasts[1].temperature.max.celsius }}°C</h2>
+        </div>
+        <img :class="$style.image" :src="weather.forecasts[1].image.url"
+          :alt="'weather image:' + weather.forecasts[1].image.title" />
       </div>
-      <img :class="$style.image" :src="weather.forecasts[1].image.url"
-        :alt="'weather image:' + weather.forecasts[1].image.title" />
-    </div>
+    </template>
+    <template v-else>
+      <h1>天気情報の取得に失敗しました</h1>
+      <h2>{{ weather.error }}</h2>
+    </template>
   </div>
 </template>
 
@@ -38,7 +83,9 @@ const weather = await(await fetch("https://weather.tsukumijima.net/api/forecast/
 }
 
 .image {
-  flex: 0.7;
-  object-fit: cover;
+  width: 40%;
+  height: auto;
+  max-height: 100%;
+  object-fit: contain;
 }
 </style>

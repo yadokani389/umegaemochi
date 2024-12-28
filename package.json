@@ -1,7 +1,7 @@
 {
   "name": "umegaemochi",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -10,15 +10,17 @@
     "tauri": "tauri"
   },
   "dependencies": {
-    "vue": "^3.3.4",
-    "@tauri-apps/api": "^2",
-    "@tauri-apps/plugin-shell": "^2"
+    "@tauri-apps/api": "^2.1.1",
+    "vue": "^3.5.13"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^5.0.5",
-    "typescript": "^5.2.2",
-    "vite": "^5.3.1",
-    "vue-tsc": "^2.0.22",
-    "@tauri-apps/cli": "^2"
+    "@tauri-apps/cli": "^2.1.0",
+    "@types/qrcode": "^1.5.5",
+    "@vitejs/plugin-vue": "^5.2.1",
+    "@vueuse/core": "^12.2.0",
+    "qrcode": "^1.5.4",
+    "typescript": "^5.7.2",
+    "vite": "^5.4.11",
+    "vue-tsc": "^2.2.0"
   }
 }

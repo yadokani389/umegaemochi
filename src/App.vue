@@ -1,20 +1,31 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import BaseWidget from "./components/BaseWidget.vue";
 import WidgetWeather from "./components/WidgetWeather.vue";
 import WidgetNews from "./components/WidgetNews.vue";
-import WidgetPicto from "./components/WidgetPicto.vue";
+import WidgetAtCoder from "./components/WidgetAtCoder.vue";
+import WindowSettings from "./components/WindowSettings.vue";
+import ButtonSettings from "./components/ButtonSettings.vue";
+
+const isSettingsOpen = ref(false);
 </script>
 
 <template>
-  <main :class="$style.container">
-    <BaseWidget :class="$style.weather">
-      <WidgetWeather />
-    </BaseWidget>
-    <BaseWidget :class="$style.news">
-      <WidgetNews />
-    </BaseWidget>
-    <BaseWidget :class="$style.picto">
-      <WidgetPicto />
+  <main>
+    <ButtonSettings :class="$style.buttonsettings" v-model="isSettingsOpen" />
+    <dev :class="$style.container">
+      <BaseWidget :class="$style.weather">
+        <WidgetWeather />
+      </BaseWidget>
+      <BaseWidget :class="$style.news">
+        <WidgetNews />
+      </BaseWidget>
+      <BaseWidget :class="$style.atcoder">
+        <WidgetAtCoder />
+      </BaseWidget>
+    </dev>
+    <BaseWidget :class="$style.settings" v-if="isSettingsOpen">
+      <WindowSettings />
     </BaseWidget>
   </main>
 </template>
@@ -22,7 +33,7 @@ import WidgetPicto from "./components/WidgetPicto.vue";
 <style>
 @font-face {
   font-family: "Koruri";
-  src: url('../assets/fonts/Koruri-Semibold.ttf') format('truetype');
+  src: url('/src/assets/fonts/Koruri-Semibold.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
@@ -57,12 +68,31 @@ h1 {
 }
 
 .news {
-  grid-column: 1 / 2;
+  grid-column: 2 / 3;
+  grid-row: 1 / 3;
+}
+
+.atcoder {
+  grid-column: 1 /2;
   grid-row: 2 / 3;
 }
 
-.picto {
-  grid-column: 2 / 3;
-  grid-row: 1 / 3;
+main {
+  position: relative;
+}
+
+.settings {
+  position: absolute;
+  border-style: solid;
+  border-color: rgb(78, 78, 78);
+  top: 0vmin;
+  right: 0vmin;
+  transform: scale(0.8);
+}
+
+.buttonsettings {
+  position: absolute;
+  top: 5px;
+  right: 5px;
 }
 </style>

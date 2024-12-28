@@ -1,33 +1,27 @@
 <script setup lang="ts">
 import { invoke } from "@tauri-apps/api/core";
-import { ref } from "vue";
+import { useAsyncState } from "@vueuse/core";
 
-let newsList = ref(['Loading...']);
-invoke('get_yahoo_news', { url: 'https://news.yahoo.co.jp/rss/topics/top-picks.xml' }).then((response) => {
-  newsList.value = [];
-  (response as string[]).toSpliced(0, 1).forEach((news) => {
-    newsList.value.push(news);
-  })
-  newsList.value = newsList.value.concat(newsList.value);
-}).catch((error) => {
-  newsList.value = ['Error: ' + error];
-});
+const newsList = useAsyncState(async () => {
+  return (await invoke<string[]>('get_yahoo_news', { url: 'https://news.yahoo.co.jp/rss/topics/top-picks.xml' })).toSpliced(0, 1);
+}, [], { onError: (e) => console.error(e) }).state;
 </script>
 
 <template>
   <div :class="$style.container">
     <h1>Yahoo!ニュース</h1>
     <div :class="$style.content">
-      <div :class="$style.scrollTrack">
-        <h2 v-for="(news, index) in newsList" :key="index" :class="$style.news">
+      <div v-if="1 < newsList.length" :class="$style.scrollTrack">
+        <h2 v-for="(news, index) in [...newsList, ...newsList]" :key="index" :class="$style.news">
           {{ news }}
         </h2>
       </div>
+      <h2 v-else>Loading...</h2>
     </div>
   </div>
 </template>
 
-<style module scoped>
+<style module>
 .container {
   width: 100%;
   height: 100%;
