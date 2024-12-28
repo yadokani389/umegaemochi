@@ -65,34 +65,20 @@ jobs:
       - name: Get app version
         run: echo "APP_VERSION=$(jq -r .version src-tauri/tauri.conf.json)" >> $GITHUB_ENV
 
-      # TODO: Combine this with the basic workflow and upload the files to the Release.
       - name: Upload deb bundle
-        uses: softprops/action-gh-release@v1
+        uses: actions/upload-artifact@v3
         with:
-          draft: true
-          prerelease: false
-          tag_name: v${{ env.APP_VERSION }}
-          release_name: 'v${{ env.APP_VERSION }}'
-          files: ${{ github.workspace }}/src-tauri/target/release/bundle/deb/umegaemochi_${{ env.APP_VERSION }}_${{ matrix.deb }}.deb
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          name: Debian Bundle
+          path: ${{ github.workspace }}/src-tauri/target/release/bundle/deb/umegaemochi_${{ env.APP_VERSION }}_${{ matrix.deb }}.deb
+
       - name: Upload rpm bundle
-        uses: softprops/action-gh-release@v1
+        uses: actions/upload-artifact@v3
         with:
-          draft: true
-          prerelease: false
-          tag_name: v${{ env.APP_VERSION }}
-          release_name: 'v${{ env.APP_VERSION }}'
-          files: ${{ github.workspace }}/src-tauri/target/release/bundle/rpm/umegaemochi-${{ env.APP_VERSION }}-1.${{ matrix.rpm }}.rpm
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          name: RPM Bundle
+          path: ${{ github.workspace }}/src-tauri/target/release/bundle/rpm/umegaemochi-${{ env.APP_VERSION }}-1.${{ matrix.rpm }}.rpm
+
       - name: Upload appimage bundle
-        uses: softprops/action-gh-release@v1
+        uses: actions/upload-artifact@v3
         with:
-          draft: true
-          prerelease: false
-          tag_name: v${{ env.APP_VERSION }}
-          release_name: 'v${{ env.APP_VERSION }}'
-          files: ${{ github.workspace }}/src-tauri/target/release/bundle/appimage/umegaemochi_${{ env.APP_VERSION }}_${{ matrix.appimage }}.AppImage
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          name: AppImage Bundle
+          path: ${{ github.workspace }}/src-tauri/target/release/bundle/appimage/umegaemochi_${{ env.APP_VERSION }}_${{ matrix.appimage }}.AppImage
