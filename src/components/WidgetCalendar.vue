@@ -1,24 +1,31 @@
 <script setup lang="ts">
-import { computed } from 'vue';
 
 const weeks = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const todayDate = new Date();
 const currentYear = todayDate.getFullYear();
 const currentMonth = todayDate.getMonth();
 
-const formattedMonthYear = computed(() => {
+const formattedMonthYear = (() => {
   const options: Intl.DateTimeFormatOptions = { month: 'short', year: 'numeric' };
   return todayDate.toLocaleDateString(undefined, options);
-});
+})();
 
 const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
 const lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0);
 
 const lastDateOfPrevMonth = new Date(currentYear, currentMonth, 0).getDate();
 
-const weeksInMonth = computed(() => {
-  const weeksArray: Array<Array<{ date: Date; isToday: boolean; isCurrentMonth: boolean }>> = [];
-  let week: Array<{ date: Date; isToday: boolean; isCurrentMonth: boolean }> = [];
+const isSameDate = (date1: Date, date2: Date): boolean => {
+  return (
+    date1.getFullYear() === date2.getFullYear() &&
+    date1.getMonth() === date2.getMonth() &&
+    date1.getDate() === date2.getDate()
+  );
+}
+
+const weeksInMonth = (() => {
+  const weeksArray: { date: Date; isToday: boolean; isCurrentMonth: boolean }[][] = [];
+  let week: { date: Date; isToday: boolean; isCurrentMonth: boolean }[] = [];
 
   const startDay = firstDayOfMonth.getDay();
 
@@ -58,20 +65,12 @@ const weeksInMonth = computed(() => {
   }
 
   return weeksArray;
-})
-
-const isSameDate = (date1: Date, date2: Date): boolean => {
-  return (
-    date1.getFullYear() === date2.getFullYear() &&
-    date1.getMonth() === date2.getMonth() &&
-    date1.getDate() === date2.getDate()
-  );
-}
+})()
 </script>
 
 <template>
-  <div class="calendar">
-    <div class="header">
+  <div :class="$style.calendar">
+    <div :class="$style.header">
       <h2>{{ formattedMonthYear }}</h2>
     </div>
     <table>
@@ -83,10 +82,10 @@ const isSameDate = (date1: Date, date2: Date): boolean => {
       <tbody>
         <tr v-for="(week, index) in weeksInMonth" :key="index">
           <td v-for="day in week" :key="day.date.getTime()" :class="{
-            today: day.isToday,
-            sunday: day.date.getDay() === 0,
-            saturday: day.date.getDay() === 6,
-            'is-current-month': day.isCurrentMonth
+            [$style.today]: day.isToday,
+            [$style.sunday]: day.date.getDay() === 0,
+            [$style.saturday]: day.date.getDay() === 6,
+            [$style.isCurrentMonth]: day.isCurrentMonth
           }">
             {{ day.date.getDate() }}
           </td>
@@ -96,7 +95,7 @@ const isSameDate = (date1: Date, date2: Date): boolean => {
   </div>
 </template>
 
-<style scoped>
+<style module>
 .calendar {
   display: flex;
   flex-direction: column;
@@ -138,7 +137,7 @@ td.today {
 }
 
 
-td.is-current-month {
+td.isCurrentMonth {
   color: #333;
 }
 
@@ -150,7 +149,7 @@ td.saturday {
   color: blue;
 }
 
-td:not(.is-current-month) {
+td:not(.isCurrentMonth) {
   color: #aaa;
 }
 </style>
