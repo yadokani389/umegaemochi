@@ -26,7 +26,7 @@ stdenv.mkDerivation (finalAttrs: {
   cargoDeps = rustPlatform.fetchCargoTarball {
     inherit (finalAttrs) pname version src;
     sourceRoot = "${finalAttrs.src.name}/${finalAttrs.cargoRoot}";
-    hash = "sha256-uYyNuDMXXS2aL/IWszX4p2+bIEgU6TRILfCqixh+uzk=";
+    hash = "sha256-HLzMT7T1insfvwUVzpeFtMHVCnUq5tnRzwffoIHVe34=";
   };
 
   nativeBuildInputs = [
