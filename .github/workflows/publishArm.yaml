@@ -2,6 +2,11 @@ name: 'Publish Linux Arm builds'
 
 on:
   workflow_dispatch:
+    inputs:
+      dont_publish:
+        required: false
+        default: true
+        type: boolean
   push:
     branches:
       - release
@@ -82,3 +87,36 @@ jobs:
         with:
           name: AppImage Bundle
           path: ${{ github.workspace }}/src-tauri/target/release/bundle/appimage/umegaemochi_${{ env.APP_VERSION }}_${{ matrix.appimage }}.AppImage
+
+      - name: Upload deb bundle to release
+        uses: svenstaro/upload-release-action@v2
+        if: inputs.dont_publish == false
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: src-tauri/target/release/bundle/deb/umegaemochi_${{ env.APP_VERSION }}_${{ matrix.deb }}.deb
+          tag: v${{ env.APP_VERSION }}
+          overwrite: true
+          draft: true
+          body: 'See the assets to download this version and install.'
+
+      - name: Upload rpm bundle to release
+        uses: svenstaro/upload-release-action@v2
+        if: inputs.dont_publish == false
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: src-tauri/target/release/bundle/rpm/umegaemochi-${{ env.APP_VERSION }}-1.${{ matrix.rpm }}.rpm
+          tag: v${{ env.APP_VERSION }}
+          overwrite: true
+          draft: true
+          body: 'See the assets to download this version and install.'
+
+      - name: Upload appimage bundle to release
+        uses: svenstaro/upload-release-action@v2
+        if: inputs.dont_publish == false
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: src-tauri/target/release/bundle/appimage/umegaemochi_${{ env.APP_VERSION }}_${{ matrix.appimage }}.AppImage
+          tag: v${{ env.APP_VERSION }}
+          overwrite: true
+          draft: true
+          body: 'See the assets to download this version and install.'
