@@ -2,6 +2,7 @@ use crate::commands::settings::{set_atcoder_id, set_weather_city_id};
 use crate::settings::Settings;
 use crate::state::AppState;
 use std::convert::Infallible;
+use std::sync::Mutex;
 use tauri::Manager;
 use warp::Filter;
 
@@ -14,13 +15,22 @@ pub fn api(
 fn get_settings(
     handle: tauri::AppHandle,
 ) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
-    println!("{:?}", handle.state::<AppState>().settings.lock().unwrap());
+    println!(
+        "{:?}",
+        handle.state::<Mutex<AppState>>().lock().unwrap().settings
+    );
 
     warp::path!("settings").and(warp::get()).and_then(move || {
         let handle = handle.clone();
         async move {
             Ok::<warp::reply::Json, Infallible>(warp::reply::json(
-                &handle.state::<AppState>().settings.lock().unwrap().data.clone(),
+                &handle
+                    .state::<Mutex<AppState>>()
+                    .lock()
+                    .unwrap()
+                    .settings
+                    .data
+                    .clone(),
             ))
         }
     })

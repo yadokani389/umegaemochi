@@ -8,6 +8,7 @@ mod state;
 
 use commands::settings::{get_settings, set_atcoder_id, set_weather_city_id};
 use commands::utils::{get_server_address, get_yahoo_news};
+use std::sync::Mutex;
 use tauri::Manager;
 
 const SETTINGS_FILE_PATH: &str = "umegaemochi/settings.toml";
@@ -17,8 +18,9 @@ fn main() {
     tauri::Builder::default()
         .setup(|app| {
             let handle = app.handle().clone();
-            let app_state =
-                state::AppState::try_new(handle.path().config_dir()?.join(SETTINGS_FILE_PATH))?;
+            let app_state = Mutex::new(state::AppState::try_new(
+                handle.path().config_dir()?.join(SETTINGS_FILE_PATH),
+            )?);
             app.manage(app_state);
             tauri::async_runtime::spawn(async move { server::start_server(handle).await });
             let handle = app.handle().clone();
