@@ -2,7 +2,7 @@
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from '@tauri-apps/api/event';
 import { computedAsync } from "@vueuse/core";
-import { ref } from "vue";
+import { ref, triggerRef } from "vue";
 
 type Settings = {
   weather_city_id: String;
@@ -38,6 +38,10 @@ const weather = computedAsync(async () => {
 
 listen("settings_changed", async () => {
   cityId.value = (await invoke<Settings>("get_settings")).weather_city_id;
+});
+
+listen("daily_reload", async () => {
+  triggerRef(cityId);
 });
 </script>
 

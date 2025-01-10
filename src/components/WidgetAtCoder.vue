@@ -27,6 +27,10 @@ listen("settings_changed", async () => {
   userName.value = (await invoke<Settings>("get_settings")).atcoder_id;
   oneDayAgo.value = Math.trunc(new Date().getTime() / 1000) - 86400;
 });
+
+listen("daily_reload", async () => {
+  oneDayAgo.value = Math.trunc(new Date().getTime() / 1000) - 86400;
+});
 </script>
 
 <template>
