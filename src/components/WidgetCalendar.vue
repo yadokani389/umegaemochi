@@ -1,19 +1,23 @@
 <script setup lang="ts">
+import { ref, computed } from 'vue';
+import { listen } from '@tauri-apps/api/event';
 
 const weeks = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-const todayDate = new Date();
-const currentYear = todayDate.getFullYear();
-const currentMonth = todayDate.getMonth();
+const todayDate = ref(new Date());
 
-const formattedMonthYear = (() => {
+const currentYear = computed(() => todayDate.value.getFullYear());
+const currentMonth = computed(() => todayDate.value.getMonth());
+
+const formattedMonthYear = computed(() => formatMonthYear(todayDate.value));
+
+function formatMonthYear(date: Date) {
   const options: Intl.DateTimeFormatOptions = { month: 'short', year: 'numeric' };
-  return todayDate.toLocaleDateString(undefined, options);
-})();
+  return date.toLocaleDateString(undefined, options);
+}
 
-const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
-const lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0);
-
-const lastDateOfPrevMonth = new Date(currentYear, currentMonth, 0).getDate();
+const firstDayOfMonth = computed(() => new Date(currentYear.value, currentMonth.value, 1));
+const lastDayOfMonth = computed(() => new Date(currentYear.value, currentMonth.value + 1, 0));
+const lastDateOfPrevMonth = computed(() => new Date(currentYear.value, currentMonth.value, 0).getDate());
 
 const isSameDate = (date1: Date, date2: Date): boolean => {
   return (
@@ -23,26 +27,28 @@ const isSameDate = (date1: Date, date2: Date): boolean => {
   );
 }
 
-const weeksInMonth = (() => {
+const weeksInMonth = computed(() => calculateWeeksInMonth());
+
+function calculateWeeksInMonth() {
   const weeksArray: { date: Date; isToday: boolean; isCurrentMonth: boolean }[][] = [];
   let week: { date: Date; isToday: boolean; isCurrentMonth: boolean }[] = [];
 
-  const startDay = firstDayOfMonth.getDay();
+  const startDay = firstDayOfMonth.value.getDay();
 
   for (let i = startDay; i > 0; i--) {
-    const date = new Date(currentYear, currentMonth - 1, lastDateOfPrevMonth - i + 1);
+    const date = new Date(currentYear.value, currentMonth.value - 1, lastDateOfPrevMonth.value - i + 1);
     week.push({
       date,
-      isToday: isSameDate(date, todayDate),
+      isToday: isSameDate(date, todayDate.value),
       isCurrentMonth: false
     });
   }
 
-  for (let i = 1; i <= lastDayOfMonth.getDate(); i++) {
-    const date = new Date(currentYear, currentMonth, i)
+  for (let i = 1; i <= lastDayOfMonth.value.getDate(); i++) {
+    const date = new Date(currentYear.value, currentMonth.value, i)
     week.push({
       date,
-      isToday: isSameDate(date, todayDate),
+      isToday: isSameDate(date, todayDate.value),
       isCurrentMonth: true
     });
 
@@ -54,10 +60,10 @@ const weeksInMonth = (() => {
 
   if (week.length > 0) {
     for (let i = 1; week.length < 7; i++) {
-      const date = new Date(currentYear, currentMonth + 1, i);
+      const date = new Date(currentYear.value, currentMonth.value + 1, i);
       week.push({
         date,
-        isToday: isSameDate(date, todayDate),
+        isToday: isSameDate(date, todayDate.value),
         isCurrentMonth: false
       });
     }
@@ -65,7 +71,11 @@ const weeksInMonth = (() => {
   }
 
   return weeksArray;
-})()
+}
+
+listen("daily_reload", async () => {
+  todayDate.value = new Date();
+});
 </script>
 
 <template>
