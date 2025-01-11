@@ -26,6 +26,10 @@ fn main() {
             tauri::async_runtime::spawn(async move { server::start_server(handle).await });
             let handle = app.handle().clone();
             tauri::async_runtime::spawn(async move { daily_reload::start_job(handle).await });
+            let handle = app.handle().clone();
+            tauri::async_runtime::spawn(async move {
+                disaster_info::check_disaster_updates(handle).await
+            });
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
