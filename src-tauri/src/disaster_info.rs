@@ -70,11 +70,32 @@ pub async fn check_disaster_updates(handle: tauri::AppHandle) -> Result<(), Stri
         for entry in feed.entries.iter() {
             if entry.title.contains("震源") {
                 let report = fetch_report(&entry.id).await.map_err(stringify)?;
-                println!("{:?}", report);
-                update_state_if_needed(&handle, report)
+                if update_state_if_needed(&handle, report)
                     .await
-                    .map_err(stringify)?;
-            } 
+                    .map_err(stringify)?
+                {
+                    break;
+                }
+            }
+        }
+
+        // Clear disaster info if it's been more than an hour since the disaster occurred
+        if handle
+            .state::<Mutex<crate::state::AppState>>()
+            .lock()
+            .map_err(stringify)?
+            .disaster_info
+            .as_ref()
+            .map_or(false, |info| {
+                info.occurred < chrono::Local::now() - chrono::Duration::hours(1)
+            })
+        {
+            handle.emit("disaster_clear", ()).map_err(stringify)?;
+            handle
+                .state::<Mutex<crate::state::AppState>>()
+                .lock()
+                .map_err(stringify)?
+                .disaster_info = None;
         }
 
         tokio::time::sleep(tokio::time::Duration::from_secs(60)).await;
@@ -99,42 +120,50 @@ async fn fetch_report(url: &str) -> Result<Report, Box<dyn std::error::Error>> {
 async fn update_state_if_needed(
     handle: &tauri::AppHandle,
     report: Report,
-) -> Result<(), Box<dyn std::error::Error>> {
-    if let Ok(mut state) = handle.state::<Mutex<crate::state::AppState>>().lock() {
-        if let Some(disaster_info) = state.disaster_info.as_ref() {
-            if disaster_info.occurred == report.body.earthquake.origin_time {
-                return Ok(());
-            }
-        }
+) -> Result<bool, Box<dyn std::error::Error>> {
+    let state = handle.state::<Mutex<crate::state::AppState>>();
+    let mut state = state.lock().map_err(stringify)?;
 
-        state.disaster_info = Some(DisasterInfo {
-            title: format!(
-                "{}で震度{},マグニチュード{}の地震が発生しました。",
-                report.body.earthquake.hypocenter.area.name,
-                report.body.intensity.observation.max_int,
-                report.body.earthquake.magnitude
-            ),
-            description: format!(
-                "{}で{}",
-                report
-                    .body
-                    .earthquake
-                    .hypocenter
-                    .area
-                    .coordinate
-                    .description
-                    .nfkc()
-                    .collect::<String>(),
-                report.head.headline.text.nfkc().collect::<String>()
-            ),
-            warning: report.body.comments.forecast_comment.text,
-            occurred: report.body.earthquake.origin_time,
-        });
-        println!("{:?}", state.disaster_info);
-        handle.emit(
-            "disaster_occurred",
-            state.disaster_info.as_ref().unwrap().clone(),
-        )?;
+    if report.body.earthquake.origin_time < chrono::Local::now() - chrono::Duration::minutes(30) {
+        return Ok(false);
     }
-    Ok(())
+
+    if state.disaster_info.as_ref().map_or(false, |info| {
+        report.body.earthquake.origin_time <= info.occurred
+    }) {
+        return Ok(false);
+    }
+
+    state.disaster_info = Some(DisasterInfo {
+        title: format!(
+            "{}で震度{},マグニチュード{}の地震が発生しました。",
+            report.body.earthquake.hypocenter.area.name,
+            report.body.intensity.observation.max_int,
+            report.body.earthquake.magnitude
+        ),
+        description: format!(
+            "{}で{}",
+            report
+                .body
+                .earthquake
+                .hypocenter
+                .area
+                .coordinate
+                .description
+                .nfkc()
+                .collect::<String>(),
+            report.head.headline.text.nfkc().collect::<String>()
+        ),
+        warning: report.body.comments.forecast_comment.text,
+        occurred: report.body.earthquake.origin_time,
+    });
+
+    println!("{:?}", state.disaster_info);
+
+    handle.emit(
+        "disaster_occurred",
+        state.disaster_info.as_ref().unwrap().clone(),
+    )?;
+
+    Ok(true)
 }
