@@ -1,29 +1,56 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import BaseWidget from "./components/BaseWidget.vue";
 import WidgetWeather from "./components/WidgetWeather.vue";
 import WidgetNews from "./components/WidgetNews.vue";
 import WidgetAtCoder from "./components/WidgetAtCoder.vue";
+import WidgetCalendar from './components/WidgetCalendar.vue';
+import WidgetClock from './components/WidgetClock.vue';
 import WindowSettings from "./components/WindowSettings.vue";
 import ButtonSettings from "./components/ButtonSettings.vue";
+import WidgetPicto from './components/WidgetPicto.vue';
 
 const isSettingsOpen = ref(false);
+
+const widgets = [
+  WidgetWeather,
+  WidgetNews,
+  WidgetAtCoder,
+  WidgetCalendar,
+  WidgetClock
+];
+
+const widgetIndex = ref(0);
+
+function nextWidget() {
+  widgetIndex.value = (widgetIndex.value + 1) % widgets.length;
+}
+
+function prevWidget() {
+  widgetIndex.value = (widgetIndex.value - 1 + widgets.length) % widgets.length;
+}
+
+onMounted(() => {
+  setInterval(nextWidget, 5000);
+});
+
 </script>
 
 <template>
   <main>
     <ButtonSettings :class="$style.buttonsettings" v-model="isSettingsOpen" />
-    <dev :class="$style.container">
-      <BaseWidget :class="$style.weather">
-        <WidgetWeather />
+    <div :class="$style.container">
+      <div :class="$style.widgetContainer">
+        <transition name="slide-fade">
+          <BaseWidget :class="$style.movewidget" :key="widgetIndex">
+            <component :is="widgets[widgetIndex]" />
+          </BaseWidget>
+        </transition>
+      </div>
+      <BaseWidget :class="$style.picto">
+        <WidgetPicto />
       </BaseWidget>
-      <BaseWidget :class="$style.news">
-        <WidgetNews />
-      </BaseWidget>
-      <BaseWidget :class="$style.atcoder">
-        <WidgetAtCoder />
-      </BaseWidget>
-    </dev>
+    </div>
     <BaseWidget :class="$style.settings" v-if="isSettingsOpen">
       <WindowSettings />
     </BaseWidget>
@@ -49,32 +76,71 @@ const isSettingsOpen = ref(false);
 h1 {
   font-size: 6vmin;
 }
+
+.slide-fade-enter-active {
+  transition: opacity 1.5s ease, transform 3.0s ease;
+}
+
+.slide-fade-leave-active {
+  transition: opacity 1.5s ease, transform 3.0s ease;
+}
+
+.slide-fade-enter-from {
+  opacity: 0;
+  transform: translateY(-50vh);
+}
+
+.slide-fade-leave-to {
+  opacity: 0;
+  transform: translateY(50vh);
+}
+
+.slide-fade-enter-to {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.slide-fade-leave-from {
+  opacity: 1;
+  transform: translateY(0);
+}
 </style>
 
 <style module>
 .container {
-  display: grid;
+  display: flex;
   width: 100vw;
   height: 100vh;
   padding: 10vmin;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr 1fr;
   gap: 8vmin;
+  align-items: center;
+  justify-items: center;
 }
 
-.weather {
-  grid-column: 1 / 2;
-  grid-row: 1 / 2;
+.widgetContainer {
+  position: absolute;
+  top: 17.5vh;
+  width: 55vw;
+  height: 65vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.news {
-  grid-column: 2 / 3;
-  grid-row: 1 / 3;
+.movewidget {
+  position: absolute;
+  width: 100%;
+  height: 100%;
 }
 
-.atcoder {
-  grid-column: 1 /2;
-  grid-row: 2 / 3;
+.picto {
+  position: absolute;
+  right: 5vw;
+  width: 30vw;
+  height: 65vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 main {
