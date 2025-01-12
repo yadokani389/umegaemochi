@@ -1,4 +1,4 @@
-{ lib, stdenv, cargo-tauri, libsoup_3, nodejs, openssl, pkg-config, pnpm
+{ lib, stdenv, cargo-tauri, glib-networking, nodejs, openssl, pkg-config, pnpm
 , rustPlatform, webkitgtk_4_1, wrapGAppsHook4, }:
 
 stdenv.mkDerivation (finalAttrs: {
@@ -38,7 +38,7 @@ stdenv.mkDerivation (finalAttrs: {
     wrapGAppsHook4
   ];
 
-  buildInputs = [ libsoup_3 openssl webkitgtk_4_1 ];
+  buildInputs = [ glib-networking openssl webkitgtk_4_1 ];
 
   meta = {
     license = lib.licenses.mit;
