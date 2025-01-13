@@ -30,9 +30,8 @@ function prevWidget() {
   widgetIndex.value = (widgetIndex.value - 1 + widgets.length) % widgets.length;
 }
 
-onMounted(() => {
-  setInterval(nextWidget, 5000);
-});
+nextWidget();
+setInterval(nextWidget, 10000);
 
 </script>
 

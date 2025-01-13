@@ -33,5 +33,6 @@ function toggleSettings() {
   width: 50px;
   height: auto;
   object-fit: cover;
+  background-color: transparent;
 }
 </style>
