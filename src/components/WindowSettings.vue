@@ -50,8 +50,7 @@ const showQR = ref(false);
   align-items: center;
   gap: 10px;
   border-style: solid;
-  border-radius: 2.5%;
-  border-color: rgb(78, 78, 78);
+  border-radius: 30px;
   background-color: #f0f0f0;
 }
 </style>
