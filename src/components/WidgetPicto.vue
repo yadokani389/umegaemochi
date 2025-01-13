@@ -79,6 +79,7 @@ const pictoImages = Object.values(pictoImagesImport).map(module => (module as { 
   position: relative;
   display: flex;
   justify-content: center;
+  align-items: center;
   overflow: hidden;
   height: 100%;
 }
