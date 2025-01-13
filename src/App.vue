@@ -127,7 +127,7 @@ h1 {
   justify-content: center;
 }
 
-.movewidget {
+.moveWidget {
   position: absolute;
   width: 100%;
   height: 100%;
