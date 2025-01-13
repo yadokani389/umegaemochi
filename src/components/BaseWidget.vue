@@ -23,7 +23,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  /*background-color: #f0f0f0;*/
   border-radius: 30px;
   min-width: 0;
   min-height: 0;
