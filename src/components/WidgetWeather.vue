@@ -91,5 +91,6 @@ listen("daily_reload", async () => {
   height: auto;
   max-height: 100%;
   object-fit: contain;
+  background-color: transparent;
 }
 </style>

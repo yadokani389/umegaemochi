@@ -110,6 +110,7 @@ listen("daily_reload", async () => {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   height: 100%;
   width: 100%;
   margin: auto;
@@ -117,8 +118,11 @@ listen("daily_reload", async () => {
 
 .header {
   text-align: center;
-  margin-bottom: 10px;
-  font-size: small;
+  margin-bottom: 5%;
+}
+
+.header h2 {
+  font-size: 6vmin;
 }
 
 table {
@@ -132,12 +136,12 @@ th {
 }
 
 td {
-  font-size: medium;
+  font-size: 3vmin;
   width: 14.28%;
   text-align: center;
   vertical-align: middle;
   box-sizing: border-box;
-  padding: 1.5%;
+  padding: 2.25%;
   border: 1px solid #ddd;
 }
 
