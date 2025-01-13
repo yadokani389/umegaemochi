@@ -49,6 +49,9 @@ const showQR = ref(false);
   justify-content: center;
   align-items: center;
   gap: 10px;
+  border-style: solid;
+  border-radius: 2.5%;
+  border-color: rgb(78, 78, 78);
   background-color: #f0f0f0;
 }
 </style>

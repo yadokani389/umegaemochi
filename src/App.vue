@@ -149,8 +149,6 @@ main {
 
 .settings {
   position: absolute;
-  border-style: solid;
-  border-color: rgb(78, 78, 78);
   top: 0vmin;
   right: 0vmin;
   transform: scale(0.8);
