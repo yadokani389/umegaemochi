@@ -41,7 +41,7 @@ setInterval(nextWidget, 10000);
     <div :class="$style.container">
       <div :class="$style.widgetContainer">
         <transition name="slide-fade">
-          <BaseWidget :class="$style.movewidget" :key="widgetIndex">
+          <BaseWidget :class="$style.moveWidget" :key="widgetIndex">
             <component :is="widgets[widgetIndex]" />
           </BaseWidget>
         </transition>
