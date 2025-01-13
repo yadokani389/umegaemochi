@@ -71,6 +71,7 @@ onMounted(() => {
   box-sizing: border-box;
   font-family: "Koruri";
   font-size: 4vmin;
+  color: #70ad47;
 }
 
 h1 {
