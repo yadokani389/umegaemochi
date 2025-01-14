@@ -14,7 +14,7 @@ import WidgetPicto from './components/WidgetPicto.vue';
 const isSettingsOpen = ref(false);
 
 function sleep(ms: number) {
-    return new Promise( resolve => setTimeout(resolve, ms) );
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 const widgets = [
@@ -54,9 +54,12 @@ function prevWidget() {
 }
 
 async function setWidget(widgetName: String) {
-  stopAutoSlide();
-
   const targetIndex = widgets.findIndex(widget => widget.name === widgetName);
+  if (targetIndex === -1) {
+    console.warn(`Widget not found: ${widgetName}`);
+    return;
+  }
+  stopAutoSlide();
   const currentIndex = widgetIndex.value;
   const totalWidgets = widgets.length;
   const forwardDistance = (targetIndex - currentIndex + totalWidgets) % totalWidgets;
@@ -91,35 +94,18 @@ type ScrollTarget =
   | "prev"
   | "next";
 
-const scrollActions: Record<ScrollTarget, () => void> = {
-  WidgetWeather: () => setWidget('WidgetWeather'),
-  WidgetNews: () => setWidget('WidgetNews'),
-  WidgetAtCoder: () => setWidget('WidgetAtCoder'),
-  WidgetCalendar: () => setWidget('WidgetCalendar'),
-  WidgetClock: () => setWidget('WidgetClock'),
-  prev: () => {
-    stopAutoSlide();
-    prevWidget();
-    setTimeout(() => {
-      startAutoSlide();
-    }, 30000);
-  },
-  next: () => {
-    stopAutoSlide();
-    nextWidget();
-    setTimeout(() => {
-      startAutoSlide();
-    }, 30000);
-  }
-};
-
 listen<ScrollTarget>('scroll', (target) => {
-  const action = scrollActions[target.payload];
-  if (action) {
-    action();
+  stopAutoSlide();
+  if (target.payload === 'prev') {
+    prevWidget();
+  } else if (target.payload === 'next') {
+    nextWidget();
   } else {
-    console.warn(`Unhandled scroll target: ${target.payload}`);
+    setWidget(target.payload);
   }
+  setTimeout(() => {
+    startAutoSlide();
+  }, 30000);
 });
 
 
