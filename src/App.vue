@@ -14,7 +14,7 @@ import WidgetPicto from './components/WidgetPicto.vue';
 const isSettingsOpen = ref(false);
 
 function sleep(ms: number) {
-    return new Promise( resolve => setTimeout(resolve, ms) );
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 const widgets = [
