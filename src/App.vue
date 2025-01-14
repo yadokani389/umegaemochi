@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { listen } from '@tauri-apps/api/event';
+import { ref } from 'vue'
 import BaseWidget from "./components/BaseWidget.vue";
 import WidgetWeather from "./components/WidgetWeather.vue";
 import WidgetNews from "./components/WidgetNews.vue";
@@ -9,8 +10,12 @@ import WidgetClock from './components/WidgetClock.vue';
 import WindowSettings from "./components/WindowSettings.vue";
 import ButtonSettings from "./components/ButtonSettings.vue";
 import WidgetPicto from './components/WidgetPicto.vue';
+import WindowEmergency from './components/WindowEmergency.vue';
 
 const isSettingsOpen = ref(false);
+const isEmergencyWindowOpen = ref(false);
+
+listen('disaster_occurred', () => { isEmergencyWindowOpen.value = true; });
 
 const widgets = [
   WidgetWeather,
@@ -37,7 +42,6 @@ setInterval(nextWidget, 10000);
 
 <template>
   <main>
-    <ButtonSettings :class="$style.buttonsettings" v-model="isSettingsOpen" />
     <div :class="$style.container">
       <div :class="$style.widgetContainer">
         <transition name="slide-fade">
@@ -50,9 +54,9 @@ setInterval(nextWidget, 10000);
         <WidgetPicto />
       </BaseWidget>
     </div>
-    <BaseWidget :class="$style.settings" v-if="isSettingsOpen">
-      <WindowSettings />
-    </BaseWidget>
+    <WindowEmergency :class="$style.emergency" v-show="isEmergencyWindowOpen" />
+    <WindowSettings :class="$style.settings" v-if="isSettingsOpen" />
+    <ButtonSettings :class="$style.buttonsettings" v-model="isSettingsOpen" />
   </main>
 </template>
 
@@ -158,5 +162,11 @@ main {
   position: absolute;
   top: 5px;
   right: 5px;
+}
+
+.emergency {
+  position: absolute;
+  top: 0vmin;
+  right: 0vmin;
 }
 </style>

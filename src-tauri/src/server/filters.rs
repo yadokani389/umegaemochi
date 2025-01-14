@@ -100,7 +100,7 @@ fn post_disaster_info(
                     .lock()
                     .unwrap()
                     .disaster_info = Some(new_disaster_info.clone());
-
+                println!("{:?}", new_disaster_info.clone());
                 let _ = handle.emit("disaster_occurred", new_disaster_info.clone());
 
                 Ok::<warp::reply::Json, Infallible>(warp::reply::json(&new_disaster_info.clone()))
