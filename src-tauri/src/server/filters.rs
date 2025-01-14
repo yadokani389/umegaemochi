@@ -5,7 +5,7 @@ use crate::state::AppState;
 use std::convert::Infallible;
 use std::sync::Mutex;
 use tauri::{Emitter, Manager};
-use warp::Filter;
+use warp::{http::StatusCode, Filter};
 
 pub fn api(
     handle: tauri::AppHandle,
@@ -14,6 +14,7 @@ pub fn api(
         .or(post_settings(handle.clone()))
         .or(get_disaster_info(handle.clone()))
         .or(post_disaster_info(handle.clone()))
+        .or(scroll(handle.clone()))
 }
 
 fn get_settings(
@@ -106,4 +107,31 @@ fn post_disaster_info(
                 Ok::<warp::reply::Json, Infallible>(warp::reply::json(&new_disaster_info.clone()))
             }
         })
+}
+
+fn scroll(
+    handle: tauri::AppHandle,
+) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
+    warp::path!("scroll" / String).and_then(move |name: String| {
+        let handle = handle.clone();
+        async move {
+            let valid_names = [
+                "WidgetWeather",
+                "WidgetNews",
+                "WidgetAtCoder",
+                "WidgetCalendar",
+                "WidgetClock",
+                "prev",
+                "next",
+            ];
+            if valid_names.contains(&name.as_str()) {
+                let _ = handle.emit("scroll", &name);
+                println!("scroll: {}", name);
+                Ok::<warp::http::StatusCode, Infallible>(StatusCode::OK)
+            } else {
+                println!("scroll: invalid name");
+                Ok(StatusCode::BAD_REQUEST)
+            }
+        }
+    })
 }
