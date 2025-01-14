@@ -132,7 +132,7 @@ table {
 
 th {
   background-color: #f0f0f0;
-  font-size: small;
+  font-size: 3vmin;
 }
 
 td {
