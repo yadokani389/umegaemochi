@@ -13,6 +13,10 @@ import WidgetPicto from './components/WidgetPicto.vue';
 
 const isSettingsOpen = ref(false);
 
+function sleep(ms: number) {
+    return new Promise( resolve => setTimeout(resolve, ms) );
+}
+
 const widgets = [
   { name: 'WidgetWeather', component: WidgetWeather },
   { name: 'WidgetNews', component: WidgetNews },
@@ -61,13 +65,12 @@ async function setWidget(widgetName: String) {
   const steps = directionForward ? forwardDistance : backwardDistance;
 
   for (let i = 0; i < steps; i++) {
-    setTimeout(() => {
-      if (directionForward) {
-        nextWidget();
-      } else {
-        prevWidget();
-      }
-    }, 300);
+    if (directionForward) {
+      nextWidget();
+    } else {
+      prevWidget();
+    }
+    await sleep(1000);
   }
 
   setTimeout(() => {
@@ -111,7 +114,7 @@ const scrollActions: Record<ScrollTarget, () => void> = {
 };
 
 listen<ScrollTarget>('scroll', (target) => {
-  const action = scrollActions[target.payload];  
+  const action = scrollActions[target.payload];
   if (action) {
     action();
   } else {
