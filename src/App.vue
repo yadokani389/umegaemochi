@@ -17,16 +17,16 @@ function sleep(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-const widgets = {
-  "WidgetWeather": WidgetWeather,
-  "WidgetNews": WidgetNews,
-  "WidgetAtCoder": WidgetAtCoder,
-  "WidgetCalendar": WidgetCalendar,
-  "WidgetClock": WidgetClock
-};
+const widgets = [
+  { name: 'WidgetWeather', component: WidgetWeather },
+  { name: 'WidgetNews', component: WidgetNews },
+  { name: 'WidgetAtCoder', component: WidgetAtCoder },
+  { name: 'WidgetCalendar', component: WidgetCalendar },
+  { name: 'WidgetClock', component: WidgetClock }
+];
 
-const slideInterval = ref<number | undefined>(undefined);
-const currentWidget = ref<keyof typeof widgets>("WidgetWeather");
+const slideInterval = ref<number | null>(null);
+const currentWidget = ref(0);
 const direction = ref(0);
 
 function startAutoSlide() {
@@ -37,34 +37,30 @@ function startAutoSlide() {
 function stopAutoSlide() {
   if (slideInterval.value) {
     clearInterval(slideInterval.value);
-    slideInterval.value = undefined;
+    slideInterval.value = null;
   }
 }
 
 function nextWidget() {
-  const widgetKeys = Object.keys(widgets);
-  currentWidget.value = widgetKeys[(widgetKeys.indexOf(currentWidget.value) + 1) % widgetKeys.length] as keyof typeof widgets;
+  currentWidget.value = (currentWidget.value + 1) % widgets.length;
   direction.value = 0;
 }
 
 function prevWidget() {
-  const widgetKeys = Object.keys(widgets);
-  currentWidget.value = widgetKeys[(widgetKeys.indexOf(currentWidget.value) + widgetKeys.length - 1) % widgetKeys.length] as keyof typeof widgets;
+  currentWidget.value = (currentWidget.value + widgets.length - 1) % widgets.length;
   direction.value = 1;
 }
 
 async function setWidget(widgetName: ScrollTarget) {
-  const widgetKeys = Object.keys(widgets);
-  const targetIndex = widgetKeys.indexOf(widgetName as keyof typeof widgets);
+  const targetIndex = widgets.findIndex(widget => widget.name === widgetName);
   if (targetIndex === -1) {
     console.warn(`Widget not found: ${widgetName}`);
     return;
   }
   stopAutoSlide();
-  const currentIndex = widgetKeys.indexOf(currentWidget.value);
-  const totalWidgets = widgetKeys.length;
-  const forwardDistance = (targetIndex - currentIndex + totalWidgets) % totalWidgets;
-  const backwardDistance = (currentIndex - targetIndex + totalWidgets) % totalWidgets;
+  const currentIndex = currentWidget.value;
+  const forwardDistance = (targetIndex - currentIndex + widgets.length) % widgets.length;
+  const backwardDistance = (currentIndex - targetIndex + widgets.length) % widgets.length;
   const directionForward = forwardDistance <= backwardDistance;
   const steps = directionForward ? forwardDistance : backwardDistance;
 
@@ -84,7 +80,7 @@ const transitionName = computed(() => {
   return direction.value === 1 ? 'slide-up' : 'slide-down';
 });
 
-type ScrollTarget = typeof widgets[keyof typeof widgets] | "prev" | "next";
+type ScrollTarget = (typeof widgets[number]['name']) | "prev" | "next";
 
 listen<ScrollTarget>('scroll', (target) => {
   stopAutoSlide();
@@ -109,7 +105,7 @@ startAutoSlide();
       <div :class="$style.widgetContainer">
         <transition :name="transitionName">
           <BaseWidget :class="$style.moveWidget" :key="currentWidget">
-            <component :is="widgets[currentWidget]" />
+            <component :is="widgets[currentWidget].component" />
           </BaseWidget>
         </transition>
       </div>
