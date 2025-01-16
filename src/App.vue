@@ -51,7 +51,7 @@ function prevWidget() {
   direction.value = 1;
 }
 
-async function setWidget(widgetName: targetWidget) {
+async function setWidget(widgetName: TargetWidget) {
   const targetIndex = widgets.findIndex(widget => widget.name === widgetName);
   if (targetIndex === -1) {
     console.warn(`Widget not found: ${widgetName}`);
@@ -80,9 +80,9 @@ const transitionName = computed(() => {
   return direction.value === 1 ? 'slide-up' : 'slide-down';
 });
 
-type targetWidget = (typeof widgets[number]['name']);
+type TargetWidget = (typeof widgets[number]['name']);
 
-listen<targetWidget | 'prev' | 'next'>('scroll', (target) => {
+listen<TargetWidget | 'prev' | 'next'>('scroll', (target) => {
   stopAutoSlide();
   if (target.payload === 'prev') {
     prevWidget();
