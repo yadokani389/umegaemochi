@@ -51,7 +51,7 @@ function prevWidget() {
   direction.value = 1;
 }
 
-async function setWidget(widgetName: ScrollTarget) {
+async function setWidget(widgetName: targetWidget) {
   const targetIndex = widgets.findIndex(widget => widget.name === widgetName);
   if (targetIndex === -1) {
     console.warn(`Widget not found: ${widgetName}`);
@@ -80,9 +80,9 @@ const transitionName = computed(() => {
   return direction.value === 1 ? 'slide-up' : 'slide-down';
 });
 
-type ScrollTarget = (typeof widgets[number]['name']) | "prev" | "next";
+type targetWidget = (typeof widgets[number]['name']);
 
-listen<ScrollTarget>('scroll', (target) => {
+listen<targetWidget | 'prev' | 'next'>('scroll', (target) => {
   stopAutoSlide();
   if (target.payload === 'prev') {
     prevWidget();
