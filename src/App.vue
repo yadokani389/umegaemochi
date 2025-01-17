@@ -54,7 +54,7 @@ setInterval(nextWidget, 10000);
         <WidgetPicto />
       </BaseWidget>
     </div>
-    <WindowEmergency :class="$style.emergency" v-show="isEmergencyWindowOpen" />
+    <WindowEmergency :class="$style.emergency" v-if="isEmergencyWindowOpen" />
     <WindowSettings :class="$style.settings" v-if="isSettingsOpen" />
     <ButtonSettings :class="$style.buttonsettings" v-model="isSettingsOpen" />
   </main>
