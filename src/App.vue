@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { ref, computed } from 'vue'
 import { listen } from '@tauri-apps/api/event';
-import { ref } from 'vue'
 import BaseWidget from "./components/BaseWidget.vue";
 import WidgetWeather from "./components/WidgetWeather.vue";
 import WidgetNews from "./components/WidgetNews.vue";
@@ -20,17 +20,14 @@ type DisasterInfo = {
 };
 
 const isSettingsOpen = ref(false);
-const isEmergencyWindowOpen = ref(false);
 const disasterInfo = ref<DisasterInfo | null>(null);
 
 listen<DisasterInfo>('disaster_occurred', (info) => {
   disasterInfo.value = info.payload;
-  isEmergencyWindowOpen.value = true;
 });
 
 listen('disaster_clear', () => {
   disasterInfo.value = null;
-  isEmergencyWindowOpen.value = false;
 });
 
 function sleep(ms: number) {
@@ -132,8 +129,7 @@ startAutoSlide();
         <WidgetPicto />
       </BaseWidget>
     </div>
-    <WindowEmergency :disastarInfo="disasterInfo" :class="$style.emergency"
-      v-if="isEmergencyWindowOpen && disasterInfo" />
+    <WindowEmergency :disastarInfo="disasterInfo" :class="$style.emergency" v-if="disasterInfo" />
     <WindowSettings :class="$style.settings" v-if="isSettingsOpen" />
     <ButtonSettings :class="$style.buttonsettings" v-model="isSettingsOpen" />
   </main>
