@@ -10,8 +10,25 @@ import WidgetClock from './components/WidgetClock.vue';
 import WindowSettings from "./components/WindowSettings.vue";
 import ButtonSettings from "./components/ButtonSettings.vue";
 import WidgetPicto from './components/WidgetPicto.vue';
+import WindowEmergency from './components/WindowEmergency.vue';
+
+type DisasterInfo = {
+  title: string,
+  description: string,
+  warning: string,
+  occurred: string,
+};
 
 const isSettingsOpen = ref(false);
+const disasterInfo = ref<DisasterInfo | null>(null);
+
+listen<DisasterInfo>('disaster_occurred', (info) => {
+  disasterInfo.value = info.payload;
+});
+
+listen('disaster_clear', () => {
+  disasterInfo.value = null;
+});
 
 function sleep(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -100,7 +117,6 @@ startAutoSlide();
 </script>
 <template>
   <main>
-    <ButtonSettings :class="$style.buttonsettings" v-model="isSettingsOpen" />
     <div :class="$style.container">
       <div :class="$style.widgetContainer">
         <transition :name="transitionName">
@@ -113,9 +129,9 @@ startAutoSlide();
         <WidgetPicto />
       </BaseWidget>
     </div>
-    <BaseWidget :class="$style.settings" v-if="isSettingsOpen">
-      <WindowSettings />
-    </BaseWidget>
+    <WindowEmergency :disastarInfo="disasterInfo" :class="$style.emergency" v-if="disasterInfo" />
+    <WindowSettings :class="$style.settings" v-if="isSettingsOpen" />
+    <ButtonSettings :class="$style.buttonsettings" v-model="isSettingsOpen" />
   </main>
 </template>
 
@@ -244,5 +260,11 @@ main {
   position: absolute;
   top: 5px;
   right: 5px;
+}
+
+.emergency {
+  position: absolute;
+  top: 0vmin;
+  right: 0vmin;
 }
 </style>
