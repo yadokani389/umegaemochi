@@ -12,10 +12,26 @@ import ButtonSettings from "./components/ButtonSettings.vue";
 import WidgetPicto from './components/WidgetPicto.vue';
 import WindowEmergency from './components/WindowEmergency.vue';
 
+type DisasterInfo = {
+  title: string,
+  description: string,
+  warning: string,
+  occurred: string,
+};
+
 const isSettingsOpen = ref(false);
 const isEmergencyWindowOpen = ref(false);
+const disasterInfo = ref<DisasterInfo | null>(null);
 
-listen('disaster_occurred', () => { isEmergencyWindowOpen.value = true; });
+listen<DisasterInfo>('disaster_occurred', (info) => {
+  disasterInfo.value = info.payload;
+  isEmergencyWindowOpen.value = true;
+});
+
+listen('disaster_clear', () => {
+  disasterInfo.value = null;
+  isEmergencyWindowOpen.value = false;
+});
 
 const widgets = [
   WidgetWeather,
@@ -54,7 +70,7 @@ setInterval(nextWidget, 10000);
         <WidgetPicto />
       </BaseWidget>
     </div>
-    <WindowEmergency :class="$style.emergency" v-if="isEmergencyWindowOpen" />
+    <WindowEmergency v-bind="disasterInfo" :class="$style.emergency" v-if="isEmergencyWindowOpen" />
     <WindowSettings :class="$style.settings" v-if="isSettingsOpen" />
     <ButtonSettings :class="$style.buttonsettings" v-model="isSettingsOpen" />
   </main>

@@ -1,27 +1,18 @@
 <script setup lang="ts">
-import { listen } from "@tauri-apps/api/event";
-import { ref } from "vue";
-
-type DisasterInfo = {
-  title: string,
-  description: string,
-  warning: string,
-  occurred: string,
-};
-
-const info = ref({ title: "a", description: "b", warning: "c", occurred: "d" } as DisasterInfo);
-
-listen<DisasterInfo>("disaster_occurred", (info_) => {
-  info.value = info_.payload;
-});
+defineProps({
+  title: String,
+  description: String,
+  warning: String,
+  occurred: String,
+})
 </script>
 
 <template>
   <div :class="$style.container">
-    <h1 :class="$style.title">⚠{{ info.title }}</h1>
+    <h1 :class="$style.title">⚠{{ title }}</h1>
     <div :class="$style.content">
-      <div :class="$style.description">{{ info.description }}</div>
-      <div :class="$style.warning">{{ info.warning }}</div>
+      <div :class="$style.description">{{ description }}</div>
+      <div :class="$style.warning">{{ warning }}</div>
     </div>
   </div>
 </template>
