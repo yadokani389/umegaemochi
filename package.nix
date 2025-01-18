@@ -3,7 +3,7 @@
 
 stdenv.mkDerivation (finalAttrs: {
   pname = "umegaemochi";
-  version = "0.2.0";
+  version = "0.3.0";
 
   src = lib.fileset.toSource {
     root = ./.;
@@ -26,7 +26,7 @@ stdenv.mkDerivation (finalAttrs: {
   cargoDeps = rustPlatform.fetchCargoTarball {
     inherit (finalAttrs) pname version src;
     sourceRoot = "${finalAttrs.src.name}/${finalAttrs.cargoRoot}";
-    hash = "sha256-6vIMdalLiD7hKrHDuE8/VOUo0dfxMmTFmB65tZJkHlM=";
+    hash = "sha256-GqZ2zcPWpWsAp/2uqMKqLrWDQcvO+MpWgEiBEdSEIu8=";
   };
 
   nativeBuildInputs = [
