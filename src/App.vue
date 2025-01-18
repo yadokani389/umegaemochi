@@ -132,7 +132,8 @@ startAutoSlide();
         <WidgetPicto />
       </BaseWidget>
     </div>
-    <WindowEmergency v-bind="disasterInfo" :class="$style.emergency" v-if="isEmergencyWindowOpen" />
+    <WindowEmergency :disastarInfo="disasterInfo" :class="$style.emergency"
+      v-if="isEmergencyWindowOpen && disasterInfo" />
     <WindowSettings :class="$style.settings" v-if="isSettingsOpen" />
     <ButtonSettings :class="$style.buttonsettings" v-model="isSettingsOpen" />
   </main>

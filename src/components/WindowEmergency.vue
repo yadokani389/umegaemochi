@@ -1,18 +1,22 @@
 <script setup lang="ts">
-defineProps({
-  title: String,
-  description: String,
-  warning: String,
-  occurred: String,
-})
+type DisasterInfo = {
+  title: string,
+  description: string,
+  warning: string,
+  occurred: string,
+};
+
+defineProps<{
+  disastarInfo: DisasterInfo,
+}>();
 </script>
 
 <template>
   <div :class="$style.container">
-    <h1 :class="$style.title">⚠{{ title }}</h1>
+    <h1 :class="$style.title">⚠{{ disastarInfo.title }}</h1>
     <div :class="$style.content">
-      <div :class="$style.description">{{ description }}</div>
-      <div :class="$style.warning">{{ warning }}</div>
+      <div :class="$style.description">{{ disastarInfo.description }}</div>
+      <div :class="$style.warning">{{ disastarInfo.warning }}</div>
     </div>
   </div>
 </template>
