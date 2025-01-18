@@ -1,9 +1,9 @@
-{ lib, stdenv, cargo-tauri, libsoup_3, nodejs, openssl, pkg-config, pnpm
+{ lib, stdenv, cargo-tauri, glib-networking, nodejs, openssl, pkg-config, pnpm
 , rustPlatform, webkitgtk_4_1, wrapGAppsHook4, }:
 
 stdenv.mkDerivation (finalAttrs: {
   pname = "umegaemochi";
-  version = "0.2.0";
+  version = "0.3.0";
 
   src = lib.fileset.toSource {
     root = ./.;
@@ -26,7 +26,7 @@ stdenv.mkDerivation (finalAttrs: {
   cargoDeps = rustPlatform.fetchCargoTarball {
     inherit (finalAttrs) pname version src;
     sourceRoot = "${finalAttrs.src.name}/${finalAttrs.cargoRoot}";
-    hash = "sha256-uYyNuDMXXS2aL/IWszX4p2+bIEgU6TRILfCqixh+uzk=";
+    hash = "sha256-GqZ2zcPWpWsAp/2uqMKqLrWDQcvO+MpWgEiBEdSEIu8=";
   };
 
   nativeBuildInputs = [
@@ -38,7 +38,7 @@ stdenv.mkDerivation (finalAttrs: {
     wrapGAppsHook4
   ];
 
-  buildInputs = [ libsoup_3 openssl webkitgtk_4_1 ];
+  buildInputs = [ glib-networking openssl webkitgtk_4_1 ];
 
   meta = {
     license = lib.licenses.mit;

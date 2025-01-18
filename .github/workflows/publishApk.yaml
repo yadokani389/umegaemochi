@@ -1,0 +1,58 @@
+name: 'Publish apk'
+
+on:
+  workflow_dispatch:
+    inputs:
+      dont_publish:
+        required: false
+        default: true
+        type: boolean
+  push:
+    branches:
+      - release
+
+jobs:
+  publish:
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: cachix/install-nix-action@v30
+
+      - uses: cachix/cachix-action@v15
+        with:
+          name: yadokani389
+
+      - name: Setup Android signing
+        run: |
+          cd src-tauri/gen/android
+          echo "keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}" > keystore.properties
+          echo "password=${{ secrets.ANDROID_KEY_PASSWORD }}" >> keystore.properties
+          base64 -d <<< "${{ secrets.ANDROID_KEY_BASE64 }}" > $RUNNER_TEMP/keystore.jks
+          echo "storeFile=$RUNNER_TEMP/keystore.jks" >> keystore.properties
+
+      - name: Build
+        run: nix develop .#android -c bash -c "export -n ANDROID_SDK_ROOT && pnpm i && cargo tauri android build"
+
+      - name: Get app version
+        run: echo "APP_VERSION=$(jq -r .version src-tauri/tauri.conf.json)" >> $GITHUB_ENV
+
+      - name: Upload binaries
+        uses: actions/upload-artifact@v3
+        with:
+          name: apk
+          path: src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release.apk
+
+      - name: Upload binaries to release
+        uses: svenstaro/upload-release-action@v2
+        if: inputs.dont_publish == false
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release.apk
+          asset_name: umegaemochi_${{ env.APP_VERSION }}_universal.apk
+          tag: v${{ env.APP_VERSION }}
+          overwrite: true
+          draft: true
+          body: 'See the assets to download this version and install.'

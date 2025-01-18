@@ -79,16 +79,19 @@ const pictoImages = Object.values(pictoImagesImport).map(module => (module as { 
   position: relative;
   display: flex;
   justify-content: center;
+  align-items: center;
   overflow: hidden;
   height: 100%;
 }
 
 img {
   max-width: 200px;
+  max-height: 200px;
   height: auto;
   object-fit: contain;
   transition: all 20s ease;
   background-color: rgba(240, 240, 240, 0.8);
   /* #f0f0f0 = rgb (240, 240, 240)*/
 }
+
 </style>
