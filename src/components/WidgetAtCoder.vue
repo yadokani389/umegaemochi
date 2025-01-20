@@ -3,17 +3,13 @@ import { invoke } from "@tauri-apps/api/core";
 import { listen } from '@tauri-apps/api/event';
 import { computedAsync } from "@vueuse/core";
 import { computed, ref } from "vue";
-
-type Settings = {
-  weather_city_id: string;
-  atcoder_id: string;
-};
+import { Settings } from "../types";
 
 type Submission = {
   problem_id: string;
   language: string;
   result: string;
-}
+};
 
 const userName = ref((await invoke<Settings>("get_settings")).atcoder_id);
 const oneDayAgo = ref(Math.trunc(new Date().getTime() / 1000) - 86400);
