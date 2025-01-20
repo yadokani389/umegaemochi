@@ -11,13 +11,7 @@ import WindowSettings from "./components/WindowSettings.vue";
 import ButtonSettings from "./components/ButtonSettings.vue";
 import WidgetPicto from './components/WidgetPicto.vue';
 import WindowEmergency from './components/WindowEmergency.vue';
-
-type DisasterInfo = {
-  title: string,
-  description: string,
-  warning: string,
-  occurred: string,
-};
+import { DisasterInfo } from './types';
 
 const isSettingsOpen = ref(false);
 const disasterInfo = ref<DisasterInfo | null>(null);

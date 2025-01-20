@@ -3,11 +3,7 @@ import { invoke } from "@tauri-apps/api/core";
 import { listen } from '@tauri-apps/api/event';
 import { computedAsync } from "@vueuse/core";
 import { ref, triggerRef } from "vue";
-
-type Settings = {
-  weather_city_id: String;
-  atcoder_id: String;
-};
+import { Settings } from "../types";
 
 type Weather = {
   location: {
