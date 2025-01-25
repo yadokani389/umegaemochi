@@ -29,7 +29,7 @@ function sleep(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-let widgets = [
+const widgets = [
   { name: 'WidgetWeather' as const, component: WidgetWeather, available: true },
   { name: 'WidgetNews' as const, component: WidgetNews, available: true },
   { name: 'WidgetAtCoder' as const, component: WidgetAtCoder, available: true },
