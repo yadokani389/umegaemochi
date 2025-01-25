@@ -5,12 +5,18 @@ mod server;
 mod settings;
 mod state;
 
-use commands::settings::{get_settings, set_atcoder_id, set_weather_city_id};
-use commands::utils::{get_server_address, get_yahoo_news};
+use commands::utils::{get_server_address, get_settings, get_yahoo_news};
 use std::sync::Mutex;
 use tauri::Manager;
 
 const SETTINGS_FILE_PATH: &str = "umegaemochi/settings.toml";
+const WIDGET_LIST: [&str; 5] = [
+    "WidgetWeather",
+    "WidgetNews",
+    "WidgetAtCoder",
+    "WidgetCalendar",
+    "WidgetClock",
+];
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -33,9 +39,7 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             get_yahoo_news,
             get_server_address,
-            get_settings,
-            set_atcoder_id,
-            set_weather_city_id
+            get_settings
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

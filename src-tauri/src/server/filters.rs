@@ -1,4 +1,3 @@
-use crate::commands::settings::{set_atcoder_id, set_weather_city_id};
 use crate::disaster_info::DisasterInfo;
 use crate::settings::Settings;
 use crate::state::AppState;
@@ -14,7 +13,9 @@ pub fn api(
         .or(post_settings(handle.clone()))
         .or(get_disaster_info(handle.clone()))
         .or(post_disaster_info(handle.clone()))
+        .or(clear_disaster_info(handle.clone()))
         .or(scroll(handle.clone()))
+        .or(get_widgets())
 }
 
 fn get_settings(
@@ -49,19 +50,17 @@ fn post_settings(
         .and(warp::body::json())
         .and_then(move |new_settings: Settings| {
             let handle = handle.clone();
+            println!("{:?}", new_settings.clone());
             async move {
-                set_weather_city_id(
-                    handle.clone(),
-                    handle.clone().state(),
-                    new_settings.weather_city_id.clone(),
-                )
-                .unwrap();
-                set_atcoder_id(
-                    handle.clone(),
-                    handle.clone().state(),
-                    new_settings.atcoder_id.clone(),
-                )
-                .unwrap();
+                handle
+                    .clone()
+                    .state::<Mutex<AppState>>()
+                    .lock()
+                    .unwrap()
+                    .settings
+                    .set(new_settings.clone())
+                    .unwrap();
+                handle.emit("settings_changed", ()).unwrap();
                 Ok::<warp::reply::Json, Infallible>(warp::reply::json(&new_settings.clone()))
             }
         })
@@ -102,11 +101,26 @@ fn post_disaster_info(
                     .unwrap()
                     .disaster_info = Some(new_disaster_info.clone());
                 println!("{:?}", new_disaster_info.clone());
-                let _ = handle.emit("disaster_occurred", new_disaster_info.clone());
+                handle
+                    .emit("disaster_occurred", new_disaster_info.clone())
+                    .unwrap();
 
                 Ok::<warp::reply::Json, Infallible>(warp::reply::json(&new_disaster_info.clone()))
             }
         })
+}
+
+fn clear_disaster_info(
+    handle: tauri::AppHandle,
+) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
+    warp::path!("disaster_info" / "clear").and_then(move || {
+        let handle = handle.clone();
+        async move {
+            handle.emit("disaster_clear", ()).unwrap();
+            println!("clear disaster info");
+            Ok::<warp::http::StatusCode, Infallible>(StatusCode::OK)
+        }
+    })
 }
 
 fn scroll(
@@ -115,17 +129,10 @@ fn scroll(
     warp::path!("scroll" / String).and_then(move |name: String| {
         let handle = handle.clone();
         async move {
-            let valid_names = [
-                "WidgetWeather",
-                "WidgetNews",
-                "WidgetAtCoder",
-                "WidgetCalendar",
-                "WidgetClock",
-                "prev",
-                "next",
-            ];
-            if valid_names.contains(&name.as_str()) {
-                let _ = handle.emit("scroll", &name);
+            const VALID_NAMES: &[&str; 7] =
+                constcat::concat_slices!([&str]: &crate::WIDGET_LIST, &["prev", "next"]);
+            if VALID_NAMES.contains(&name.as_str()) {
+                handle.emit("scroll", &name).unwrap();
                 println!("scroll: {}", name);
                 Ok::<warp::http::StatusCode, Infallible>(StatusCode::OK)
             } else {
@@ -133,5 +140,11 @@ fn scroll(
                 Ok(StatusCode::BAD_REQUEST)
             }
         }
+    })
+}
+
+fn get_widgets() -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
+    warp::path!("widgets").and(warp::get()).and_then(|| async {
+        Ok::<warp::reply::Json, Infallible>(warp::reply::json(&crate::WIDGET_LIST))
     })
 }
