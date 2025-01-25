@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import { invoke } from "@tauri-apps/api/core";
 import { listen } from '@tauri-apps/api/event';
 import BaseWidget from "./components/BaseWidget.vue";
 import WidgetWeather from "./components/WidgetWeather.vue";
@@ -11,7 +12,7 @@ import WindowSettings from "./components/WindowSettings.vue";
 import ButtonSettings from "./components/ButtonSettings.vue";
 import WidgetPicto from './components/WidgetPicto.vue';
 import WindowEmergency from './components/WindowEmergency.vue';
-import { DisasterInfo } from './types';
+import { DisasterInfo, Settings } from './types';
 
 const isSettingsOpen = ref(false);
 const disasterInfo = ref<DisasterInfo | null>(null);
@@ -28,47 +29,51 @@ function sleep(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-const widgets = [
-  { name: 'WidgetWeather', component: WidgetWeather },
-  { name: 'WidgetNews', component: WidgetNews },
-  { name: 'WidgetAtCoder', component: WidgetAtCoder },
-  { name: 'WidgetCalendar', component: WidgetCalendar },
-  { name: 'WidgetClock', component: WidgetClock }
+let widgets = [
+  { name: 'WidgetWeather' as const, component: WidgetWeather, available: true },
+  { name: 'WidgetNews' as const, component: WidgetNews, available: true },
+  { name: 'WidgetAtCoder' as const, component: WidgetAtCoder, available: true },
+  { name: 'WidgetCalendar' as const, component: WidgetCalendar, available: true },
+  { name: 'WidgetClock' as const, component: WidgetClock, available: true }
 ];
 
-const slideInterval = ref<number | null>(null);
+let slideInterval = 10000;
+let slideIntervalId: number | null = null;
 const currentWidget = ref(0);
 const direction = ref(0);
 
 function startAutoSlide() {
   stopAutoSlide();
-  slideInterval.value = setInterval(nextWidget, 10000) as unknown as number;
+  slideIntervalId = setInterval(nextWidget, slideInterval) as unknown as number;
 }
 
 function stopAutoSlide() {
-  if (slideInterval.value) {
-    clearInterval(slideInterval.value);
-    slideInterval.value = null;
+  if (slideIntervalId) {
+    clearInterval(slideIntervalId);
+    slideIntervalId = null;
   }
 }
 
 function nextWidget() {
-  currentWidget.value = (currentWidget.value + 1) % widgets.length;
+  do {
+    currentWidget.value = (currentWidget.value + 1) % widgets.length;
+  } while (!widgets[currentWidget.value].available);
   direction.value = 0;
 }
 
 function prevWidget() {
-  currentWidget.value = (currentWidget.value + widgets.length - 1) % widgets.length;
+  do {
+    currentWidget.value = (currentWidget.value + widgets.length - 1) % widgets.length;
+  } while (!widgets[currentWidget.value].available);
   direction.value = 1;
 }
 
 async function setWidget(widgetName: TargetWidget) {
   const targetIndex = widgets.findIndex(widget => widget.name === widgetName);
-  if (targetIndex === -1) {
+  if (targetIndex === -1 || !widgets[targetIndex].available) {
     console.warn(`Widget not found: ${widgetName}`);
     return;
   }
-  stopAutoSlide();
   const currentIndex = currentWidget.value;
   const forwardDistance = (targetIndex - currentIndex + widgets.length) % widgets.length;
   const backwardDistance = (currentIndex - targetIndex + widgets.length) % widgets.length;
@@ -83,8 +88,6 @@ async function setWidget(widgetName: TargetWidget) {
     }
     await sleep(1000);
   }
-
-  setTimeout(startAutoSlide, 30000);
 }
 
 const transitionName = computed(() => {
@@ -105,10 +108,20 @@ listen<TargetWidget | 'prev' | 'next'>('scroll', (target) => {
   setTimeout(startAutoSlide, 30000);
 });
 
+async function applySettings() {
+  const settings = await invoke<Settings>('get_settings');
+  slideInterval = settings.widget_interval;
+  startAutoSlide();
+  widgets.forEach(widget => {
+    widget.available = settings.using_widgets.includes(widget.name);
+  });
+}
 
-startAutoSlide();
+listen("settings_changed", () => { applySettings(); });
 
+applySettings();
 </script>
+
 <template>
   <main>
     <div :class="$style.container">

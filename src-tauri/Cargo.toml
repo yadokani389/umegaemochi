@@ -31,3 +31,5 @@ chrono = { version = "0.4.39", features = ["serde"] }
 tokio = { version = "1.42.0", features = ["full"] }
 nestify = "0.3.3"
 unicode-normalization = "0.1.24"
+toml = "0.8.19"
+constcat = "0.5.1"
