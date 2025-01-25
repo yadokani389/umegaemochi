@@ -29,13 +29,15 @@ function sleep(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-const widgets = [
+const widgets = ref([
   { name: 'WidgetWeather' as const, component: WidgetWeather, available: true },
   { name: 'WidgetNews' as const, component: WidgetNews, available: true },
   { name: 'WidgetAtCoder' as const, component: WidgetAtCoder, available: true },
   { name: 'WidgetCalendar' as const, component: WidgetCalendar, available: true },
   { name: 'WidgetClock' as const, component: WidgetClock, available: true }
-];
+]);
+
+const availableWidgets = computed(() => widgets.value.filter(widget => widget.available));
 
 let slideInterval = 10000;
 let slideIntervalId: number | null = null;
@@ -55,28 +57,24 @@ function stopAutoSlide() {
 }
 
 function nextWidget() {
-  do {
-    currentWidget.value = (currentWidget.value + 1) % widgets.length;
-  } while (!widgets[currentWidget.value].available);
+  currentWidget.value = (currentWidget.value + 1) % availableWidgets.value.length;
   direction.value = 0;
 }
 
 function prevWidget() {
-  do {
-    currentWidget.value = (currentWidget.value + widgets.length - 1) % widgets.length;
-  } while (!widgets[currentWidget.value].available);
+  currentWidget.value = (currentWidget.value + availableWidgets.value.length - 1) % availableWidgets.value.length;
   direction.value = 1;
 }
 
 async function setWidget(widgetName: TargetWidget) {
-  const targetIndex = widgets.findIndex(widget => widget.name === widgetName);
-  if (targetIndex === -1 || !widgets[targetIndex].available) {
+  const targetIndex = availableWidgets.value.findIndex(widget => widget.name === widgetName);
+  if (targetIndex === -1) {
     console.warn(`Widget not found: ${widgetName}`);
     return;
   }
   const currentIndex = currentWidget.value;
-  const forwardDistance = (targetIndex - currentIndex + widgets.length) % widgets.length;
-  const backwardDistance = (currentIndex - targetIndex + widgets.length) % widgets.length;
+  const forwardDistance = (targetIndex - currentIndex + availableWidgets.value.length) % availableWidgets.value.length;
+  const backwardDistance = (currentIndex - targetIndex + availableWidgets.value.length) % availableWidgets.value.length;
   const directionForward = forwardDistance <= backwardDistance;
   const steps = directionForward ? forwardDistance : backwardDistance;
 
@@ -94,7 +92,7 @@ const transitionName = computed(() => {
   return direction.value === 1 ? 'slide-up' : 'slide-down';
 });
 
-type TargetWidget = (typeof widgets[number]['name']);
+type TargetWidget = (typeof availableWidgets.value[number]['name']);
 
 listen<TargetWidget | 'prev' | 'next'>('scroll', (target) => {
   stopAutoSlide();
@@ -112,9 +110,14 @@ async function applySettings() {
   const settings = await invoke<Settings>('get_settings');
   slideInterval = settings.widget_interval;
   startAutoSlide();
-  widgets.forEach(widget => {
+  const currentWidgetName = availableWidgets.value[currentWidget.value].name;
+  widgets.value.forEach(widget => {
     widget.available = settings.using_widgets.includes(widget.name);
   });
+  currentWidget.value = availableWidgets.value.findIndex(widget => widget.name === currentWidgetName);
+  if (currentWidget.value === -1) {
+    currentWidget.value = 0;
+  }
 }
 
 listen("settings_changed", () => { applySettings(); });
@@ -128,7 +131,7 @@ applySettings();
       <div :class="$style.widgetContainer">
         <transition :name="transitionName">
           <BaseWidget :class="$style.moveWidget" :key="currentWidget">
-            <component :is="widgets[currentWidget].component" />
+            <component :is="availableWidgets[currentWidget].component" />
           </BaseWidget>
         </transition>
       </div>
