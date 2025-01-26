@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, shallowRef } from 'vue'
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from '@tauri-apps/api/event';
 import BaseWidget from "./components/BaseWidget.vue";
@@ -29,7 +29,7 @@ function sleep(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-const widgets = ref([
+const widgets = shallowRef([
   { name: 'WidgetWeather' as const, component: WidgetWeather, available: true },
   { name: 'WidgetNews' as const, component: WidgetNews, available: true },
   { name: 'WidgetAtCoder' as const, component: WidgetAtCoder, available: true },
@@ -40,13 +40,13 @@ const widgets = ref([
 const availableWidgets = computed(() => widgets.value.filter(widget => widget.available));
 
 let slideInterval = 10000;
-let slideIntervalId: number | null = null;
+let slideIntervalId: NodeJS.Timeout | null = null;
 const currentWidget = ref(0);
 const direction = ref(0);
 
 function startAutoSlide() {
   stopAutoSlide();
-  slideIntervalId = setInterval(nextWidget, slideInterval) as unknown as number;
+  slideIntervalId = setInterval(nextWidget, slideInterval);
 }
 
 function stopAutoSlide() {
@@ -111,8 +111,11 @@ async function applySettings() {
   slideInterval = settings.widget_interval;
   startAutoSlide();
   const currentWidgetName = availableWidgets.value[currentWidget.value].name;
-  widgets.value.forEach(widget => {
-    widget.available = settings.using_widgets.includes(widget.name);
+  widgets.value = widgets.value.map(widget => {
+    return {
+      ...widget,
+      available: settings.using_widgets.includes(widget.name)
+    };
   });
   currentWidget.value = availableWidgets.value.findIndex(widget => widget.name === currentWidgetName);
   if (currentWidget.value === -1) {
@@ -120,7 +123,7 @@ async function applySettings() {
   }
 }
 
-listen("settings_changed", () => { applySettings(); });
+listen("settings_changed", applySettings);
 
 applySettings();
 </script>
