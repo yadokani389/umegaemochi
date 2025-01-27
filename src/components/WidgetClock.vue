@@ -25,7 +25,7 @@ setInterval(clock, 1000);
 
 @font-face {
   font-family: 'ClockFont';
-  src: url('src/assets/fonts/ADLaMDisplay-Regular.ttf') format('truetype');
+  src: url('/src/assets/fonts/ADLaMDisplay-Regular.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
