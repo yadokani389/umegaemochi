@@ -1,6 +1,6 @@
 [package]
 name = "umegaemochi"
-version = "0.3.0"
+version = "0.4.0"
 description = "A Tauri App"
 authors = ["yadokani389"]
 edition = "2021"
@@ -18,7 +18,7 @@ crate-type = ["staticlib", "cdylib", "rlib"]
 tauri-build = { version = "2", features = [] }
 
 [dependencies]
-tauri = { version = "2", features = [] }
+tauri = { version = "2", features = ["native-tls-vendored"] }
 serde = { version = "1", features = ["derive"] }
 reqwest = { version = "0.12.9", default-features = false, features = [
   "rustls-tls",
@@ -31,3 +31,5 @@ chrono = { version = "0.4.39", features = ["serde"] }
 tokio = { version = "1.42.0", features = ["full"] }
 nestify = "0.3.3"
 unicode-normalization = "0.1.24"
+toml = "0.8.19"
+constcat = "0.5.1"

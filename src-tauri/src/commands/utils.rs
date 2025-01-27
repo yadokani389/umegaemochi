@@ -48,3 +48,10 @@ pub fn get_server_address() -> Result<String, String> {
 pub fn stringify(e: impl ToString) -> String {
     e.to_string()
 }
+
+#[tauri::command]
+pub fn get_settings(
+    state: tauri::State<std::sync::Mutex<crate::state::AppState>>,
+) -> Result<crate::settings::Settings, String> {
+    Ok(state.lock().unwrap().settings.data.clone())
+}

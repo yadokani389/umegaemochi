@@ -1,10 +1,5 @@
 <script setup lang="ts">
-type DisasterInfo = {
-  title: string,
-  description: string,
-  warning: string,
-  occurred: string,
-};
+import { DisasterInfo } from '../types';
 
 defineProps<{
   disastarInfo: DisasterInfo,

@@ -25,6 +25,11 @@ jobs:
         with:
           name: yadokani389
 
+      - name: Rust cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: './src-tauri -> target'
+
       - name: Setup Android signing
         run: |
           cd src-tauri/gen/android

@@ -5,9 +5,12 @@ use std::io::Write;
 use std::path::PathBuf;
 
 #[derive(Debug, Clone, PartialEq, serde::Serialize, serde::Deserialize)]
+#[serde(default)]
 pub struct Settings {
     pub weather_city_id: String,
     pub atcoder_id: String,
+    pub widget_interval: u64,
+    pub using_widgets: Vec<String>,
 }
 
 impl Default for Settings {
@@ -15,6 +18,8 @@ impl Default for Settings {
         Settings {
             weather_city_id: "130010".into(),
             atcoder_id: "1step621".into(),
+            widget_interval: 10000,
+            using_widgets: crate::WIDGET_LIST.iter().map(|x| x.to_string()).collect(),
         }
     }
 }
@@ -32,20 +37,17 @@ impl Config<Settings> {
             data: Settings::default(),
         };
         if config.config_path.exists() {
-            config.read_file()?;
-        } else {
-            config.write_file()?;
+            if let Err(e) = config.read_file() {
+                println!("Error reading config file: {}", e);
+                println!("Creating new config file");
+            }
         }
+        config.write_file()?;
         Ok(config)
     }
 
-    pub fn set_weather_city_id(&mut self, city_id: String) -> Result<(), String> {
-        self.data.weather_city_id = city_id;
-        self.write_file()
-    }
-
-    pub fn set_atcoder_id(&mut self, atcoder_id: String) -> Result<(), String> {
-        self.data.atcoder_id = atcoder_id;
+    pub fn set(&mut self, new: Settings) -> Result<(), String> {
+        self.data = new;
         self.write_file()
     }
 
@@ -54,7 +56,7 @@ impl Config<Settings> {
             std::fs::create_dir_all(parent).map_err(stringify)?;
         }
         let mut file = File::create(&self.config_path).map_err(stringify)?;
-        let toml = serde_json::to_string(&self.data).map_err(stringify)?;
+        let toml = toml::to_string(&self.data).map_err(stringify)?;
 
         file.write_all(toml.as_bytes()).map_err(stringify)?;
         file.flush().map_err(stringify)?;
@@ -64,7 +66,7 @@ impl Config<Settings> {
 
     fn read_file(&mut self) -> Result<(), String> {
         let s = std::fs::read_to_string(&self.config_path).map_err(stringify)?;
-        self.data = serde_json::from_str(&s).map_err(stringify)?;
+        self.data = toml::from_str(&s).map_err(stringify)?;
 
         Ok(())
     }
