@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { invoke } from "@tauri-apps/api/core";
-import { Window } from "@tauri-apps/api/window";
+import { getCurrentWindow } from "@tauri-apps/api/window";
+import { type } from "@tauri-apps/plugin-os";
 import { ref } from "vue";
 import QRCode from "qrcode";
 
@@ -16,6 +17,8 @@ function getServerAddress() {
 
 const localIp = ref("");
 const showQR = ref(false);
+
+const osType = type();
 </script>
 
 <template>
@@ -23,8 +26,14 @@ const showQR = ref(false);
     <button @click="getServerAddress">Get server address</button>
     <canvas v-show="showQR" id="qr" />
     <div>{{ localIp }}</div>
-    <button @click="Window.getCurrent().setFullscreen(true)">Set Fullscreen</button>
-    <button @click="Window.getCurrent().setFullscreen(false)">Exit Fullscreen</button>
+    <template v-if="['linux', 'windows', 'macos'].includes(osType)">
+      <button @click="getCurrentWindow().setFullscreen(true)">Set Fullscreen</button>
+      <button @click="getCurrentWindow().setFullscreen(false)">Exit Fullscreen</button>
+    </template>
+    <template v-if="['linux', 'windows', 'macos'].includes(osType)">
+      <button @click="getCurrentWindow().setCursorVisible(true)">Show Cursor</button>
+      <button @click="getCurrentWindow().setCursorVisible(false)">Hide Cursor</button>
+    </template>
   </div>
 </template>
 
