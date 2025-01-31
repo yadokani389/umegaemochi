@@ -1,4 +1,4 @@
-{ lib, stdenv, cargo-tauri, glib-networking, nodejs, openssl, pkg-config, pnpm
+{ lib, stdenv, cargo-tauri, glib-networking, nodejs, openssl, pkg-config, pnpm_9
 , rustPlatform, webkitgtk_4_1, wrapGAppsHook4, }:
 
 stdenv.mkDerivation (finalAttrs: {
@@ -15,25 +15,22 @@ stdenv.mkDerivation (finalAttrs: {
     ]);
   };
 
-  pnpmDeps = pnpm.fetchDeps {
+  pnpmDeps = pnpm_9.fetchDeps {
     inherit (finalAttrs) src pname version;
-    hash = "sha256-oaJazr7bUEcvG2X8vQy9ewMIpvKyJ6C612hc1lyqFsE=";
+    hash = "sha256-M0mmKV6NSLHkntpG6HLFTK3CYIhnGZnfDgWRtfAngAY=";
   };
 
   cargoRoot = "src-tauri";
   buildAndTestSubdir = finalAttrs.cargoRoot;
 
-  cargoDeps = rustPlatform.fetchCargoTarball {
-    inherit (finalAttrs) pname version src;
-    sourceRoot = "${finalAttrs.src.name}/${finalAttrs.cargoRoot}";
-    hash = "sha256-RX162oOuDeOY0aLBkDff5KdxM5FmK2LE+c18tjQzvko=";
-  };
+  cargoDeps =
+    rustPlatform.importCargoLock { lockFile = ./src-tauri/Cargo.lock; };
 
   nativeBuildInputs = [
     cargo-tauri.hook
     nodejs
     pkg-config
-    pnpm.configHook
+    pnpm_9.configHook
     rustPlatform.cargoSetupHook
     wrapGAppsHook4
   ];
