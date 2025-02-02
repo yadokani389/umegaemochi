@@ -12,6 +12,7 @@ import WindowSettings from "./components/WindowSettings.vue";
 import ButtonSettings from "./components/ButtonSettings.vue";
 import WidgetPicto from './components/WidgetPicto.vue';
 import WindowEmergency from './components/WindowEmergency.vue';
+import Tab from './components/tab.vue'
 import { DisasterInfo, Settings } from './types';
 
 const isSettingsOpen = ref(false);
@@ -130,6 +131,7 @@ applySettings();
 
 <template>
   <main>
+    <Tab :class="$style.tab"/>
     <div :class="$style.container">
       <div :class="$style.widgetContainer">
         <transition :name="transitionName">
@@ -239,6 +241,7 @@ h1 {
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
 }
 
 .moveWidget {
@@ -279,5 +282,13 @@ main {
   position: absolute;
   top: 0vmin;
   right: 0vmin;
+}
+
+.tab {
+  position: absolute;
+  top: 5vmin;
+  left: 10vmin;
+  height: 10%;
+  width: 75%;
 }
 </style>
