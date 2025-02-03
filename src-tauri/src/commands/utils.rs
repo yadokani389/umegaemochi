@@ -55,3 +55,8 @@ pub fn get_settings(
 ) -> Result<crate::settings::Settings, String> {
     Ok(state.lock().unwrap().settings.data.clone())
 }
+
+#[tauri::command]
+pub fn get_version() -> String {
+    crate::VERSION.to_string()
+}

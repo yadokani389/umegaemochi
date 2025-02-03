@@ -16,6 +16,7 @@ pub fn api(
         .or(clear_disaster_info(handle.clone()))
         .or(scroll(handle.clone()))
         .or(get_widgets())
+        .or(get_version())
 }
 
 fn get_settings(
@@ -146,5 +147,11 @@ fn scroll(
 fn get_widgets() -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
     warp::path!("widgets").and(warp::get()).and_then(|| async {
         Ok::<warp::reply::Json, Infallible>(warp::reply::json(&crate::WIDGET_LIST))
+    })
+}
+
+fn get_version() -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
+    warp::path!("version").and(warp::get()).and_then(|| async {
+        Ok::<warp::reply::Json, Infallible>(warp::reply::json(&crate::VERSION))
     })
 }

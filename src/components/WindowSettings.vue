@@ -31,6 +31,7 @@ const showQR = ref(false);
 const osType = type();
 const isAutostartEnabled = ref(await autostart.isEnabled());
 const AutostartStatus = computed(() => isAutostartEnabled.value ? "Enabled" : "Disabled");
+const version = await invoke<string>("get_version");
 </script>
 
 <template>
@@ -49,6 +50,7 @@ const AutostartStatus = computed(() => isAutostartEnabled.value ? "Enabled" : "D
       <button @click="EnableAutostart()">Enable Autostart</button>
       <button @click="DisableAutostart()">Disable Autostart</button>
     </template>
+    <div>Version: v{{ version }}</div>
   </div>
 </template>
 

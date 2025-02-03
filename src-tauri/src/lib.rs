@@ -5,7 +5,7 @@ mod server;
 mod settings;
 mod state;
 
-use commands::utils::{get_server_address, get_settings, get_yahoo_news};
+use commands::utils::{get_server_address, get_settings, get_version, get_yahoo_news};
 use std::sync::Mutex;
 use tauri::Manager;
 
@@ -17,6 +17,10 @@ const WIDGET_LIST: [&str; 5] = [
     "WidgetCalendar",
     "WidgetClock",
 ];
+const VERSION: &str = match option_env!("CARGO_PKG_VERSION") {
+    Some(version) => version,
+    None => "unknown",
+};
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -44,7 +48,8 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             get_yahoo_news,
             get_server_address,
-            get_settings
+            get_settings,
+            get_version,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
