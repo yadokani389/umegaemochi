@@ -21,6 +21,10 @@ const WIDGET_LIST: [&str; 5] = [
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_autostart::init(
+            tauri_plugin_autostart::MacosLauncher::LaunchAgent,
+            None,
+        ))
         .plugin(tauri_plugin_os::init())
         .setup(|app| {
             let handle = app.handle().clone();

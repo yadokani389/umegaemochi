@@ -2,7 +2,8 @@
 import { invoke } from "@tauri-apps/api/core";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { type } from "@tauri-apps/plugin-os";
-import { ref } from "vue";
+import * as autostart from "@tauri-apps/plugin-autostart";
+import { computed, ref } from "vue";
 import QRCode from "qrcode";
 
 function getServerAddress() {
@@ -15,10 +16,21 @@ function getServerAddress() {
   });
 }
 
+async function EnableAutostart() {
+  await autostart.enable();
+  isAutostartEnabled.value = await autostart.isEnabled();
+}
+
+async function DisableAutostart() {
+  await autostart.disable();
+  isAutostartEnabled.value = await autostart.isEnabled();
+}
+
 const localIp = ref("");
 const showQR = ref(false);
-
 const osType = type();
+const isAutostartEnabled = ref(await autostart.isEnabled());
+const AutostartStatus = computed(() => isAutostartEnabled.value ? "Enabled" : "Disabled");
 </script>
 
 <template>
@@ -29,10 +41,13 @@ const osType = type();
     <template v-if="['linux', 'windows', 'macos'].includes(osType)">
       <button @click="getCurrentWindow().setFullscreen(true)">Set Fullscreen</button>
       <button @click="getCurrentWindow().setFullscreen(false)">Exit Fullscreen</button>
-    </template>
-    <template v-if="['linux', 'windows', 'macos'].includes(osType)">
+
       <button @click="getCurrentWindow().setCursorVisible(true)">Show Cursor</button>
       <button @click="getCurrentWindow().setCursorVisible(false)">Hide Cursor</button>
+
+      <div>Autostart: {{ AutostartStatus }}</div>
+      <button @click="EnableAutostart()">Enable Autostart</button>
+      <button @click="DisableAutostart()">Disable Autostart</button>
     </template>
   </div>
 </template>

@@ -143,7 +143,9 @@ applySettings();
       </BaseWidget>
     </div>
     <WindowEmergency :disastarInfo="disasterInfo" :class="$style.emergency" v-if="disasterInfo" />
-    <WindowSettings :class="$style.settings" v-if="isSettingsOpen" />
+    <Suspense>
+      <WindowSettings :class="$style.settings" v-if="isSettingsOpen" />
+    </Suspense>
     <ButtonSettings :class="$style.buttonsettings" v-model="isSettingsOpen" />
   </main>
 </template>
