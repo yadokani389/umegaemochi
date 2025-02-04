@@ -22,6 +22,7 @@ pub fn new(handle: tauri::AppHandle) -> axum::Router {
         .route("/scroll/{name}", get(scroll))
         .route("/widgets", get(get_widgets))
         .route("/version", get(get_version))
+        .route("/hostname", get(get_hostname))
         .with_state(handle)
 }
 
@@ -109,5 +110,9 @@ async fn get_widgets() -> impl IntoResponse {
 }
 
 async fn get_version() -> impl IntoResponse {
-    Json(crate::VERSION)
+    crate::VERSION
+}
+
+async fn get_hostname() -> impl IntoResponse {
+    tauri_plugin_os::hostname()
 }
