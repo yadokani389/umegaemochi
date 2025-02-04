@@ -16,21 +16,38 @@ function getServerAddress() {
   });
 }
 
-async function EnableAutostart() {
-  await autostart.enable();
-  isAutostartEnabled.value = await autostart.isEnabled();
+async function toggleFullscreen() {
+  if (await getCurrentWindow().isFullscreen()) {
+    await getCurrentWindow().setFullscreen(false);
+  } else {
+    await getCurrentWindow().setFullscreen(true);
+  }
 }
 
-async function DisableAutostart() {
-  await autostart.disable();
+async function toggleCursorVisible() {
+  if (previousCursorVisible) {
+    await getCurrentWindow().setCursorVisible(false);
+  } else {
+    await getCurrentWindow().setCursorVisible(true);
+  }
+  previousCursorVisible = !previousCursorVisible;
+}
+
+async function toggleAutostart() {
+  if (isAutostartEnabled.value) {
+    await autostart.disable();
+  } else {
+    await autostart.enable();
+  }
   isAutostartEnabled.value = await autostart.isEnabled();
 }
 
 const localIp = ref("");
 const showQR = ref(false);
 const osType = type();
+let previousCursorVisible = true;
 const isAutostartEnabled = ref(await autostart.isEnabled());
-const AutostartStatus = computed(() => isAutostartEnabled.value ? "Enabled" : "Disabled");
+const autostartStatus = computed(() => isAutostartEnabled.value ? "Enabled" : "Disabled");
 const version = await invoke<string>("get_version");
 </script>
 
@@ -40,15 +57,14 @@ const version = await invoke<string>("get_version");
     <canvas v-show="showQR" id="qr" />
     <div>{{ localIp }}</div>
     <template v-if="['linux', 'windows', 'macos'].includes(osType)">
-      <button @click="getCurrentWindow().setFullscreen(true)">Set Fullscreen</button>
-      <button @click="getCurrentWindow().setFullscreen(false)">Exit Fullscreen</button>
+      <button @click="toggleFullscreen">Toggle Fullscreen</button>
 
-      <button @click="getCurrentWindow().setCursorVisible(true)">Show Cursor</button>
-      <button @click="getCurrentWindow().setCursorVisible(false)">Hide Cursor</button>
+      <button @click="toggleCursorVisible">Toggle Cursor</button>
 
-      <div>Autostart: {{ AutostartStatus }}</div>
-      <button @click="EnableAutostart()">Enable Autostart</button>
-      <button @click="DisableAutostart()">Disable Autostart</button>
+      <div :class="[$style.autostartStatus, autostartStatus === 'Enabled' ? $style.enabled : $style.disabled]">
+        Autostart: {{ autostartStatus }}
+      </div>
+      <button @click="toggleAutostart()">Toggle Autostart</button>
     </template>
     <div>Version: v{{ version }}</div>
   </div>
@@ -62,9 +78,21 @@ const version = await invoke<string>("get_version");
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 10px;
+  gap: 15px;
   border-style: solid;
   border-radius: 30px;
   background-color: #f0f0f0;
+}
+
+.autostartStatus {
+  font-weight: bold;
+}
+
+.enabled {
+  color: green;
+}
+
+.disabled {
+  color: grey;
 }
 </style>
