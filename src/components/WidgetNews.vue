@@ -2,11 +2,16 @@
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from '@tauri-apps/api/event';
 import { useAsyncState } from "@vueuse/core";
+import { computed } from "vue";
 
 const model = defineModel();
 const { state: newsList, execute: refetch } = useAsyncState(async () => {
   return await invoke<string[]>('get_yahoo_news', { url: 'https://news.yahoo.co.jp/rss/topics/top-picks.xml' });
 }, [], { onError: (e) => console.error(e) });
+
+const scrollDuration = computed(() => {
+  return `${5 * newsList.value.length}s`;
+});
 
 model.value = '/picto/gorogoro.gif';
 
@@ -19,7 +24,7 @@ listen("daily_reload", async () => {
   <div :class="$style.container">
     <h1>Yahoo!ニュース</h1>
     <div :class="$style.content">
-      <div v-if="1 < newsList.length" :class="$style.scrollTrack">
+      <div v-if="1 < newsList.length" :class="$style.scrollTrack" :style="{ animationDuration: scrollDuration }">
         <h2 v-for="(news, index) in [...newsList, ...newsList]" :key="index" :class="$style.news">
           {{ news }}
         </h2>
@@ -56,7 +61,7 @@ listen("daily_reload", async () => {
 }
 
 .scrollTrack {
-  animation: infiniteScroll 20s linear infinite;
+  animation: infiniteScroll linear infinite;
 }
 
 .news {

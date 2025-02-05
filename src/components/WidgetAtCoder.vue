@@ -22,6 +22,10 @@ const submissions = computedAsync(async () => {
 
 model.value = '/picto/banana.png';
 
+const scrollDuration = computed(() => {
+  return `${5 * submissions.value.length}s`;
+});
+
 listen("settings_changed", async () => {
   userName.value = (await invoke<Settings>("get_settings")).atcoder_id;
   oneDayAgo.value = Math.trunc(new Date().getTime() / 1000) - 86400;
@@ -36,7 +40,7 @@ listen("daily_reload", async () => {
   <div :class="$style.container" v-if="submissions">
     <h1>{{ userName }}の最近の提出</h1>
     <div :class="$style.content">
-      <div v-if="!evaluating" :class="$style.scrollTrack">
+      <div v-if="!evaluating" :class="$style.scrollTrack" :style="{ animationDuration: scrollDuration }">
         <div v-for="(submission, index) in [...submissions, ...submissions]" :key="index" :class="$style.submission">
           <h2>問題: {{ submission.problem_id }}</h2>
           <h2>言語: {{ submission.language }}</h2>
@@ -73,7 +77,7 @@ listen("daily_reload", async () => {
 }
 
 .scrollTrack {
-  animation: infiniteScroll 20s linear infinite;
+  animation: infiniteScroll linear infinite;
 }
 
 .submission {
