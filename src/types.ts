@@ -10,4 +10,5 @@ export type Settings = {
   atcoder_id: string;
   widget_interval: number;
   using_widgets: string[];
+  auto_fullscreen: boolean;
 };
