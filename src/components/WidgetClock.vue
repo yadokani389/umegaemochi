@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
+const emit = defineEmits(["updatePicto"]);
 const currentTime = ref('');
 
 const clock = () => {
@@ -10,9 +11,10 @@ const clock = () => {
   currentTime.value = `${hours}:${minutes}`;
 }
 
+emit("updatePicto", '/picto/rock.png');
+
 clock();
 setInterval(clock, 1000);
-
 </script>
 
 <template>
@@ -22,13 +24,13 @@ setInterval(clock, 1000);
 </template>
 
 <style module>
-
 @font-face {
   font-family: 'ClockFont';
   src: url('/src/assets/fonts/ADLaMDisplay-Regular.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
+
 .container {
   width: 100%;
   height: 100%;

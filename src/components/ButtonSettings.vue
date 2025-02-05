@@ -10,10 +10,10 @@ function toggleSettings() {
 <template>
   <button :class="$style.content" @click="toggleSettings">
     <div v-if="isSettingsOpen">
-      <img :class="$style.image" src="../assets/icons/batu_icon.png" />
+      <img :class="$style.image" src="/src/assets/icons/batu_icon.png" />
     </div>
     <div v-else>
-      <img :class="$style.image" src="../assets/icons/setting_icon.png" />
+      <img :class="$style.image" src="/src/assets/icons/setting_icon.png" />
     </div>
   </button>
 </template>
