@@ -9,13 +9,14 @@ import WidgetNews from "./components/WidgetNews.vue";
 import WidgetAtCoder from "./components/WidgetAtCoder.vue";
 import WidgetCalendar from './components/WidgetCalendar.vue';
 import WidgetClock from './components/WidgetClock.vue';
-import WindowSettings from "./components/WindowSettings.vue";
-import ButtonSettings from "./components/ButtonSettings.vue";
 import WidgetPicto from './components/WidgetPicto.vue';
+import ButtonSettings from "./components/ButtonSettings.vue";
+import WindowSettings from "./components/WindowSettings.vue";
 import WindowEmergency from './components/WindowEmergency.vue';
 import Tab from './components/Tab.vue'
 import { DisasterInfo, Settings } from './types';
 
+const pictoSrc = ref('');
 const isSettingsOpen = ref(false);
 const disasterInfo = ref<DisasterInfo | null>(null);
 
@@ -113,7 +114,6 @@ async function init() {
     getCurrentWindow().setFullscreen(true);
   }
 }
-
 listen("settings_changed", applySettings);
 
 init();
@@ -126,15 +126,15 @@ init();
       <div :class="$style.widgetContainer">
         <transition :name="transitionName">
           <BaseWidget :class="$style.moveWidget" :key="currentWidget">
-            <component :is="widgets[currentWidget].component" />
+            <component :is="widgets[currentWidget].component" v-model="pictoSrc" />
           </BaseWidget>
         </transition>
       </div>
       <BaseWidget :class="$style.picto">
-        <WidgetPicto />
+        <WidgetPicto :picto-src="pictoSrc" />
       </BaseWidget>
     </div>
-    <WindowEmergency :disastarInfo="disasterInfo" :class="$style.emergency" v-if="disasterInfo" />
+    <WindowEmergency :disastar-info="disasterInfo" :class="$style.emergency" v-if="disasterInfo" />
     <Suspense>
       <WindowSettings :class="$style.settings" v-if="isSettingsOpen" />
     </Suspense>
@@ -161,56 +161,6 @@ init();
 
 h1 {
   font-size: 6vmin;
-}
-
-.slide-up-enter-active,
-.slide-down-enter-active {
-  transition: opacity 1.5s ease, transform 3.0s ease;
-}
-
-.slide-up-leave-active,
-.slide-down-leave-active {
-  transition: opacity 1.5s ease, transform 3.0s ease;
-}
-
-.slide-up-enter-from {
-  opacity: 0;
-  transform: translateY(50vh);
-}
-
-.slide-up-leave-to {
-  opacity: 0;
-  transform: translateY(-50vh);
-}
-
-.slide-up-enter-to {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.slide-up-leave-from {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.slide-down-enter-from {
-  opacity: 0;
-  transform: translateY(-50vh);
-}
-
-.slide-down-leave-to {
-  opacity: 0;
-  transform: translateY(50vh);
-}
-
-.slide-down-enter-to {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.slide-down-leave-from {
-  opacity: 1;
-  transform: translateY(0);
 }
 </style>
 
@@ -282,5 +232,34 @@ main {
   left: 8vmin;
   height: 10%;
   width: 60%;
+}
+</style>
+
+<style scoped>
+.slide-up-enter-active,
+.slide-up-leave-active,
+.slide-down-enter-active,
+.slide-down-leave-active {
+  transition: opacity 1.5s ease, transform 3.0s ease;
+}
+
+.slide-up-enter-to,
+.slide-up-leave-from,
+.slide-down-enter-to,
+.slide-down-leave-from {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.slide-up-leave-to,
+.slide-down-enter-from {
+  opacity: 0;
+  transform: translateY(-50vh);
+}
+
+.slide-up-enter-from,
+.slide-down-leave-to {
+  opacity: 0;
+  transform: translateY(50vh);
 }
 </style>

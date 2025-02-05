@@ -3,9 +3,12 @@ import { invoke } from "@tauri-apps/api/core";
 import { listen } from '@tauri-apps/api/event';
 import { useAsyncState } from "@vueuse/core";
 
+const model = defineModel();
 const { state: newsList, execute: refetch } = useAsyncState(async () => {
   return await invoke<string[]>('get_yahoo_news', { url: 'https://news.yahoo.co.jp/rss/topics/top-picks.xml' });
 }, [], { onError: (e) => console.error(e) });
+
+model.value = '/picto/gorogoro.gif';
 
 listen("daily_reload", async () => {
   await refetch();

@@ -22,7 +22,7 @@ setInterval(clock, 1000);
   <div :class="$style.container">
     <div :class="$style.clock">
       {{ currentTime }}
-      <img :class="$style.tabIcon" src="/src/assets/picto/sleep.gif" />
+      <img :class="$style.tabIcon" src="/picto/sleep.gif" />
     </div>
   </div>
 </template>

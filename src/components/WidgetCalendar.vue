@@ -2,6 +2,8 @@
 import { ref, computed } from 'vue';
 import { listen } from '@tauri-apps/api/event';
 
+const model = defineModel();
+
 const weeks = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const todayDate = ref(new Date());
 
@@ -72,6 +74,8 @@ function calculateWeeksInMonth() {
 
   return weeksArray;
 }
+
+model.value = '/picto/Rain.png';
 
 listen("daily_reload", async () => {
   todayDate.value = new Date();
