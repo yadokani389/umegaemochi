@@ -286,9 +286,9 @@ main {
 
 .tab {
   position: absolute;
-  top: 5vmin;
-  left: 10vmin;
+  top: 3vmin;
+  left: 8vmin;
   height: 10%;
-  width: 75%;
+  width: 60%;
 }
 </style>

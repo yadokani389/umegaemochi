@@ -20,7 +20,12 @@ setInterval(clock, 1000);
 
 <template>
   <div :class="$style.container">
-    <div :class="$style.clock">{{ currentTime }}</div>
+    <p>
+      <div :class="$style.clock">
+        {{ currentTime }}
+        <img :class="$style.tabIcon" src="../assets/picto/sleep.gif"  />
+      </div>
+    </p>
   </div>
 </template>
 
@@ -38,8 +43,15 @@ setInterval(clock, 1000);
   height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: left;
-  align-items: left;
+  justify-content: center;
+  border-bottom: 1vw solid #70ad47;
+  padding-bottom: 1vw;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+
 }
 
 .clock {
@@ -47,5 +59,13 @@ setInterval(clock, 1000);
   font-family: 'ClockFont';
   font-size: 5vw;
   font-weight: bold;
+}
+
+.tabIcon {
+  width: 10vw;
+  height: 10vw;
+  object-fit: cover;
+  background-color: transparent;
+  vertical-align: -2.5vw;
 }
 </style>
