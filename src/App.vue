@@ -12,7 +12,7 @@ import WindowSettings from "./components/WindowSettings.vue";
 import ButtonSettings from "./components/ButtonSettings.vue";
 import WidgetPicto from './components/WidgetPicto.vue';
 import WindowEmergency from './components/WindowEmergency.vue';
-import Tab from './components/tab.vue'
+import Tab from './components/Tab.vue'
 import { DisasterInfo, Settings } from './types';
 
 const isSettingsOpen = ref(false);
