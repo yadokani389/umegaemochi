@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, shallowRef } from 'vue'
+import { ref, computed } from 'vue'
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from '@tauri-apps/api/event';
 import BaseWidget from "./components/BaseWidget.vue";
@@ -25,19 +25,13 @@ listen('disaster_clear', () => {
   disasterInfo.value = null;
 });
 
-function sleep(ms: number) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-const widgets = shallowRef([
+const widgets = [
   { name: 'WidgetWeather' as const, component: WidgetWeather, available: true },
   { name: 'WidgetNews' as const, component: WidgetNews, available: true },
   { name: 'WidgetAtCoder' as const, component: WidgetAtCoder, available: true },
   { name: 'WidgetCalendar' as const, component: WidgetCalendar, available: true },
   { name: 'WidgetClock' as const, component: WidgetClock, available: true }
-]);
-
-const availableWidgets = computed(() => widgets.value.filter(widget => widget.available));
+];
 
 let slideInterval = 10000;
 let slideIntervalId: NodeJS.Timeout | null = null;
@@ -57,42 +51,33 @@ function stopAutoSlide() {
 }
 
 function nextWidget() {
-  currentWidget.value = (currentWidget.value + 1) % availableWidgets.value.length;
   direction.value = 0;
+  do {
+    currentWidget.value = (currentWidget.value + 1) % widgets.length;
+  } while (!widgets[currentWidget.value].available);
 }
 
 function prevWidget() {
-  currentWidget.value = (currentWidget.value + availableWidgets.value.length - 1) % availableWidgets.value.length;
   direction.value = 1;
+  do {
+    currentWidget.value = (currentWidget.value + widgets.length - 1) % widgets.length;
+  } while (!widgets[currentWidget.value].available);
 }
 
 async function setWidget(widgetName: TargetWidget) {
-  const targetIndex = availableWidgets.value.findIndex(widget => widget.name === widgetName);
-  if (targetIndex === -1) {
+  const targetIndex = widgets.findIndex(widget => widget.name === widgetName);
+  if (targetIndex === -1 || !widgets[targetIndex].available) {
     console.warn(`Widget not found: ${widgetName}`);
     return;
   }
-  const currentIndex = currentWidget.value;
-  const forwardDistance = (targetIndex - currentIndex + availableWidgets.value.length) % availableWidgets.value.length;
-  const backwardDistance = (currentIndex - targetIndex + availableWidgets.value.length) % availableWidgets.value.length;
-  const directionForward = forwardDistance <= backwardDistance;
-  const steps = directionForward ? forwardDistance : backwardDistance;
-
-  for (let i = 0; i < steps; i++) {
-    if (directionForward) {
-      nextWidget();
-    } else {
-      prevWidget();
-    }
-    await sleep(1000);
-  }
+  currentWidget.value = targetIndex;
 }
 
 const transitionName = computed(() => {
   return direction.value === 1 ? 'slide-up' : 'slide-down';
 });
 
-type TargetWidget = (typeof availableWidgets.value[number]['name']);
+type TargetWidget = (typeof widgets[number]['name']);
 
 listen<TargetWidget | 'prev' | 'next'>('scroll', (target) => {
   stopAutoSlide();
@@ -110,16 +95,12 @@ async function applySettings() {
   const settings = await invoke<Settings>('get_settings');
   slideInterval = settings.widget_interval;
   startAutoSlide();
-  const currentWidgetName = availableWidgets.value[currentWidget.value].name;
-  widgets.value = widgets.value.map(widget => {
-    return {
-      ...widget,
-      available: settings.using_widgets.includes(widget.name)
-    };
+  widgets.forEach(widget => {
+    widget.available = settings.using_widgets.includes(widget.name);
   });
-  currentWidget.value = availableWidgets.value.findIndex(widget => widget.name === currentWidgetName);
-  if (currentWidget.value === -1) {
+  if (!widgets[currentWidget.value].available) {
     currentWidget.value = 0;
+    nextWidget();
   }
 }
 
@@ -134,7 +115,7 @@ applySettings();
       <div :class="$style.widgetContainer">
         <transition :name="transitionName">
           <BaseWidget :class="$style.moveWidget" :key="currentWidget">
-            <component :is="availableWidgets[currentWidget].component" />
+            <component :is="widgets[currentWidget].component" />
           </BaseWidget>
         </transition>
       </div>
