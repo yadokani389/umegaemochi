@@ -20,17 +20,14 @@ setInterval(clock, 1000);
 
 <template>
   <div :class="$style.container">
-    <p>
-      <div :class="$style.clock">
-        {{ currentTime }}
-        <img :class="$style.tabIcon" src="../assets/picto/sleep.gif"  />
-      </div>
-    </p>
+    <div :class="$style.clock">
+      {{ currentTime }}
+      <img :class="$style.tabIcon" src="../assets/picto/sleep.gif" />
+    </div>
   </div>
 </template>
 
 <style module>
-
 @font-face {
   font-family: 'ClockFont';
   src: url('/src/assets/fonts/ADLaMDisplay-Regular.ttf') format('truetype');
