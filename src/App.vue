@@ -107,11 +107,6 @@ async function applySettings() {
   }
 }
 
-function updatePicto(picto: string) {
-  console.log(picto);
-  pictoSrc.value = picto;
-}
-
 async function init() {
   applySettings();
   const settings = await invoke<Settings>('get_settings');
@@ -119,7 +114,6 @@ async function init() {
     getCurrentWindow().setFullscreen(true);
   }
 }
-
 listen("settings_changed", applySettings);
 
 init();
@@ -132,7 +126,7 @@ init();
       <div :class="$style.widgetContainer">
         <transition :name="transitionName">
           <BaseWidget :class="$style.moveWidget" :key="currentWidget">
-            <component :is="widgets[currentWidget].component" @update-picto="updatePicto" />
+            <component :is="widgets[currentWidget].component" v-model="pictoSrc" />
           </BaseWidget>
         </transition>
       </div>

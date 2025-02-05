@@ -27,13 +27,13 @@ type Weather = {
   }[];
 } | { error: string; };
 
-const emit = defineEmits(["updatePicto"]);
+const model = defineModel();
 const cityId = ref((await invoke<Settings>("get_settings")).weather_city_id);
 const weather = computedAsync(async () => {
   return await (await fetch("https://weather.tsukumijima.net/api/forecast/city/" + cityId.value)).json() as Weather;
 }, null, { onError: (e) => console.error(e) });
 
-emit("updatePicto", '/picto/cloudy.gif');
+model.value = '/picto/cloudy.gif';
 
 listen("settings_changed", async () => {
   cityId.value = (await invoke<Settings>("get_settings")).weather_city_id;

@@ -11,7 +11,7 @@ type Submission = {
   result: string;
 };
 
-const emit = defineEmits(["updatePicto"]);
+const model = defineModel();
 const userName = ref((await invoke<Settings>("get_settings")).atcoder_id);
 const oneDayAgo = ref(Math.trunc(new Date().getTime() / 1000) - 86400);
 const url = computed(() => `https://kenkoooo.com/atcoder/atcoder-api/v3/user/submissions?user=${userName.value}&from_second=${oneDayAgo.value}`);
@@ -20,7 +20,7 @@ const submissions = computedAsync(async () => {
   return await (await fetch(url.value)).json() as Submission[];
 }, [], evaluating);
 
-emit("updatePicto", '/picto/banana.png');
+model.value = '/picto/banana.png';
 
 listen("settings_changed", async () => {
   userName.value = (await invoke<Settings>("get_settings")).atcoder_id;

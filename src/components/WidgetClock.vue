@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-const emit = defineEmits(["updatePicto"]);
+const model = defineModel();
 const currentTime = ref('');
 
 const clock = () => {
@@ -11,7 +11,7 @@ const clock = () => {
   currentTime.value = `${hours}:${minutes}`;
 }
 
-emit("updatePicto", '/picto/rock.png');
+model.value = '/picto/rock.png';
 
 clock();
 setInterval(clock, 1000);
