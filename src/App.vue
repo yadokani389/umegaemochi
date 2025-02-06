@@ -231,7 +231,6 @@ main {
   top: 3vmin;
   left: 8vmin;
   height: 10%;
-  width: 60%;
 }
 </style>
 
