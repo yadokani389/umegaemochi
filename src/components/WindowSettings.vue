@@ -46,7 +46,7 @@ const localIp = ref("");
 const showQR = ref(false);
 const osType = type();
 let previousCursorVisible = true;
-const isAutostartEnabled = ref(await autostart.isEnabled());
+const isAutostartEnabled = ref(['linux', 'windows', 'macos'].includes(osType) ? await autostart.isEnabled() : false);
 const autostartStatus = computed(() => isAutostartEnabled.value ? "Enabled" : "Disabled");
 const version = await invoke<string>("get_version");
 </script>
