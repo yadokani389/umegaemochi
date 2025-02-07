@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
-import { ref, onMounted } from "vue";
+import { ref, computed } from "vue";
 
 const articleTitles = ref<string[]>([]);
-const topic = "baseball"; 
+const topic = "baseball";
 
 const model = defineModel();
 model.value = "/picto/gorogoro.gif";
@@ -12,18 +12,19 @@ model.value = "/picto/gorogoro.gif";
 async function getNews() {
   try {
     articleTitles.value = await invoke("get_sports_news", { topic });
-    console.log("Fetched sports news", articleTitles.value);
   } catch (error) {
     console.error("Failed to fetch sports news", error);
   }
 }
 
-onMounted(() => {
-  getNews();
-});
+getNews();
 
 listen("daily_reload", async () => {
   await getNews();
+});
+
+const scrollDuration = computed(() => {
+  return `${5 * articleTitles.value.length}s`;
 });
 
 </script>
@@ -32,9 +33,12 @@ listen("daily_reload", async () => {
   <div :class="$style.container">
     <h1>スポーツニュース</h1>
     <div :class="$style.content">
-      <h2 v-for="title in articleTitles" :key="title" :class="$style.news">
-        {{ title }}
-      </h2>
+      <div v-if="1 < articleTitles.length" :class="$style.scrollTrack" :style="{ animationDuration: scrollDuration }">
+        <h2 v-for="(title, index) in [...articleTitles, ...articleTitles]" :key="index" :class="$style.news">
+          {{ title }}
+        </h2>
+      </div>
+      <h2 v-else>Loading...</h2>
     </div>
   </div>
 </template>
@@ -53,5 +57,24 @@ listen("daily_reload", async () => {
 
 .content {
   overflow-y: auto;
+}
+
+@keyframes infiniteScroll {
+  0% {
+    transform: translateY(0);
+  }
+
+  100% {
+    transform: translateY(-50%);
+  }
+}
+
+.scrollTrack {
+  animation: infiniteScroll linear infinite;
+}
+
+.news {
+  font-size: 4vmin;
+  padding: 30px;
 }
 </style>
