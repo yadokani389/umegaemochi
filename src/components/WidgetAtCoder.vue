@@ -22,9 +22,7 @@ const submissions = computedAsync(async () => {
 
 model.value = '/picto/banana.png';
 
-const scrollDuration = computed(() => {
-  return `${5 * submissions.value.length}s`;
-});
+const scrollDuration = computed(() => { return `${5 * submissions.value.length}s`; });
 
 listen("settings_changed", async () => {
   userName.value = (await invoke<Settings>("get_settings")).atcoder_id;

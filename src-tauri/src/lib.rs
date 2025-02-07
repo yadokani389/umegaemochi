@@ -1,21 +1,20 @@
 mod commands;
 mod daily_reload;
-mod disaster_info;
 mod server;
-mod settings;
 mod state;
 
-use commands::utils::{get_server_address, get_settings, get_version, get_yahoo_news};
+use commands::utils::{get_server_address, get_settings, get_todos, get_version, get_yahoo_news};
 use std::sync::Mutex;
 use tauri::Manager;
 
-const SETTINGS_FILE_PATH: &str = "umegaemochi/settings.toml";
-const WIDGET_LIST: [&str; 5] = [
+const CONFIG_PATH: &str = "umegaemochi/";
+const WIDGET_LIST: [&str; 6] = [
     "WidgetWeather",
     "WidgetNews",
     "WidgetAtCoder",
     "WidgetCalendar",
     "WidgetClock",
+    "WidgetTodo",
 ];
 const VERSION: &str = match option_env!("CARGO_PKG_VERSION") {
     Some(version) => version,
@@ -38,7 +37,7 @@ pub fn run() {
             }
             let handle = app.handle().clone();
             let app_state = Mutex::new(state::AppState::try_new(
-                handle.path().config_dir()?.join(SETTINGS_FILE_PATH),
+                handle.path().config_dir()?.join(CONFIG_PATH),
             )?);
             app.manage(app_state);
             tauri::async_runtime::spawn(async move { server::start_server(handle).await });
@@ -46,7 +45,7 @@ pub fn run() {
             tauri::async_runtime::spawn(async move { daily_reload::start_job(handle).await });
             let handle = app.handle().clone();
             tauri::async_runtime::spawn(async move {
-                disaster_info::check_disaster_updates(handle).await
+                state::disaster_info::check_disaster_updates(handle).await
             });
             Ok(())
         })
@@ -55,6 +54,7 @@ pub fn run() {
             get_server_address,
             get_settings,
             get_version,
+            get_todos,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

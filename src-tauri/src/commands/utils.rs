@@ -52,11 +52,18 @@ pub fn stringify(e: impl ToString) -> String {
 #[tauri::command]
 pub fn get_settings(
     state: tauri::State<std::sync::Mutex<crate::state::AppState>>,
-) -> Result<crate::settings::Settings, String> {
+) -> Result<crate::state::settings::Settings, String> {
     Ok(state.lock().unwrap().settings.data.clone())
 }
 
 #[tauri::command]
 pub fn get_version() -> String {
     crate::VERSION.to_string()
+}
+
+#[tauri::command]
+pub fn get_todos(
+    state: tauri::State<std::sync::Mutex<crate::state::AppState>>,
+) -> Result<Vec<crate::state::todo::Todo>, String> {
+    Ok(state.lock().unwrap().todo.data.values().cloned().collect())
 }

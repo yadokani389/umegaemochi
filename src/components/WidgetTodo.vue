@@ -4,14 +4,24 @@ import { listen } from '@tauri-apps/api/event';
 import { useAsyncState } from "@vueuse/core";
 import { computed } from "vue";
 
+type Todo = {
+  id: string,
+  text: string,
+  completed: boolean,
+};
+
 const model = defineModel();
-const { state: newsList, execute: refetch } = useAsyncState(async () => {
-  return await invoke<string[]>('get_yahoo_news', { url: 'https://news.yahoo.co.jp/rss/topics/top-picks.xml' });
+const { state: todoList, execute: refetch } = useAsyncState(async () => {
+  return (await invoke<Todo[]>('get_todos')).filter(todo => !todo.completed);
 }, [], { onError: (e) => console.error(e) });
 
-const scrollDuration = computed(() => { return `${5 * newsList.value.length}s`; });
+const scrollDuration = computed(() => { return `${5 * todoList.value.length}s`; });
 
-model.value = '/picto/gorogoro.gif';
+model.value = '/picto/rain_normal.gif';
+
+listen("todo_changed", async () => {
+  await refetch();
+});
 
 listen("daily_reload", async () => {
   await refetch();
@@ -20,14 +30,14 @@ listen("daily_reload", async () => {
 
 <template>
   <div :class="$style.container">
-    <h1>Yahoo!ニュース</h1>
+    <h1>Todo List</h1>
     <div :class="$style.content">
-      <div v-if="1 < newsList.length" :class="$style.scrollTrack" :style="{ animationDuration: scrollDuration }">
-        <h2 v-for="(news, index) in [...newsList, ...newsList]" :key="index" :class="$style.news">
-          {{ news }}
+      <div v-if="0 < todoList.length" :class="$style.scrollTrack" :style="{ animationDuration: scrollDuration }">
+        <h2 v-for="(todo, index) in [...todoList, ...todoList]" :key="index" :class="$style.todo">
+          □ {{ todo.text }}
         </h2>
       </div>
-      <h2 v-else>Loading...</h2>
+      <h2 v-else>All done</h2>
     </div>
   </div>
 </template>
@@ -62,8 +72,8 @@ listen("daily_reload", async () => {
   animation: infiniteScroll linear infinite;
 }
 
-.news {
-  font-size: 4vmin;
-  padding: 30px;
+.todo {
+  font-size: 5vmin;
+  padding: 20px;
 }
 </style>

@@ -34,6 +34,7 @@ toml = "0.8.19"
 constcat = "0.5.1"
 tauri-plugin-os = "2"
 axum = "0.8.1"
+uuid = { version = "1.13.1", features = ["v4"] }
 
 [target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
 tauri-plugin-autostart = "2"
