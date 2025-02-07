@@ -10,6 +10,7 @@ import WidgetAtCoder from "./components/WidgetAtCoder.vue";
 import WidgetCalendar from './components/WidgetCalendar.vue';
 import WidgetClock from './components/WidgetClock.vue';
 import WidgetPicto from './components/WidgetPicto.vue';
+import WidgetSportsNews from './components/WidgetSportsNews.vue';
 import ButtonSettings from "./components/ButtonSettings.vue";
 import WindowSettings from "./components/WindowSettings.vue";
 import WindowEmergency from './components/WindowEmergency.vue';
@@ -33,7 +34,8 @@ const widgets = [
   { name: 'WidgetNews' as const, component: WidgetNews, available: true },
   { name: 'WidgetAtCoder' as const, component: WidgetAtCoder, available: true },
   { name: 'WidgetCalendar' as const, component: WidgetCalendar, available: true },
-  { name: 'WidgetClock' as const, component: WidgetClock, available: true }
+  { name: 'WidgetClock' as const, component: WidgetClock, available: true },
+  { name: 'WidgetSportsNews' as const, component: WidgetSportsNews, available: true },
 ];
 
 let slideInterval = 10000;
