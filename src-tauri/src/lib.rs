@@ -1,5 +1,6 @@
 mod commands;
 mod daily_reload;
+mod sports_news;
 mod server;
 mod state;
 
@@ -56,6 +57,7 @@ pub fn run() {
             get_settings,
             get_version,
             get_todos,
+            sports_news::get_sports_news,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

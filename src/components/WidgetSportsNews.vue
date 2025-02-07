@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 
 const articleTitles = ref<string[]>([]);
 const topic = "baseball"; 
@@ -12,10 +12,15 @@ model.value = "/picto/gorogoro.gif";
 async function getNews() {
   try {
     articleTitles.value = await invoke("get_sports_news", { topic });
+    console.log("Fetched sports news", articleTitles.value);
   } catch (error) {
     console.error("Failed to fetch sports news", error);
   }
 }
+
+onMounted(() => {
+  getNews();
+});
 
 listen("daily_reload", async () => {
   await getNews();
