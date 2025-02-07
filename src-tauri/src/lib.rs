@@ -10,12 +10,13 @@ use std::sync::Mutex;
 use tauri::Manager;
 
 const SETTINGS_FILE_PATH: &str = "umegaemochi/settings.toml";
-const WIDGET_LIST: [&str; 5] = [
+const WIDGET_LIST: [&str; 6] = [
     "WidgetWeather",
     "WidgetNews",
     "WidgetAtCoder",
     "WidgetCalendar",
     "WidgetClock",
+    "WidgetSportsNews",
 ];
 const VERSION: &str = match option_env!("CARGO_PKG_VERSION") {
     Some(version) => version,

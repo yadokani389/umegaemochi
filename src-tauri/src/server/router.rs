@@ -92,7 +92,7 @@ async fn scroll(
     State(handle): State<Arc<tauri::AppHandle>>,
     Path(name): Path<String>,
 ) -> impl IntoResponse {
-    const VALID_NAMES: &[&str; 7] =
+    const VALID_NAMES: &[&str; 8] =
         constcat::concat_slices!([&str]: &crate::WIDGET_LIST, &["prev", "next"]);
 
     if VALID_NAMES.contains(&name.as_str()) {
