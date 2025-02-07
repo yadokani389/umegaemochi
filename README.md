@@ -1,8 +1,8 @@
 # umegaemochi
 
-ピクトグラムのある日常を​
+ピクトグラムのある日常を
 
-親しみやすい電光掲示板​
+親しみやすい電光掲示板
 
 ![demo](./images/demo.png)
 
@@ -19,3 +19,10 @@
 - macOS
 - Windows
 - Android
+
+### Warning
+
+v0.5.1以前のリリースにあるmacOS用バイナリはcodesignされておらず開くことができません.
+自分でするかコードからビルドしてください.
+
+v0.5.2以降ではprivacy & settings -> open anywayから開くことができます.
