@@ -16,8 +16,9 @@ pub trait ConfigTrait<T>: std::marker::Sized {
     fn read_file(&mut self) -> Result<(), String>;
 }
 
-impl<T: std::default::Default + serde::Serialize + serde::de::DeserializeOwned> ConfigTrait<T>
-    for Config<T>
+impl<T> ConfigTrait<T> for Config<T>
+where
+    T: std::default::Default + serde::Serialize + serde::de::DeserializeOwned,
 {
     fn try_new(config_path: PathBuf) -> Result<Self, String> {
         let mut config = Config {
