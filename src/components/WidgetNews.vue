@@ -2,8 +2,9 @@
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from '@tauri-apps/api/event';
 import { useAsyncState } from "@vueuse/core";
-import { computed } from "vue";
+import { computed, watch } from "vue";
 
+const { widgetName } = defineProps<{ widgetName: string; }>();
 const model = defineModel();
 const { state: newsList, execute: refetch } = useAsyncState(async () => {
   return await invoke<string[]>('get_yahoo_news', { url: 'https://news.yahoo.co.jp/rss/topics/top-picks.xml' });
@@ -11,7 +12,11 @@ const { state: newsList, execute: refetch } = useAsyncState(async () => {
 
 const scrollDuration = computed(() => { return `${5 * newsList.value.length}s`; });
 
-model.value = '/picto/gorogoro.gif';
+watch(() => widgetName, () => {
+  if (widgetName === 'WidgetNews') {
+    model.value = '/picto/gorogoro.gif';
+  }
+});
 
 listen("daily_reload", async () => {
   await refetch();

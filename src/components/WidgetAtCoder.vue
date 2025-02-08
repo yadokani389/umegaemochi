@@ -2,7 +2,7 @@
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from '@tauri-apps/api/event';
 import { computedAsync } from "@vueuse/core";
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import { Settings } from "../types";
 
 type Submission = {
@@ -11,6 +11,7 @@ type Submission = {
   result: string;
 };
 
+const { widgetName } = defineProps<{ widgetName: string; }>();
 const model = defineModel();
 const userName = ref((await invoke<Settings>("get_settings")).atcoder_id);
 const oneDayAgo = ref(Math.trunc(new Date().getTime() / 1000) - 86400);
@@ -20,7 +21,11 @@ const submissions = computedAsync(async () => {
   return await (await fetch(url.value)).json() as Submission[];
 }, [], evaluating);
 
-model.value = '/picto/banana.png';
+watch(() => widgetName, () => {
+  if (widgetName === 'WidgetAtCoder') {
+    model.value = '/picto/banana.png';
+  }
+});
 
 const scrollDuration = computed(() => { return `${5 * submissions.value.length}s`; });
 

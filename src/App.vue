@@ -17,7 +17,7 @@ import WindowEmergency from './components/WindowEmergency.vue';
 import Tab from './components/Tab.vue'
 import { DisasterInfo, Settings } from './types';
 
-const pictoSrc = ref('');
+const pictoSrc = ref('/picto/cloudy.gif');
 const isSettingsOpen = ref(false);
 const disasterInfo = ref<DisasterInfo | null>(null);
 
@@ -41,6 +41,7 @@ const widgets = [
 let slideInterval = 10000;
 let slideIntervalId: NodeJS.Timeout | null = null;
 const currentWidget = ref(0);
+const currentWidgetName = computed(() => widgets[currentWidget.value].name);
 const direction = ref(0);
 
 function startAutoSlide() {
@@ -126,11 +127,13 @@ init();
     <Tab :class="$style.tab" />
     <div :class="$style.container">
       <div :class="$style.widgetContainer">
-        <transition :name="transitionName">
-          <BaseWidget :class="$style.moveWidget" :key="currentWidget">
-            <component :is="widgets[currentWidget].component" v-model="pictoSrc" />
-          </BaseWidget>
-        </transition>
+        <transition-group :name="transitionName">
+          <template v-for="(widget, index) in widgets" :key="widget.name">
+            <BaseWidget :class="$style.moveWidget" v-show="currentWidget === index">
+              <component :is="widget.component" v-model="pictoSrc" :widget-name="currentWidgetName" />
+            </BaseWidget>
+          </template>
+        </transition-group>
       </div>
       <BaseWidget :class="$style.picto">
         <WidgetPicto :picto-src="pictoSrc" />

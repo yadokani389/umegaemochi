@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 
+const { widgetName } = defineProps<{ widgetName: string; }>();
 const model = defineModel();
 const currentTime = ref('');
 
@@ -11,7 +12,11 @@ const clock = () => {
   currentTime.value = `${hours}:${minutes}`;
 }
 
-model.value = '/picto/rock.png';
+watch(() => widgetName, () => {
+  if (widgetName === 'WidgetClock') {
+    model.value = '/picto/rock.png';
+  }
+});
 
 clock();
 setInterval(clock, 1000);

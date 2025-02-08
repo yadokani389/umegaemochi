@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { listen } from '@tauri-apps/api/event';
 
+const { widgetName } = defineProps<{ widgetName: string; }>();
 const model = defineModel();
 
 const weeks = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -75,7 +76,11 @@ function calculateWeeksInMonth() {
   return weeksArray;
 }
 
-model.value = '/picto/Rain.png';
+watch(() => widgetName, () => {
+  if (widgetName === 'WidgetCalendar') {
+    model.value = '/picto/Rain.png';
+  }
+});
 
 listen("daily_reload", async () => {
   todayDate.value = new Date();
