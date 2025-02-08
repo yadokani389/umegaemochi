@@ -12,6 +12,7 @@ import WidgetClock from './components/WidgetClock.vue';
 import WidgetPicto from './components/WidgetPicto.vue';
 import WidgetSportsNews from './components/WidgetSportsNews.vue';
 import WidgetTodo from './components/WidgetTodo.vue';
+import WidgetSportsNews from './components/WidgetSportsNews.vue';
 import ButtonSettings from "./components/ButtonSettings.vue";
 import WindowSettings from "./components/WindowSettings.vue";
 import WindowEmergency from './components/WindowEmergency.vue';
@@ -36,6 +37,7 @@ const widgets = [
   { name: 'WidgetAtCoder' as const, component: WidgetAtCoder, available: true },
   { name: 'WidgetCalendar' as const, component: WidgetCalendar, available: true },
   { name: 'WidgetClock' as const, component: WidgetClock, available: true },
+  { name: 'WidgetSportsNews' as const, component: WidgetSportsNews, available: true },
   { name: 'WidgetTodo' as const, component: WidgetTodo, available: true },
   { name: 'WidgetClock' as const, component: WidgetClock, available: true },
   { name: 'WidgetSportsNews' as const, component: WidgetSportsNews, available: true },
