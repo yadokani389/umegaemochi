@@ -2,7 +2,7 @@
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from '@tauri-apps/api/event';
 import { useAsyncState } from "@vueuse/core";
-import { computed } from "vue";
+import { computed, watch } from "vue";
 
 type Todo = {
   id: string,
@@ -10,6 +10,7 @@ type Todo = {
   completed: boolean,
 };
 
+const { widgetName } = defineProps<{ widgetName: string; }>();
 const model = defineModel();
 const { state: todoList, execute: refetch } = useAsyncState(async () => {
   return (await invoke<Todo[]>('get_todos')).filter(todo => !todo.completed);
@@ -17,7 +18,11 @@ const { state: todoList, execute: refetch } = useAsyncState(async () => {
 
 const scrollDuration = computed(() => { return `${5 * todoList.value.length}s`; });
 
-model.value = '/picto/rain_normal.gif';
+watch(() => widgetName, () => {
+  if (widgetName === 'WidgetTodo') {
+    model.value = '/picto/rain_normal.gif';
+  }
+});
 
 listen("todo_changed", async () => {
   await refetch();
