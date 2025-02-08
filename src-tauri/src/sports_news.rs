@@ -1,16 +1,30 @@
 use reqwest;
+use crate::commands::utils::stringify;
 
 #[tauri::command]
 pub async fn get_sports_news(topic: String) -> Result<Vec<String>, String> {
-    let url = format!("https://www.nikkansports.com/{}/atom.xml", topic);
-    let response = reqwest::get(url).await.unwrap();
-    let response_str = response.text().await.unwrap();
+    nestify::nest! {
+        #[derive(Debug, serde::Deserialize)]*
+        #[serde(rename = "feed")]
+        struct Feed {
+            #[serde(rename = "entry")]
+            entries: Vec<struct Entry {
+                title: String,
+            }>,
+        }
+    }
 
-    let article_titles: Vec<String> = response_str
-        .split("<title>")
-        .skip(1)
-        .map(|s| s.split("</title>").next().unwrap().to_string())
-        .collect();
-      
-    Ok(article_titles)
+    let url = format!("https://www.nikkansports.com/{}/atom.xml", topic);
+
+    let resp = reqwest::get(url)
+        .await
+        .map_err(stringify)?
+        .text()
+        .await
+        .map_err(stringify)?;
+
+    let feed: Feed = quick_xml::de::from_str(&resp).map_err(stringify)?;
+    let titles = feed.entries.into_iter().map(|entry| entry.title).collect();
+
+    Ok(titles)
 }
