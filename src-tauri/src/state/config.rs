@@ -1,42 +1,29 @@
-// https://qiita.com/takavfx/items/5c27d22df50be45a8968
 use crate::commands::utils::stringify;
 use std::fs::File;
 use std::io::Write;
 use std::path::PathBuf;
 
-#[derive(Debug, Clone, PartialEq, serde::Serialize, serde::Deserialize)]
-#[serde(default)]
-pub struct Settings {
-    pub weather_city_id: String,
-    pub atcoder_id: String,
-    pub widget_interval: u64,
-    pub using_widgets: Vec<String>,
-    pub auto_fullscreen: bool,
-}
-
-impl Default for Settings {
-    fn default() -> Self {
-        Settings {
-            weather_city_id: "130010".into(),
-            atcoder_id: "1step621".into(),
-            widget_interval: 10000,
-            using_widgets: crate::WIDGET_LIST.iter().map(|x| x.to_string()).collect(),
-            auto_fullscreen: false,
-        }
-    }
-}
-
 #[derive(Debug, Clone)]
 pub struct Config<T> {
-    config_path: PathBuf,
+    pub config_path: PathBuf,
     pub data: T,
 }
 
-impl Config<Settings> {
-    pub fn try_new(config_path: PathBuf) -> Result<Self, String> {
+pub trait ConfigTrait<T>: std::marker::Sized {
+    fn try_new(config_path: PathBuf) -> Result<Self, String>;
+    fn set(&mut self, new: T) -> Result<(), String>;
+    fn write_file(&self) -> Result<(), String>;
+    fn read_file(&mut self) -> Result<(), String>;
+}
+
+impl<T> ConfigTrait<T> for Config<T>
+where
+    T: std::default::Default + serde::Serialize + serde::de::DeserializeOwned,
+{
+    fn try_new(config_path: PathBuf) -> Result<Self, String> {
         let mut config = Config {
             config_path,
-            data: Settings::default(),
+            data: T::default(),
         };
         if config.config_path.exists() {
             if let Err(e) = config.read_file() {
@@ -48,7 +35,7 @@ impl Config<Settings> {
         Ok(config)
     }
 
-    pub fn set(&mut self, new: Settings) -> Result<(), String> {
+    fn set(&mut self, new: T) -> Result<(), String> {
         self.data = new;
         self.write_file()
     }

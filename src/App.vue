@@ -10,6 +10,7 @@ import WidgetAtCoder from "./components/WidgetAtCoder.vue";
 import WidgetCalendar from './components/WidgetCalendar.vue';
 import WidgetClock from './components/WidgetClock.vue';
 import WidgetPicto from './components/WidgetPicto.vue';
+import WidgetTodo from './components/WidgetTodo.vue';
 import ButtonSettings from "./components/ButtonSettings.vue";
 import WindowSettings from "./components/WindowSettings.vue";
 import WindowEmergency from './components/WindowEmergency.vue';
@@ -33,7 +34,8 @@ const widgets = [
   { name: 'WidgetNews' as const, component: WidgetNews, available: true },
   { name: 'WidgetAtCoder' as const, component: WidgetAtCoder, available: true },
   { name: 'WidgetCalendar' as const, component: WidgetCalendar, available: true },
-  { name: 'WidgetClock' as const, component: WidgetClock, available: true }
+  { name: 'WidgetClock' as const, component: WidgetClock, available: true },
+  { name: 'WidgetTodo' as const, component: WidgetTodo, available: true },
 ];
 
 let slideInterval = 10000;
@@ -121,7 +123,7 @@ init();
 
 <template>
   <main>
-    <Tab :class="$style.tab"/>
+    <Tab :class="$style.tab" />
     <div :class="$style.container">
       <div :class="$style.widgetContainer">
         <transition :name="transitionName">
