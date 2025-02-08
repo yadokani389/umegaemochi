@@ -4,14 +4,16 @@ import { listen } from "@tauri-apps/api/event";
 import { ref, computed } from "vue";
 
 const articleTitles = ref<string[]>([]);
-const topic = "baseball";
+const topics = ["baseball", "soccer", "sports", "baseball/highschool"];
 
 const model = defineModel();
 model.value = "/picto/gorogoro.gif";
 
+const { sportsNewsIndex } = defineProps<{ sportsNewsIndex: number }>();
+
 async function getNews() {
   try {
-    articleTitles.value = await invoke("get_sports_news", { topic });
+    articleTitles.value = await invoke("get_sports_news", { topic: topics[sportsNewsIndex % topics.length] });
   } catch (error) {
     console.error("Failed to fetch sports news", error);
   }
