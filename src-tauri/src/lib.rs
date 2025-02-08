@@ -1,9 +1,8 @@
 mod commands;
 mod daily_reload;
-mod sports_news;
-mod sports_news;
 mod server;
 mod state;
+mod sports_news;
 
 use commands::utils::{get_server_address, get_settings, get_todos, get_version, get_yahoo_news};
 use std::sync::Mutex;
@@ -58,7 +57,6 @@ pub fn run() {
             get_settings,
             get_version,
             get_todos,
-            sports_news::get_sports_news,
             sports_news::get_sports_news,
         ])
         .run(tauri::generate_context!())

@@ -12,7 +12,6 @@ import WidgetClock from './components/WidgetClock.vue';
 import WidgetPicto from './components/WidgetPicto.vue';
 import WidgetSportsNews from './components/WidgetSportsNews.vue';
 import WidgetTodo from './components/WidgetTodo.vue';
-import WidgetSportsNews from './components/WidgetSportsNews.vue';
 import ButtonSettings from "./components/ButtonSettings.vue";
 import WindowSettings from "./components/WindowSettings.vue";
 import WindowEmergency from './components/WindowEmergency.vue';
