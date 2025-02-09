@@ -1,15 +1,19 @@
 <script setup lang="ts">
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
 
 const articleTitles = ref<string[]>([]);
 const topics = ["baseball", "soccer", "sports", "baseball/highschool"];
 
 const model = defineModel();
-model.value = "/picto/gorogoro.gif";
+const { widgetName, sportsNewsIndex } = defineProps<{ widgetName: string, sportsNewsIndex: number}>();
 
-const { sportsNewsIndex } = defineProps<{ sportsNewsIndex: number }>();
+watch(() => widgetName, () => {
+  if (widgetName === 'WidgetNews') {
+    model.value = '/picto/gorogoro.gif';
+  }
+});
 
 async function getNews() {
   try {
@@ -20,6 +24,10 @@ async function getNews() {
 }
 
 getNews();
+
+watch(() => sportsNewsIndex, async () => {
+  await getNews();
+});
 
 listen("daily_reload", async () => {
   await getNews();
