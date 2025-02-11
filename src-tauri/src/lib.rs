@@ -8,13 +8,14 @@ use std::sync::Mutex;
 use tauri::Manager;
 
 const CONFIG_PATH: &str = "umegaemochi/";
-const WIDGET_LIST: [&str; 6] = [
+const WIDGET_LIST: [&str; 7] = [
     "WidgetWeather",
     "WidgetNews",
     "WidgetAtCoder",
     "WidgetCalendar",
     "WidgetClock",
     "WidgetTodo",
+    "WidgetWeeklyWeather",
 ];
 const VERSION: &str = match option_env!("CARGO_PKG_VERSION") {
     Some(version) => version,
@@ -24,6 +25,7 @@ const VERSION: &str = match option_env!("CARGO_PKG_VERSION") {
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_os::init())
         .setup(|app| {
             #[cfg(desktop)]
