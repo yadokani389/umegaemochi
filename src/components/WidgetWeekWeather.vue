@@ -32,10 +32,9 @@ function weathername(weathercode: number) {
 
 const cityId = ref((await invoke<Settings>("get_settings")).weather_city_id);
 const weather = computedAsync(async () => {
-  return await (await fetch("https://api.open-meteo.com/v1/forecast?latitude=35.6895&longitude=139.6917&daily=weather_code,temperature_2m_max,temperature_2m_min")).json() as Weather;
+  if (!(cityId.value in citys)) return { error: '指定した都市が存在しません' } as Weather;
+  return await (await fetch("https://api.open-meteo.com/v1/forecast?latitude=" + citys[cityId.value].lnglat[1] + "&longitude=" + citys[cityId.value].lnglat[0] + "&daily=weather_code,temperature_2m_max,temperature_2m_min")).json() as Weather;
 }, null, { onError: (e) => console.error(e) });
-console.log(cityId.value);
-console.log(citys[cityId.value]);
 
 listen("settings_changed", async () => {
   cityId.value = (await invoke<Settings>("get_settings")).weather_city_id;
@@ -48,7 +47,7 @@ listen("daily_reload", async () => {
 
 <template>
   <div :class="$style.container" v-if="weather">
-    <template v-if="!('error' in weather)">
+    <template v-if="weather && !('error' in weather)">
       <h1>{{ citys[cityId].name }}の一週間天気</h1>
       <div :class="$style.content">
         <div :class="$style.detail">
