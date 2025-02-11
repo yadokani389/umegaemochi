@@ -36,7 +36,7 @@ pub fn get_server_address() -> Result<String, String> {
 
     let local_addr = format!(
         "{}:{}",
-        localip::get_local_ip().map_err(stringify)?,
+        local_ip_addr::get_local_ip_address().map_err(stringify)?,
         port_number
     );
 
