@@ -2,13 +2,13 @@
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from '@tauri-apps/api/event';
 import { computedAsync } from "@vueuse/core";
-import { ref, triggerRef } from "vue";
+import { ref, triggerRef, watch } from "vue";
 import { Settings } from "../types";
 import { resolveResource } from '@tauri-apps/api/path';
 import { readTextFile } from '@tauri-apps/plugin-fs';
 
 const resourcePath = await resolveResource('city_code.json');
-const citys = JSON.parse(await readTextFile(resourcePath));
+const cities = JSON.parse(await readTextFile(resourcePath));
 
 type Weather = {
   daily: {
@@ -17,9 +17,12 @@ type Weather = {
     temperature_2m_min: number[];
     time: string[];
   };
-} | { error: string; };
+} | {
+  error: boolean;
+  reason: string;
+};
 
-function weathername(weathercode: number) {
+function weatherName(weathercode: number) {
   if (weathercode < 2) return '晴れ'
   else if (weathercode < 4) return '曇り'
   else if (weathercode < 49) return ' 霧 '
@@ -28,13 +31,22 @@ function weathername(weathercode: number) {
   else if (weathercode < 83) return ' 雨 '
   else if (weathercode < 86) return ' 雪 '
   else if (weathercode < 100) return '雷雨'
+  else return '不明'
 }
 
+const { widgetName } = defineProps<{ widgetName: string; }>();
+const model = defineModel();
 const cityId = ref((await invoke<Settings>("get_settings")).weather_city_id);
 const weather = computedAsync(async () => {
-  if (!(cityId.value in citys)) return { error: '指定した都市が存在しません' } as Weather;
-  return await (await fetch("https://api.open-meteo.com/v1/forecast?latitude=" + citys[cityId.value].lnglat[1] + "&longitude=" + citys[cityId.value].lnglat[0] + "&daily=weather_code,temperature_2m_max,temperature_2m_min")).json() as Weather;
+  if (!(cityId.value in cities)) return { error: true, reason: 'The specified city ID is invalid.' } as Weather;
+  return await (await fetch("https://api.open-meteo.com/v1/forecast?latitude=" + cities[cityId.value].lnglat[1] + "&longitude=" + cities[cityId.value].lnglat[0] + "&daily=weather_code,temperature_2m_max,temperature_2m_min")).json() as Weather;
 }, null, { onError: (e) => console.error(e) });
+
+watch(() => widgetName, () => {
+  if (widgetName === 'WidgetWeekWeather') {
+    model.value = '/picto/rain_dohshaburi.gif';
+  }
+});
 
 listen("settings_changed", async () => {
   cityId.value = (await invoke<Settings>("get_settings")).weather_city_id;
@@ -47,8 +59,8 @@ listen("daily_reload", async () => {
 
 <template>
   <div :class="$style.container" v-if="weather">
-    <template v-if="weather && !('error' in weather)">
-      <h1>{{ citys[cityId].name }}の一週間天気</h1>
+    <template v-if="!('error' in weather)">
+      <h1>{{ cities[cityId].name }}の一週間天気</h1>
       <div :class="$style.content">
         <div :class="$style.detail">
           <h2>日付</h2>
@@ -56,7 +68,7 @@ listen("daily_reload", async () => {
         </div>
         <div :class="$style.detail">
           <h2>天気</h2>
-          <h2 v-for="n in 7">{{ weathername(weather.daily.weather_code[n - 1]) }}</h2>
+          <h2 v-for="n in 7">{{ weatherName(weather.daily.weather_code[n - 1]) }}</h2>
         </div>
         <div :class="$style.detail">
           <h2 :class="$style.max_temperature">最高気温</h2>
@@ -70,7 +82,7 @@ listen("daily_reload", async () => {
     </template>
     <template v-else>
       <h1>天気情報の取得に失敗しました</h1>
-      <h2>{{ weather.error }}</h2>
+      <h2>{{ weather.reason }}</h2>
     </template>
   </div>
 </template>
