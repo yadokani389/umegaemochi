@@ -22,16 +22,16 @@ type Weather = {
   reason: string;
 };
 
-function weatherName(weathercode: number) {
-  if (weathercode < 2) return '晴れ'
-  else if (weathercode < 4) return '曇り'
-  else if (weathercode < 49) return ' 霧 '
-  else if (weathercode < 67) return ' 雨 '
-  else if (weathercode < 78) return ' 雪 '
-  else if (weathercode < 83) return ' 雨 '
-  else if (weathercode < 86) return ' 雪 '
-  else if (weathercode < 100) return '雷雨'
-  else return '不明'
+function weatherName(weatherCode: number) {
+  if (weatherCode < 2) return '晴れ';
+  else if (weatherCode < 4) return '曇り';
+  else if (weatherCode < 49) return ' 霧 ';
+  else if (weatherCode < 67) return ' 雨 ';
+  else if (weatherCode < 78) return ' 雪 ';
+  else if (weatherCode < 83) return ' 雨 ';
+  else if (weatherCode < 86) return ' 雪 ';
+  else if (weatherCode < 100) return '雷雨';
+  else return '不明';
 }
 
 const { widgetName } = defineProps<{ widgetName: string; }>();
