@@ -7,8 +7,7 @@ import { Settings } from "../types";
 import { resolveResource } from '@tauri-apps/api/path';
 import { readTextFile } from '@tauri-apps/plugin-fs';
 
-const resourcePath = await resolveResource('city_code.json');
-const cities = JSON.parse(await readTextFile(resourcePath));
+type Cities = { [key: string]: { lnglat: [number, number]; name: string; } };
 
 type Weather = {
   daily: {
@@ -25,25 +24,32 @@ type Weather = {
 function weatherName(weatherCode: number) {
   if (weatherCode < 2) return '晴れ';
   else if (weatherCode < 4) return '曇り';
-  else if (weatherCode < 49) return ' 霧 ';
-  else if (weatherCode < 67) return ' 雨 ';
-  else if (weatherCode < 78) return ' 雪 ';
-  else if (weatherCode < 83) return ' 雨 ';
-  else if (weatherCode < 86) return ' 雪 ';
+  else if (weatherCode < 49) return '霧';
+  else if (weatherCode < 67) return '雨';
+  else if (weatherCode < 78) return '雪';
+  else if (weatherCode < 83) return '雨';
+  else if (weatherCode < 86) return '雪';
   else if (weatherCode < 100) return '雷雨';
   else return '不明';
 }
+
+const week = ["月", "火", "水", "木", "金", "土", "日"];
+
+const resourcePath = await resolveResource('city_code.json');
+const cities = JSON.parse(await readTextFile(resourcePath)) as Cities;
 
 const { widgetName } = defineProps<{ widgetName: string; }>();
 const model = defineModel();
 const cityId = ref((await invoke<Settings>("get_settings")).weather_city_id);
 const weather = computedAsync(async () => {
   if (!(cityId.value in cities)) return { error: true, reason: 'The specified city ID is invalid.' } as Weather;
-  return await (await fetch("https://api.open-meteo.com/v1/forecast?latitude=" + cities[cityId.value].lnglat[1] + "&longitude=" + cities[cityId.value].lnglat[0] + "&daily=weather_code,temperature_2m_max,temperature_2m_min")).json() as Weather;
+  const [lng, lat] = cities[cityId.value].lnglat;
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&daily=weather_code,temperature_2m_max,temperature_2m_min`;
+  return await (await fetch(url)).json() as Weather;
 }, null, { onError: (e) => console.error(e) });
 
 watch(() => widgetName, () => {
-  if (widgetName === 'WidgetWeekWeather') {
+  if (widgetName === 'WidgetWeeklyWeather') {
     model.value = '/picto/rain_dohshaburi.gif';
   }
 });
@@ -60,11 +66,12 @@ listen("daily_reload", async () => {
 <template>
   <div :class="$style.container" v-if="weather">
     <template v-if="!('error' in weather)">
-      <h1>{{ cities[cityId].name }}の一週間天気</h1>
+      <h1>{{ cities[cityId].name }}の一週間の天気</h1>
       <div :class="$style.content">
         <div :class="$style.detail">
           <h2>日付</h2>
-          <h2 v-for="n in 7">{{ weather.daily.time[n - 1].slice(5) }}</h2>
+          <h2 v-for="n in 7">{{ weather.daily.time[n - 1].slice(5) }}({{ week[((new Date).getDay() + n - 2) % 7] }})
+          </h2>
         </div>
         <div :class="$style.detail">
           <h2>天気</h2>
@@ -97,7 +104,6 @@ listen("daily_reload", async () => {
   justify-content: center;
   align-items: center;
   gap: 10px;
-  padding-left: 50px;
 }
 
 .content {

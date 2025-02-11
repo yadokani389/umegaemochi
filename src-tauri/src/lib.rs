@@ -15,7 +15,7 @@ const WIDGET_LIST: [&str; 7] = [
     "WidgetCalendar",
     "WidgetClock",
     "WidgetTodo",
-    "WidgetWeekWeather",
+    "WidgetWeeklyWeather",
 ];
 const VERSION: &str = match option_env!("CARGO_PKG_VERSION") {
     Some(version) => version,
