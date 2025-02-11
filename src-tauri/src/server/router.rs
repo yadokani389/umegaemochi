@@ -30,6 +30,7 @@ pub fn new(handle: tauri::AppHandle) -> axum::Router {
             "/todos/{id}",
             get(get_todo).patch(update_todo).delete(delete_todo),
         )
+        .route("/sports_news", get(get_sports_news))
         .with_state(handle)
 }
 
@@ -114,6 +115,10 @@ async fn scroll(
 
 async fn get_widgets() -> impl IntoResponse {
     Json(crate::WIDGET_LIST)
+}
+
+async fn get_sports_news() -> impl IntoResponse {
+    Json(["プロ野球", "高校野球", "サッカー", "スポーツ", "ゴルフ", "ラグビー", "テニス", "バスケ", "バレー", "水泳"]) 
 }
 
 async fn get_version() -> impl IntoResponse {

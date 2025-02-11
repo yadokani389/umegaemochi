@@ -5,7 +5,6 @@ import { type } from "@tauri-apps/plugin-os";
 import * as autostart from "@tauri-apps/plugin-autostart";
 import { computed, ref } from "vue";
 import QRCode from "qrcode";
-import SportsTopicSelectmenu from "./SportsTopicSelectmenu.vue";
 
 function getServerAddress() {
   invoke<string>("get_server_address").then(async (address) => {
@@ -51,16 +50,6 @@ const isAutostartEnabled = ref(['linux', 'windows', 'macos'].includes(osType) ? 
 const autostartStatus = computed(() => isAutostartEnabled.value ? "Enabled" : "Disabled");
 const version = await invoke<string>("get_version");
 
-const isSportSelectmenuOpen = ref(false);
-
-function openSportSelectmenu() {
-  if(isSportSelectmenuOpen.value) {
-    isSportSelectmenuOpen.value = false;
-  } else {
-    isSportSelectmenuOpen.value = true;
-  }
-}
-
 </script>
 
 <template>
@@ -77,13 +66,7 @@ function openSportSelectmenu() {
         Autostart: {{ autostartStatus }}
       </div>
       <button @click="toggleAutostart()">Toggle Autostart</button>
-      <button @click="openSportSelectmenu">Edit Display Sports News Topic</button>
-      <div v-show="isSportSelectmenuOpen" :class="$style.overlay" @click.self="openSportSelectmenu">
-        <div :class="$style.sportSelectMenu">
-          <SportsTopicSelectmenu />
-        </div>
-      </div>
-      </template>
+    </template>
     <div>Version: v{{ version }}</div>
   </div>
 </template>
@@ -112,31 +95,5 @@ function openSportSelectmenu() {
 
 .disabled {
   color: grey;
-}
-
-.overlay {
-  position: fixed;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 999;
-}
-
-.sportSelectMenu {
-  position: fixed;
-  left: 0;
-  bottom: 0;
-  height: 25vmin;
-  width: 100%;
-  background: white;
-  border-radius: 10px;
-  animation: slideUp 0.3s forwards;
-}
-
-@keyframes slideUp {
-  from { transform: translateY(100%); }
-  to { transform: translateY(0); }
 }
 </style>

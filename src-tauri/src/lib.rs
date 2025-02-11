@@ -2,9 +2,8 @@ mod commands;
 mod daily_reload;
 mod server;
 mod state;
-mod sports_news;
 
-use commands::utils::{get_server_address, get_settings, get_todos, get_version, get_yahoo_news};
+use commands::utils::{get_server_address, get_settings, get_todos, get_version, get_yahoo_news, get_sports_news};
 use std::sync::Mutex;
 use tauri::Manager;
 
@@ -57,7 +56,7 @@ pub fn run() {
             get_settings,
             get_version,
             get_todos,
-            sports_news::get_sports_news,
+            get_sports_news,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

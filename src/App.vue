@@ -36,7 +36,6 @@ const widgets = [
   { name: 'WidgetAtCoder' as const, component: WidgetAtCoder, available: true },
   { name: 'WidgetCalendar' as const, component: WidgetCalendar, available: true },
   { name: 'WidgetClock' as const, component: WidgetClock, available: true },
-  { name: 'WidgetSportsNews' as const, component: WidgetSportsNews, available: true },
   { name: 'WidgetTodo' as const, component: WidgetTodo, available: true },
   { name: 'WidgetSportsNews' as const, component: WidgetSportsNews, available: true },
 ];
