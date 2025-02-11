@@ -11,6 +11,7 @@ import WidgetCalendar from './components/WidgetCalendar.vue';
 import WidgetClock from './components/WidgetClock.vue';
 import WidgetPicto from './components/WidgetPicto.vue';
 import WidgetTodo from './components/WidgetTodo.vue';
+import WidgetWeekWeather from './components/WidgetWeekWeather.vue';
 import ButtonSettings from "./components/ButtonSettings.vue";
 import WindowSettings from "./components/WindowSettings.vue";
 import WindowEmergency from './components/WindowEmergency.vue';
@@ -36,6 +37,7 @@ const widgets = [
   { name: 'WidgetCalendar' as const, component: WidgetCalendar, available: true },
   { name: 'WidgetClock' as const, component: WidgetClock, available: true },
   { name: 'WidgetTodo' as const, component: WidgetTodo, available: true },
+  { name: 'WidgetWeekWeather' as const, component: WidgetWeekWeather, available: true },
 ];
 
 let slideInterval = 10000;
