@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from '@tauri-apps/api/event';
 import { getCurrentWindow } from '@tauri-apps/api/window';
@@ -11,6 +11,7 @@ import WidgetCalendar from './components/WidgetCalendar.vue';
 import WidgetClock from './components/WidgetClock.vue';
 import WidgetPicto from './components/WidgetPicto.vue';
 import WidgetTodo from './components/WidgetTodo.vue';
+import WidgetSportsNews from './components/WidgetSportsNews.vue';
 import WidgetWeeklyWeather from './components/WidgetWeeklyWeather.vue';
 import ButtonSettings from "./components/ButtonSettings.vue";
 import WindowSettings from "./components/WindowSettings.vue";
@@ -37,6 +38,7 @@ const widgets = [
   { name: 'WidgetCalendar' as const, component: WidgetCalendar, available: true },
   { name: 'WidgetClock' as const, component: WidgetClock, available: true },
   { name: 'WidgetTodo' as const, component: WidgetTodo, available: true },
+  { name: 'WidgetSportsNews' as const, component: WidgetSportsNews, available: true },
   { name: 'WidgetWeeklyWeather' as const, component: WidgetWeeklyWeather, available: true },
 ];
 
@@ -45,6 +47,14 @@ let slideIntervalId: NodeJS.Timeout | null = null;
 const currentWidget = ref(0);
 const currentWidgetName = computed(() => widgets[currentWidget.value].name);
 const direction = ref(0);
+
+const sportsNewsIndex = ref(0);
+
+watch(currentWidget, (newval, _) => {
+  if (widgets[newval].name === 'WidgetSportsNews') {
+    sportsNewsIndex.value++;
+  }
+});
 
 function startAutoSlide() {
   stopAutoSlide();
@@ -132,7 +142,8 @@ init();
         <transition-group :name="transitionName">
           <template v-for="(widget, index) in widgets" :key="widget.name">
             <BaseWidget :class="$style.moveWidget" v-show="currentWidget === index">
-              <component :is="widget.component" v-model="pictoSrc" :widget-name="currentWidgetName" />
+              <component :is="widget.component" v-model="pictoSrc" :widget-name="currentWidgetName"
+                :sports-news-index="sportsNewsIndex" />
             </BaseWidget>
           </template>
         </transition-group>
