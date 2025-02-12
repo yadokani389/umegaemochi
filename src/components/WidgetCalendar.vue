@@ -131,6 +131,7 @@ listen("daily_reload", async () => {
 }
 
 .header h2 {
+  font-family: 'ADLaMFont';
   font-size: 6vmin;
 }
 

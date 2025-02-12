@@ -172,6 +172,13 @@ init();
   font-style: normal;
 }
 
+@font-face {
+  font-family: 'ADLaMFont';
+  src: url('/src/assets/fonts/ADLaMDisplay-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 * {
   padding: 0;
   margin: 0;
