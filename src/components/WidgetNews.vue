@@ -45,7 +45,7 @@ listen("daily_reload", async () => {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 10px;
+  gap: 20px;
   padding: 10px;
 }
 

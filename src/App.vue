@@ -196,8 +196,9 @@ h1 {
 .widgetContainer {
   position: absolute;
   top: 17.5vh;
-  width: 55vw;
-  height: 65vh;
+  right: 38vw;
+  width: 60vw;
+  height: 72vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -247,8 +248,7 @@ main {
 .tab {
   position: absolute;
   top: 3vmin;
-  left: 8vmin;
-  height: 10%;
+  left: 8vmin;height: 10%;
 }
 </style>
 

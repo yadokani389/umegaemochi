@@ -78,11 +78,11 @@ listen("daily_reload", async () => {
           <h2 v-for="n in 7">{{ weatherName(weather.daily.weather_code[n - 1]) }}</h2>
         </div>
         <div :class="$style.detail">
-          <h2 :class="$style.max_temperature">最高気温</h2>
+          <h2 :class="$style.max_temperature" style="font-size: 0.8em">最高気温</h2>
           <h2 :class="$style.max_temperature" v-for="n in 7">{{ weather.daily.temperature_2m_max[n - 1] }}°C</h2>
         </div>
         <div :class="$style.detail">
-          <h2 :class="$style.min_temperature">最低気温</h2>
+          <h2 :class="$style.min_temperature" style="font-size: 0.8em">最低気温</h2>
           <h2 :class="$style.min_temperature" v-for="n in 7">{{ weather.daily.temperature_2m_min[n - 1] }}°C</h2>
         </div>
       </div>
