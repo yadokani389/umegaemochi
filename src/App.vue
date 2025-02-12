@@ -2,7 +2,7 @@
 import { ref, computed, watch } from 'vue'
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from '@tauri-apps/api/event';
-import { getCurrentWindow } from '@tauri-apps/api/window';
+import { getCurrentWindow, LogicalPosition } from '@tauri-apps/api/window';
 import BaseWidget from "./components/BaseWidget.vue";
 import WidgetWeather from "./components/WidgetWeather.vue";
 import WidgetNews from "./components/WidgetNews.vue";
@@ -127,6 +127,10 @@ async function init() {
   const settings = await invoke<Settings>('get_settings');
   if (settings.auto_fullscreen) {
     getCurrentWindow().setFullscreen(true);
+  }
+  if (settings.auto_hide_cursor) {
+    getCurrentWindow().setCursorVisible(false);
+    getCurrentWindow().setCursorPosition(new LogicalPosition(0, 0));
   }
 }
 listen("settings_changed", applySettings);

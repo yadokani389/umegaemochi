@@ -11,5 +11,6 @@ export type Settings = {
   widget_interval: number;
   using_widgets: string[];
   auto_fullscreen: boolean;
+  auto_hide_cursor: boolean;
   using_sports_news: string[];
 };
