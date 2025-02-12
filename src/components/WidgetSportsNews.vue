@@ -21,6 +21,9 @@ const topicsToId = [
   { name: '水泳', id: 'sports/swimming'},
 ]
 
+const cache = new Map<string, string[]>(); 
+const lastFetch = new Map<string, number>();
+
 const model = defineModel();
 const { widgetName, sportsNewsIndex } = defineProps<{ widgetName: string, sportsNewsIndex: number }>();
 
@@ -31,9 +34,19 @@ watch(() => widgetName, () => {
 });
 
 async function getNews() {
-  console.log(selectedTopics.value[sportsNewsIndex % selectedTopics.value.length])
+  if (cache.has(selectedTopics.value[sportsNewsIndex % selectedTopics.value.length]) && lastFetch.has(selectedTopics.value[sportsNewsIndex % selectedTopics.value.length])) {
+    const lastFetched = lastFetch.get(selectedTopics.value[sportsNewsIndex % selectedTopics.value.length])!;
+    if (Date.now() - lastFetched < 1000 * 60 * 60) {
+      articleTitles.value = cache.get(selectedTopics.value[sportsNewsIndex % selectedTopics.value.length])!;
+      console.log("Using cache");
+      return;
+    }
+  }
+
   try {
     articleTitles.value = await invoke<string[]>("get_sports_news", { topic: selectedTopics.value[sportsNewsIndex % selectedTopics.value.length] });
+    cache.set(selectedTopics.value[sportsNewsIndex % selectedTopics.value.length], articleTitles.value);
+    lastFetch.set(selectedTopics.value[sportsNewsIndex % selectedTopics.value.length], Date.now());
   } catch (error) {
     console.error("Failed to fetch sports news", error);
   }
