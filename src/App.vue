@@ -143,7 +143,7 @@ init();
           <template v-for="(widget, index) in widgets" :key="widget.name">
             <BaseWidget :class="$style.moveWidget" v-show="currentWidget === index">
               <component :is="widget.component" v-model="pictoSrc" :widget-name="currentWidgetName"
-              :sports-news-index="sportsNewsIndex" />
+                :sports-news-index="sportsNewsIndex" />
             </BaseWidget>
           </template>
         </transition-group>
