@@ -28,13 +28,6 @@ setInterval(clock, 1000);
 </template>
 
 <style module>
-@font-face {
-  font-family: 'ClockFont';
-  src: url('/src/assets/fonts/ADLaMDisplay-Regular.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-}
-
 .container {
   display: flex;
   flex-direction: column;
@@ -45,7 +38,7 @@ setInterval(clock, 1000);
 
 .clock {
   color: #70ad47;
-  font-family: 'ClockFont';
+  font-family: 'ADLaMFont';
   font-size: 5vw;
   font-weight: bold;
 }
