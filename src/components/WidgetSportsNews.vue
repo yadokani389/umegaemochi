@@ -38,7 +38,6 @@ async function getNews() {
     const lastFetched = lastFetch.get(selectedTopics.value[sportsNewsIndex % selectedTopics.value.length])!;
     if (Date.now() - lastFetched < 1000 * 60 * 60) {
       articleTitles.value = cache.get(selectedTopics.value[sportsNewsIndex % selectedTopics.value.length])!;
-      console.log("Using cache");
       return;
     }
   }
