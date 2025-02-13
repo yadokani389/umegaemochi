@@ -14,7 +14,7 @@ const scrollDuration = computed(() => { return `${5 * newsList.value.length}s`; 
 
 watch(() => widgetName, () => {
   if (widgetName === 'WidgetNews') {
-    model.value = '/picto/gorogoro.gif';
+    model.value = '/picto/news.gif';
   }
 });
 

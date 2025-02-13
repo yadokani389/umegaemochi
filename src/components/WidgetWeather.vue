@@ -36,7 +36,23 @@ const weather = computedAsync(async () => {
 
 watch(() => widgetName, () => {
   if (widgetName === 'WidgetWeather') {
-    model.value = '/picto/cloudy.gif';
+    if (!weather.value || 'error' in weather.value) {
+      model.value = '/picto/cloudy.gif';
+      return;
+    }
+    switch (weather.value.forecasts[1].telop) {
+      case "晴れ":
+        model.value = '/picto/sunny.gif';
+        break;
+      case "曇り":
+        model.value = '/picto/cloudy.gif';
+        break;
+      case "雨":
+        model.value = '/picto/rain_normal.gif';
+        break;
+      default:
+        model.value = '/picto/cloudy.gif';
+    }
   }
 });
 

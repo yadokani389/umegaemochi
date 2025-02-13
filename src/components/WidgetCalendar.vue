@@ -78,7 +78,15 @@ function calculateWeeksInMonth() {
 
 watch(() => widgetName, () => {
   if (widgetName === 'WidgetCalendar') {
-    model.value = '/picto/Rain.png';
+    if (3 <= currentMonth.value && currentMonth.value <= 5) {
+      model.value = '/picto/spring.gif';
+    } else if (6 <= currentMonth.value && currentMonth.value <= 8) {
+      model.value = '/picto/summer.gif';
+    } else if (9 <= currentMonth.value && currentMonth.value <= 11) {
+      model.value = '/picto/autumn.gif';
+    } else {
+      model.value = '/picto/winter.gif';
+    }
   }
 });
 

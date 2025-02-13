@@ -49,8 +49,20 @@ const weather = computedAsync(async () => {
 }, null, { onError: (e) => console.error(e) });
 
 watch(() => widgetName, () => {
-  if (widgetName === 'WidgetWeeklyWeather') {
-    model.value = '/picto/rain_dohshaburi.gif';
+  if (widgetName === 'WidgetWeeklyWeather' && weather.value && !('error' in weather.value)) {
+    switch (weatherName(weather.value.daily.weather_code[0])) {
+      case "晴れ":
+        model.value = '/picto/sunny.gif';
+        break;
+      case "曇り":
+        model.value = '/picto/cloudy.gif';
+        break;
+      case "雨":
+        model.value = '/picto/rain_doshaburi.gif';
+        break;
+      default:
+        model.value = '/picto/cloudy.gif';
+    }
   }
 });
 

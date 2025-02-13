@@ -20,7 +20,7 @@ const scrollDuration = computed(() => { return `${5 * todoList.value.length}s`; 
 
 watch(() => widgetName, () => {
   if (widgetName === 'WidgetTodo') {
-    model.value = '/picto/rain_normal.gif';
+    model.value = '/picto/todo.gif';
   }
 });
 

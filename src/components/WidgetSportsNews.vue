@@ -28,8 +28,8 @@ const model = defineModel();
 const { widgetName, sportsNewsIndex } = defineProps<{ widgetName: string, sportsNewsIndex: number }>();
 
 watch(() => widgetName, () => {
-  if (widgetName === 'WidgetNews') {
-    model.value = '/picto/gorogoro.gif';
+  if (widgetName === 'WidgetSportsNews') {
+    model.value = '/picto/baseball.gif';
   }
 });
 
