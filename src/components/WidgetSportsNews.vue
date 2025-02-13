@@ -28,7 +28,7 @@ const model = defineModel();
 const { widgetName, sportsNewsIndex } = defineProps<{ widgetName: string, sportsNewsIndex: number }>();
 
 watch(() => widgetName, () => {
-  if (widgetName === 'WidgetNews') {
+  if (widgetName === 'WidgetSportsNews') {
     model.value = '/picto/gorogoro.gif';
   }
 });
