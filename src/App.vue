@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
+import { useSwipe, UseSwipeDirection } from '@vueuse/core';
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from '@tauri-apps/api/event';
 import { getCurrentWindow, LogicalPosition } from '@tauri-apps/api/window';
@@ -135,13 +136,30 @@ async function init() {
 }
 listen("settings_changed", applySettings);
 
+const container = ref<HTMLElement | null>(null);
+
+useSwipe(container, {
+  onSwipeEnd(_: TouchEvent, direction: UseSwipeDirection) {
+    console.log(direction);
+    if (direction === 'up') {
+      prevWidget();
+      stopAutoSlide();
+      setTimeout(startAutoSlide, 10000);
+    } else if (direction === 'down') {
+      nextWidget();
+      stopAutoSlide();
+      setTimeout(startAutoSlide, 10000);
+    }
+  }
+});
+
 init();
 </script>
 
 <template>
   <main>
     <Tab :class="$style.tab" />
-    <div :class="$style.container">
+    <div :class="$style.container" ref="container">
       <div :class="$style.widgetContainer">
         <transition-group :name="transitionName">
           <template v-for="(widget, index) in widgets" :key="widget.name">
