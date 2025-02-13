@@ -248,7 +248,8 @@ main {
 .tab {
   position: absolute;
   top: 3vmin;
-  left: 8vmin;height: 10%;
+  left: 8vmin;
+  height: 10%;
 }
 </style>
 
