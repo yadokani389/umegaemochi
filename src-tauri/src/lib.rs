@@ -3,12 +3,12 @@ mod daily_reload;
 mod server;
 mod state;
 
-use commands::utils::{get_server_address, get_settings, get_todos, get_version, get_yahoo_news, get_sports_news};
+use commands::utils::{get_server_address, get_settings, get_todos, get_version, get_yahoo_news, get_sports_news, get_exchange_rate};
 use std::sync::Mutex;
 use tauri::Manager;
 
 const CONFIG_PATH: &str = "umegaemochi/";
-const WIDGET_LIST: [&str; 8] = [
+const WIDGET_LIST: [&str; 9] = [
     "WidgetWeather",
     "WidgetNews",
     "WidgetAtCoder",
@@ -17,6 +17,7 @@ const WIDGET_LIST: [&str; 8] = [
     "WidgetTodo",
     "WidgetSportsNews",
     "WidgetWeeklyWeather",
+    "WidgetExchangeRate",
 ];
 const VERSION: &str = match option_env!("CARGO_PKG_VERSION") {
     Some(version) => version,
@@ -59,6 +60,7 @@ pub fn run() {
             get_version,
             get_todos,
             get_sports_news,
+            get_exchange_rate,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

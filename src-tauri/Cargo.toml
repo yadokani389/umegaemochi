@@ -21,7 +21,7 @@ tauri-build = { version = "2", features = [] }
 tauri = { version = "2", features = [] }
 serde = { version = "1", features = ["derive"] }
 reqwest = { version = "0.12.9", default-features = false, features = [
-  "rustls-tls",
+  "rustls-tls", "json"
 ] }
 quick-xml = { version = "0.37.0", features = ["serde", "serialize"] }
 serde_json = "1.0.134"
