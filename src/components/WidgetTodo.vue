@@ -38,9 +38,10 @@ listen("daily_reload", async () => {
     <h1>Todo List</h1>
     <div :class="$style.content">
       <div v-if="0 < todoList.length" :class="$style.scrollTrack" :style="{ animationDuration: scrollDuration }">
-        <h2 v-for="(todo, index) in [...todoList, ...todoList]" :key="index" :class="$style.todo">
-          □ {{ todo.text }}
-        </h2>
+        <div v-for="(todo, index) in [...todoList, ...todoList]" :key="index" :class="$style.todo">
+          <h2> □ </h2>
+          <h2>{{ todo.text }}</h2>
+        </div>
       </div>
       <h2 v-else>All done</h2>
     </div>
@@ -75,10 +76,16 @@ listen("daily_reload", async () => {
 
 .scrollTrack {
   animation: infiniteScroll linear infinite;
+  justify-content: left;
 }
 
 .todo {
   font-size: 5vmin;
   padding: 20px;
+  display: flex;
+}
+
+.todo h2 {
+  margin: 5px;
 }
 </style>
