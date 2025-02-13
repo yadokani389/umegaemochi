@@ -95,4 +95,37 @@ pub async fn get_sports_news(topic: String) -> Result<Vec<String>, String> {
 
     Ok(titles)
 }
+#[derive(Debug, serde::Deserialize, serde::Serialize)]
+pub struct ExchangeRate {
+    pub result: String,
+    pub basecode: String,
+    pub update: String,
+    pub source: String,
+    #[serde(rename = "API_URL")]
+    pub api_url: String,
+    #[serde(flatten)]
+    pub rates: std::collections::HashMap<String, String>,
+    #[serde(rename = "JPY")]
+    pub jpy: f32,
+}
 
+#[tauri::command]
+pub async fn get_exchange_rate() -> Result<std::collections::HashMap<String, f32>, String> {
+    let url = "https://api.aoikujira.com/kawase/json/jpy";
+
+    let response = reqwest::get(url)
+        .await
+        .map_err(stringify)?
+        .json::<ExchangeRate>()
+        .await
+        .map_err(stringify)?;
+
+    let mut rates = std::collections::HashMap::new();
+
+    for (key, value) in response.rates {
+        if let Ok(rate) = value.parse::<f32>() {
+            rates.insert(key, rate);
+        }
+    }
+    Ok(rates)
+}
