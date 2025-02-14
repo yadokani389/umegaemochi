@@ -14,6 +14,7 @@ import WidgetPicto from './components/WidgetPicto.vue';
 import WidgetTodo from './components/WidgetTodo.vue';
 import WidgetSportsNews from './components/WidgetSportsNews.vue';
 import WidgetWeeklyWeather from './components/WidgetWeeklyWeather.vue';
+import WidgetExchangeRate from './components/WidgetExchangeRate.vue';
 import ButtonSettings from "./components/ButtonSettings.vue";
 import WindowSettings from "./components/WindowSettings.vue";
 import WindowEmergency from './components/WindowEmergency.vue';
@@ -41,6 +42,7 @@ const widgets = [
   { name: 'WidgetTodo' as const, component: WidgetTodo, available: true },
   { name: 'WidgetSportsNews' as const, component: WidgetSportsNews, available: true },
   { name: 'WidgetWeeklyWeather' as const, component: WidgetWeeklyWeather, available: true },
+  { name: 'WidgetExchangeRate' as const, component: WidgetExchangeRate, available: true },
 ];
 
 let slideInterval = 10000;

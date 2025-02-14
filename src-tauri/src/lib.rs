@@ -5,13 +5,14 @@ mod state;
 
 use commands::utils::{
     complete_todo, get_server_address, get_settings, get_sports_news, get_todos, get_version,
-    get_yahoo_news,
+    get_yahoo_news, get_exchange_rate,
 };
+
 use std::sync::Mutex;
 use tauri::Manager;
 
 const CONFIG_PATH: &str = "umegaemochi/";
-const WIDGET_LIST: [&str; 8] = [
+const WIDGET_LIST: [&str; 9] = [
     "WidgetWeather",
     "WidgetNews",
     "WidgetAtCoder",
@@ -20,6 +21,7 @@ const WIDGET_LIST: [&str; 8] = [
     "WidgetTodo",
     "WidgetSportsNews",
     "WidgetWeeklyWeather",
+    "WidgetExchangeRate",
 ];
 const VERSION: &str = match option_env!("CARGO_PKG_VERSION") {
     Some(version) => version,
@@ -63,6 +65,7 @@ pub fn run() {
             get_todos,
             complete_todo,
             get_sports_news,
+            get_exchange_rate,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
