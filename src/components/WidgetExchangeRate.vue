@@ -59,13 +59,13 @@ watch(() => widgetName, () => {
   <div :class="$style.container">
     <h1 :class="$style.header">為替レート</h1>
     <div :class="$style.exchanges">
-      <div v-for="currency, index in firstList" :key="currency" :class="$style.card">
+      <div v-for="index in 5" :class="$style.card">
         <div :class="[$style.cardInner, { [$style.flipped]: isFlipped }]">
           <div :class="$style.cardFront">
-            <div :class="$style.unit">{{ currency }}</div>
+            <div :class="$style.unit">{{ firstList[index - 1] }}</div>
           </div>
           <div :class="$style.cardBack">
-            <div :class="$style.unit">{{ secondList[index] }}</div>
+            <div :class="$style.unit">{{ secondList[index - 1] }}</div>
           </div>
         </div>
       </div>
@@ -109,7 +109,6 @@ watch(() => widgetName, () => {
   position: relative;
   height: 15%;
   width: 100%;
-  margin: 5px;
 }
 
 .cardInner {
