@@ -68,15 +68,15 @@ listen("daily_reload", async () => {
 <template>
   <div :class="$style.container" v-if="weather">
     <template v-if="!('error' in weather)">
-      <h1>{{ weather.location.city }}の{{ weather.forecasts[1].dateLabel }}の天気</h1>
+      <h1 :class="$style.title">{{ weather.location.city }}の{{ weather.forecasts[1].dateLabel }}の天気</h1>
       <div :class="$style.content">
+        <img :class="$style.image" :src="weather.forecasts[1].image.url"
+          :alt="'weather image:' + weather.forecasts[1].image.title" />
         <div>
           <h2>天気: {{ weather.forecasts[1].telop }}</h2>
           <h2>気温: {{ weather.forecasts[1].temperature.min.celsius }}°C - {{
             weather.forecasts[1].temperature.max.celsius }}°C</h2>
         </div>
-        <img :class="$style.image" :src="weather.forecasts[1].image.url"
-          :alt="'weather image:' + weather.forecasts[1].image.title" />
       </div>
     </template>
     <template v-else>
@@ -94,22 +94,30 @@ listen("daily_reload", async () => {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 10px;
+}
+
+.title {
+  font-size: 1.8em;
 }
 
 .content {
-  width: 100%;
-  height: 100%;
+  width: 90%;
+  height: 70%;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 10px;
+}
+
+.content h2 {
+  font-size: 1.4em;
+  margin-bottom: 5%;
 }
 
 .image {
-  width: 40%;
-  height: auto;
-  max-height: 100%;
+  width: auto;
+  height: 50%;
+  max-width: 50%;
   object-fit: contain;
   background-color: transparent;
 }

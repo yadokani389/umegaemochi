@@ -231,8 +231,9 @@ h1 {
 .widgetContainer {
   position: absolute;
   top: 17.5vh;
-  width: 55vw;
-  height: 65vh;
+  right: 38vw;
+  width: 60vw;
+  height: 72vh;
   display: flex;
   align-items: center;
   justify-content: center;
