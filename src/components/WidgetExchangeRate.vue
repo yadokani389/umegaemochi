@@ -28,7 +28,7 @@ const getExchangeRate = async () => {
     if (response[currency] !== undefined) {
       let price = response[currency];
       price = 1 / price;
-      currencyList.value.push("1 " + currencyName + ": " + price.toFixed(2) + "円");
+      currencyList.value.push(`1${currencyName}: ${price.toFixed(2)}円`);
     }
   }
   firstList.value = currencyList.value.slice(0, 5);
