@@ -137,12 +137,9 @@ pub async fn get_exchange_rate() -> Result<std::collections::HashMap<String, f32
         .await
         .map_err(stringify)?;
 
-    let mut rates = std::collections::HashMap::new();
-
-    for (key, value) in response.rates {
-        if let Ok(rate) = value.parse::<f32>() {
-            rates.insert(key, rate);
-        }
-    }
+    let rates = response.rates
+        .iter()
+        .filter_map(|(key, value)| value.parse::<f32>().ok().map(|rate| (key, rate)))
+        .collect::<std::collections::HashMap<_, _>>();
     Ok(rates)
 }
