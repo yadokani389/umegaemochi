@@ -69,6 +69,23 @@ pub fn get_todos(
 }
 
 #[tauri::command]
+pub fn complete_todo(
+    state: tauri::State<std::sync::Mutex<crate::state::AppState>>,
+    id: String,
+) -> Result<(), String> {
+    state
+        .lock()
+        .unwrap()
+        .todo
+        .data
+        .get_mut(&uuid::Uuid::parse_str(&id).map_err(stringify)?)
+        .ok_or_else(|| "todo not found".to_string())?
+        .completed = true;
+
+    Ok(())
+}
+
+#[tauri::command]
 pub async fn get_sports_news(topic: String) -> Result<Vec<String>, String> {
     nestify::nest! {
         #[derive(Debug, serde::Deserialize)]*
