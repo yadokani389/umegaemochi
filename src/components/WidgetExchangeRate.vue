@@ -33,9 +33,6 @@ const getExchangeRate = async () => {
   }
   firstList.value = currencyList.value.slice(0, 5);
   secondList.value = currencyList.value.slice(5, 10);
-
-  console.log(firstList.value);
-  console.log(secondList.value);
 };
 
 const flip = () => {
@@ -115,6 +112,7 @@ watch(() => widgetName, () => {
   width: 100%;
   margin: 5px;
 }
+
 .cardInner {
   width: 100%;
   height: 100%;
