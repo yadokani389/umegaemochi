@@ -16,6 +16,9 @@ const currencyMap = [
 ];
 
 const currencyList = ref<string[]>([]);
+const firstList = ref<string[]>([]);
+const secondList = ref<string[]>([]);
+const isFlipped = ref(false);
 
 const getExchangeRate = async () => {
   currencyList.value = [];
@@ -24,22 +27,43 @@ const getExchangeRate = async () => {
     if (response[currency] !== undefined) {
       let price = response[currency];
       price = 1 / price;
-      currencyList.value.push(" 1 " + currencyName + ": " + price.toFixed(2) + "円");
+      currencyList.value.push("1 " + currencyName + ": " + price.toFixed(2) + "円");
     }
   }
+  firstList.value = currencyList.value.slice(0, 5);
+  secondList.value = currencyList.value.slice(5, 10);
+
+  console.log(firstList.value);
+  console.log(secondList.value);
+};
+
+const flip = () => {
+  isFlipped.value = !isFlipped.value;
 };
 
 getExchangeRate();
+setInterval(flip, 5000);
 </script>
 
 <template>
   <div :class="$style.container">
     <h1 :class="$style.header">為替レート</h1>
     <div :class="$style.exchanges">
-      <div v-for="currency in currencyList" :key="currency">{{ currency }}</div>
+      <div v-for="currency, index in firstList" :key="currency" :class="$style.card">
+        <div :class="[$style.cardInner, { [$style.flipped]: isFlipped }]">
+          <div :class="$style.cardFront">
+            <div :class="$style.unit">{{ currency }}</div>
+          </div>
+          <div :class="$style.cardBack">
+            <div :class="$style.unit">{{ secondList[index] }}</div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
+
+<!-- 離席中 -->
 
 <style module>
 .container {
@@ -58,6 +82,7 @@ getExchangeRate();
   font-size: 1.8rem;
   font-weight: bold;
   margin-bottom: 10px;
+  margin-top: 10px;
 }
 
 .exchanges {
@@ -71,15 +96,42 @@ getExchangeRate();
   background: #ffffff;
   border-radius: 8px;
   box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-  max-height: 50vh;
 }
 
-.exchanges div {
+.card {
+  white-space: nowrap;
+  position: relative;
+  height: 15%;
+  width: 100%;
+}
+
+.card .div {
+  position: absolute;
+  transition: transform 0.5s;
+  align-items: center;
+  top: 0;
+  left: 0;
+}
+
+.cardInner {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 1s ease-in-out;
+}
+
+.card .unit {
+  align-items: center;
   padding: 8px 12px;
   background: #c8e6c9;
   border-radius: 5px;
   font-size: 1rem;
-  min-width: 80px;
   text-align: center;
+  backface-visibility: hidden;
+}
+
+.flipped {
+  transform: rotateY(180deg);
 }
 </style>
