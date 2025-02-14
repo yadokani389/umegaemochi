@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { invoke } from "@tauri-apps/api/core";
+import { listen } from '@tauri-apps/api/event';
 
 const currencyMap = [
   { code: "USD", name: "アメリカドル" },
@@ -43,6 +44,18 @@ const flip = () => {
 
 getExchangeRate();
 setInterval(flip, 5000);
+
+listen("daily_reload", async () => {
+  getExchangeRate();
+});
+
+const { widgetName } = defineProps<{ widgetName: string; }>();
+const model = defineModel();
+watch(() => widgetName, () => {
+  if (widgetName === 'WidgetExchangeRate') {
+    model.value = '/picto/gorogoro.gif';
+  }
+});
 </script>
 
 <template>
@@ -62,8 +75,6 @@ setInterval(flip, 5000);
     </div>
   </div>
 </template>
-
-<!-- 離席中 -->
 
 <style module>
 .container {
@@ -90,27 +101,19 @@ setInterval(flip, 5000);
   flex-wrap: wrap;
   justify-content: center;
   gap: 8px;
-  max-width: 80%;
+  width: 80%;
+  height: 100%;
   overflow-y: auto;
   padding: 10px;
   background: #ffffff;
   border-radius: 8px;
-  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .card {
   white-space: nowrap;
   position: relative;
-  height: 15%;
+  height: 18%;
   width: 100%;
-}
-
-.card .div {
-  position: absolute;
-  transition: transform 0.5s;
-  align-items: center;
-  top: 0;
-  left: 0;
 }
 
 .cardInner {
@@ -121,14 +124,37 @@ setInterval(flip, 5000);
   transition: transform 1s ease-in-out;
 }
 
-.card .unit {
+.cardFront {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
   align-items: center;
-  padding: 8px 12px;
+  justify-content: center;
+  backface-visibility: hidden;
+}
+
+.cardBack {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backface-visibility: hidden;
+  transform: rotateY(180deg);
+}
+
+.unit {
+  align-items: center;
+  padding: 2.4%;
   background: #c8e6c9;
   border-radius: 5px;
-  font-size: 1rem;
   text-align: center;
-  backface-visibility: hidden;
 }
 
 .flipped {
