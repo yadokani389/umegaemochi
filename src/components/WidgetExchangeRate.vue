@@ -83,7 +83,6 @@ watch(() => widgetName, () => {
   padding: 5%;
   background-color: #e8f5e9;
   color: #2e7d32;
-  font-family: Arial, sans-serif;
   border-radius: 5px;
 }
 
