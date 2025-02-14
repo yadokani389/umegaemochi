@@ -83,6 +83,7 @@ watch(() => widgetName, () => {
   align-items: center;
   justify-content: center;
   height: 100%;
+  padding: 5%;
   background-color: #e8f5e9;
   color: #2e7d32;
   font-family: Arial, sans-serif;
@@ -90,10 +91,8 @@ watch(() => widgetName, () => {
 }
 
 .header {
-  font-size: 1.8rem;
   font-weight: bold;
   margin-bottom: 10px;
-  margin-top: 10px;
 }
 
 .exchanges {
@@ -112,10 +111,10 @@ watch(() => widgetName, () => {
 .card {
   white-space: nowrap;
   position: relative;
-  height: 18%;
+  height: 15%;
   width: 100%;
+  margin: 5px;
 }
-
 .cardInner {
   width: 100%;
   height: 100%;
@@ -151,10 +150,12 @@ watch(() => widgetName, () => {
 
 .unit {
   align-items: center;
-  padding: 2.4%;
+  padding: 1.5%;
   background: #c8e6c9;
   border-radius: 5px;
   text-align: center;
+  max-width: 100%;
+  font-size: 2.5vw;
 }
 
 .flipped {
