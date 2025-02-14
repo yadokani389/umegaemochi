@@ -3,7 +3,11 @@ mod daily_reload;
 mod server;
 mod state;
 
-use commands::utils::{get_server_address, get_settings, get_todos, get_version, get_yahoo_news, get_sports_news, get_exchange_rate};
+use commands::utils::{
+    complete_todo, get_server_address, get_settings, get_sports_news, get_todos, get_version,
+    get_yahoo_news, get_exchange_rate,
+};
+
 use std::sync::Mutex;
 use tauri::Manager;
 
@@ -59,6 +63,7 @@ pub fn run() {
             get_settings,
             get_version,
             get_todos,
+            complete_todo,
             get_sports_news,
             get_exchange_rate,
         ])

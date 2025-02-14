@@ -23,7 +23,7 @@ const submissions = computedAsync(async () => {
 
 watch(() => widgetName, () => {
   if (widgetName === 'WidgetAtCoder') {
-    model.value = '/picto/banana.png';
+    model.value = '/picto/atcoder.gif';
   }
 });
 

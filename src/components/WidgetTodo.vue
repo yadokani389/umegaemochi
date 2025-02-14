@@ -18,9 +18,14 @@ const { state: todoList, execute: refetch } = useAsyncState(async () => {
 
 const scrollDuration = computed(() => { return `${5 * todoList.value.length}s`; });
 
+function complete(id: string) {
+  invoke('complete_todo', { id });
+  refetch();
+}
+
 watch(() => widgetName, () => {
   if (widgetName === 'WidgetTodo') {
-    model.value = '/picto/rain_normal.gif';
+    model.value = '/picto/todo.gif';
   }
 });
 
@@ -38,7 +43,8 @@ listen("daily_reload", async () => {
     <h1>Todo List</h1>
     <div :class="$style.content">
       <div v-if="0 < todoList.length" :class="$style.scrollTrack" :style="{ animationDuration: scrollDuration }">
-        <div v-for="(todo, index) in [...todoList, ...todoList]" :key="index" :class="$style.todo">
+        <div v-for="(todo, index) in [...todoList, ...todoList]" :key="index" :class="$style.todo"
+          @click="complete(todo.id)">
           <h2> □ </h2>
           <h2>{{ todo.text }}</h2>
         </div>

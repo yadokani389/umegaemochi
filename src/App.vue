@@ -211,6 +211,10 @@ init();
 h1 {
   font-size: 6vmin;
 }
+
+::-webkit-scrollbar {
+  display: none;
+}
 </style>
 
 <style module>

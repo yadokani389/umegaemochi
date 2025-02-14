@@ -14,7 +14,14 @@ const clock = () => {
 
 watch(() => widgetName, () => {
   if (widgetName === 'WidgetClock') {
-    model.value = '/picto/rock.png';
+    const hours = new Date().getHours();
+    if (6 <= hours && hours <= 12) {
+      model.value = '/picto/train.gif';
+    } else if (13 <= hours && hours <= 20) {
+      model.value = '/picto/gorogoro.gif';
+    } else {
+      model.value = '/picto/sleep.gif';
+    }
   }
 });
 
@@ -29,7 +36,6 @@ setInterval(clock, 1000);
 </template>
 
 <style module>
-
 .container {
   width: 100%;
   height: 100%;
