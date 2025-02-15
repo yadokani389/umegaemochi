@@ -4,7 +4,7 @@
 stdenv.mkDerivation (finalAttrs: {
   pname = "umegaemochi";
 
-  version = "0.6.0";
+  version = "0.7.0";
 
   src = lib.fileset.toSource {
     root = ./.;
