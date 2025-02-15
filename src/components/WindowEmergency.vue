@@ -10,8 +10,11 @@ defineProps<{
   <div :class="$style.container">
     <h1 :class="$style.title">⚠{{ disastarInfo.title }}</h1>
     <div :class="$style.content">
-      <div :class="$style.description">{{ disastarInfo.description }}</div>
-      <div :class="$style.warning">{{ disastarInfo.warning }}</div>
+      <div>
+        <h2>{{ disastarInfo.description }}</h2>
+        <h2>{{ disastarInfo.warning }}</h2>
+      </div>
+      <img :class="$style.image" src="/picto/earthquake.gif" :alt="'disaster image'" />
     </div>
   </div>
 </template>
@@ -23,7 +26,8 @@ defineProps<{
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 10px;
+  align-items: center;
+  gap: 5%;
   background-color: #1c8c41;
   position: relative;
 }
@@ -31,31 +35,33 @@ defineProps<{
 .title {
   color: rgb(255, 255, 255);
   font-size: 8vmin;
-  position: absolute;
-  top: 4vh;
   align-self: center;
   max-width: 95vw;
-  padding: 8px;
-  border: 40px solid rgb(56, 280, 130);
-  border-radius: 10px;
+  border: 0.6em solid rgb(56, 280, 130);
+  border-radius: 0.5em;
   width: fit-content;
+  padding: 2%;
 }
 
 .content {
-  position: absolute;
-  top: 62vh;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
   text-align: left;
   max-width: 90vw;
-  margin-left: 5vh;
 }
 
-.description {
+.content h2 {
   color: #ffffff;
   font-size: 6vmin;
 }
 
-.warning {
-  color: #ffffff;
-  font-size: 6vmin;
+.image {
+  width: 30%;
+  height: auto;
+  max-height: 100%;
+  justify-content: flex-end;
+  object-fit: contain;
 }
 </style>
