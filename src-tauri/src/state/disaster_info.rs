@@ -65,6 +65,7 @@ nestify::nest! {
 }
 
 pub async fn check_disaster_updates(handle: tauri::AppHandle) -> Result<(), String> {
+    tokio::time::sleep(std::time::Duration::from_secs(10)).await;
     loop {
         let feed = fetch_feed().await.map_err(stringify)?;
         for entry in feed.entries.iter() {
@@ -98,7 +99,7 @@ pub async fn check_disaster_updates(handle: tauri::AppHandle) -> Result<(), Stri
                 .disaster_info = None;
         }
 
-        tokio::time::sleep(tokio::time::Duration::from_secs(60)).await;
+        tokio::time::sleep(std::time::Duration::from_secs(60)).await;
     }
 }
 

@@ -14,7 +14,7 @@ defineProps<{
         <h2>{{ disastarInfo.description }}</h2>
         <h2>{{ disastarInfo.warning }}</h2>
       </div>
-      <img :class="$style.image" src="/public/picto/earthquake.gif" :alt="'disaster image'" />
+      <img :class="$style.image" src="/picto/earthquake.gif" :alt="'disaster image'" />
     </div>
   </div>
 </template>
