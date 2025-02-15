@@ -67,11 +67,10 @@ nestify::nest! {
 pub async fn check_disaster_updates(handle: tauri::AppHandle) -> Result<(), String> {
     loop {
         let feed = fetch_feed().await.map_err(stringify)?;
-        for entry in feed.entries.iter() {
+        for entry in &feed.entries {
             if entry.title.contains("震源") {
                 let report = fetch_report(&entry.id).await.map_err(stringify)?;
                 if update_state_if_needed(&handle, report)
-                    .await
                     .map_err(stringify)?
                 {
                     break;
@@ -117,7 +116,7 @@ async fn fetch_report(url: &str) -> Result<Report, Box<dyn std::error::Error>> {
     Ok(report)
 }
 
-async fn update_state_if_needed(
+fn update_state_if_needed(
     handle: &tauri::AppHandle,
     report: Report,
 ) -> Result<bool, Box<dyn std::error::Error>> {

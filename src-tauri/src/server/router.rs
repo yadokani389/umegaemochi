@@ -105,7 +105,7 @@ async fn scroll(
 
     if VALID_NAMES.contains(&name.as_str()) {
         handle.emit("scroll", &name).unwrap();
-        println!("scroll: {}", name);
+        println!("scroll: {name}");
         StatusCode::OK
     } else {
         println!("scroll: invalid name");

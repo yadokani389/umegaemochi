@@ -27,7 +27,7 @@ where
         };
         if config.config_path.exists() {
             if let Err(e) = config.read_file() {
-                println!("Error reading config file: {}", e);
+                println!("Error reading config file: {e}");
                 println!("Creating new config file");
             }
         }

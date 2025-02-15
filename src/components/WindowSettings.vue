@@ -47,9 +47,8 @@ const showQR = ref(false);
 const osType = type();
 let previousCursorVisible = true;
 const isAutostartEnabled = ref(['linux', 'windows', 'macos'].includes(osType) ? await autostart.isEnabled() : false);
-const autostartStatus = computed(() => isAutostartEnabled.value ? "Enabled" : "Disabled");
+const isNightmode = defineModel();
 const version = await invoke<string>("get_version");
-
 </script>
 
 <template>
@@ -62,10 +61,14 @@ const version = await invoke<string>("get_version");
 
       <button @click="toggleCursorVisible">Toggle Cursor</button>
 
-      <div :class="[$style.autostartStatus, autostartStatus === 'Enabled' ? $style.enabled : $style.disabled]">
-        Autostart: {{ autostartStatus }}
+      <div :class="[$style.bold, isAutostartEnabled ? $style.enabled : $style.disabled]">
+        Autostart: {{ isAutostartEnabled ? "Enabled" : "Disabled" }}
       </div>
       <button @click="toggleAutostart()">Toggle Autostart</button>
+      <div :class="[$style.bold, isNightmode ? $style.enabled : $style.disabled]">
+        Nightmode: {{ isNightmode ? "Enabled" : "Disabled" }}
+      </div>
+      <button @click="isNightmode = !isNightmode">Toggle Nightmode</button>
     </template>
     <div>Version: v{{ version }}</div>
   </div>
@@ -85,7 +88,7 @@ const version = await invoke<string>("get_version");
   background-color: #f0f0f0;
 }
 
-.autostartStatus {
+.bold {
   font-weight: bold;
 }
 
