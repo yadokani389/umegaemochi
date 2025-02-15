@@ -50,7 +50,7 @@ const { widgetName } = defineProps<{ widgetName: string; }>();
 const model = defineModel();
 watch(() => widgetName, () => {
   if (widgetName === 'WidgetExchangeRate') {
-    model.value = '/picto/gorogoro.gif';
+    model.value = '/picto/money.gif';
   }
 });
 </script>
