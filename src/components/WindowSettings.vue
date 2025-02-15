@@ -3,7 +3,7 @@ import { invoke } from "@tauri-apps/api/core";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { type } from "@tauri-apps/plugin-os";
 import * as autostart from "@tauri-apps/plugin-autostart";
-import { computed, ref } from "vue";
+import { ref } from "vue";
 import QRCode from "qrcode";
 
 function getServerAddress() {
@@ -65,11 +65,11 @@ const version = await invoke<string>("get_version");
         Autostart: {{ isAutostartEnabled ? "Enabled" : "Disabled" }}
       </div>
       <button @click="toggleAutostart()">Toggle Autostart</button>
-      <div :class="[$style.bold, isNightmode ? $style.enabled : $style.disabled]">
-        Nightmode: {{ isNightmode ? "Enabled" : "Disabled" }}
-      </div>
-      <button @click="isNightmode = !isNightmode">Toggle Nightmode</button>
     </template>
+    <div :class="[$style.bold, isNightmode ? $style.enabled : $style.disabled]">
+      Nightmode: {{ isNightmode ? "Enabled" : "Disabled" }}
+    </div>
+    <button @click="isNightmode = !isNightmode">Toggle Nightmode</button>
     <div>Version: v{{ version }}</div>
   </div>
 </template>

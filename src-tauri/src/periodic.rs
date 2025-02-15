@@ -1,5 +1,5 @@
 use chrono::{Duration, Local, NaiveTime};
-use tauri::Emitter;
+use tauri::{Emitter, Manager};
 
 pub async fn start_daily_reload(handle: tauri::AppHandle) {
     loop {
@@ -24,13 +24,16 @@ pub async fn start_daily_reload(handle: tauri::AppHandle) {
 pub async fn start_control_nightmode(handle: tauri::AppHandle) {
     tokio::time::sleep(std::time::Duration::from_secs(10)).await;
     loop {
+        let nightmode_range = handle
+            .state::<std::sync::Mutex<crate::state::AppState>>()
+            .lock()
+            .unwrap()
+            .settings
+            .data
+            .nightmode_range;
         let now = Local::now();
-        let night_start = Local::now()
-            .with_time(NaiveTime::from_hms_opt(22, 0, 0).unwrap())
-            .unwrap();
-        let day_start = Local::now()
-            .with_time(NaiveTime::from_hms_opt(6, 0, 0).unwrap())
-            .unwrap();
+        let night_start = Local::now().with_time(nightmode_range.start).unwrap();
+        let day_start = Local::now().with_time(nightmode_range.end).unwrap();
 
         if now < day_start || night_start <= now {
             handle.emit("set_nightmode", ()).unwrap();
