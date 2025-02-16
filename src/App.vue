@@ -192,7 +192,8 @@ watch(mouse, () => {
     </div>
     <WindowEmergency :disastar-info="disasterInfo" :class="$style.emergency" v-if="disasterInfo" />
     <Suspense>
-      <WindowSettings :class="$style.settings" v-if="isSettingsOpen" v-model="isNightmode" />
+      <WindowSettings :class="$style.settings" v-if="isSettingsOpen" v-model:is-nightmode="isNightmode"
+        v-model:disaster-info="disasterInfo" />
     </Suspense>
     <ButtonSettings :class="$style.buttonsettings" v-model="isSettingsOpen" />
     <div v-if="isNightmode && blackout" :class="$style.blackout" ref="curtain" />

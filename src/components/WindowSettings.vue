@@ -47,7 +47,8 @@ const showQR = ref(false);
 const osType = type();
 let previousCursorVisible = true;
 const isAutostartEnabled = ref(['linux', 'windows', 'macos'].includes(osType) ? await autostart.isEnabled() : false);
-const isNightmode = defineModel();
+const isNightmode = defineModel('isNightmode');
+const disasterInfo = defineModel('disasterInfo');
 const version = await invoke<string>("get_version");
 </script>
 
@@ -70,6 +71,7 @@ const version = await invoke<string>("get_version");
       Nightmode: {{ isNightmode ? "Enabled" : "Disabled" }}
     </div>
     <button @click="isNightmode = !isNightmode">Toggle Nightmode</button>
+    <button @click="disasterInfo = null" v-if="disasterInfo">Clear Disaster</button>
     <div>Version: v{{ version }}</div>
   </div>
 </template>
