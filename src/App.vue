@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
-import { useSwipe, UseSwipeDirection } from '@vueuse/core';
+import { ref, computed, watch, reactive } from 'vue'
+import { useMouseInElement, useSwipe, UseSwipeDirection } from '@vueuse/core';
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from '@tauri-apps/api/event';
 import { getCurrentWindow, LogicalPosition } from '@tauri-apps/api/window';
@@ -125,6 +125,8 @@ async function applySettings() {
   }
 }
 
+listen("settings_changed", applySettings);
+
 async function init() {
   applySettings();
   const settings = await invoke<Settings>('get_settings');
@@ -136,7 +138,8 @@ async function init() {
     getCurrentWindow().setCursorPosition(new LogicalPosition(0, 0));
   }
 }
-listen("settings_changed", applySettings);
+
+init();
 
 const container = ref<HTMLElement | null>(null);
 
@@ -155,7 +158,18 @@ useSwipe(container, {
   }
 });
 
-init();
+const isNightmode = ref(false);
+const blackout = ref(false);
+const curtain = ref<HTMLElement | null>(null);
+const mouse = reactive(useMouseInElement(curtain));
+listen("set_nightmode", () => { isNightmode.value = true; blackout.value = true });
+listen("set_daymode", () => { isNightmode.value = false; blackout.value = false });
+watch(mouse, () => {
+  blackout.value = false;
+  setTimeout(() => {
+    blackout.value = true;
+  }, 60000);
+});
 </script>
 
 <template>
@@ -178,9 +192,10 @@ init();
     </div>
     <WindowEmergency :disastar-info="disasterInfo" :class="$style.emergency" v-if="disasterInfo" />
     <Suspense>
-      <WindowSettings :class="$style.settings" v-if="isSettingsOpen" />
+      <WindowSettings :class="$style.settings" v-if="isSettingsOpen" v-model="isNightmode" />
     </Suspense>
     <ButtonSettings :class="$style.buttonsettings" v-model="isSettingsOpen" />
+    <div v-if="isNightmode && blackout" :class="$style.blackout" ref="curtain" />
   </main>
 </template>
 
@@ -285,6 +300,16 @@ main {
   top: 3vmin;
   left: 8vmin;
   height: 10%;
+}
+
+.blackout {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: black;
+  z-index: 9999;
 }
 </style>
 

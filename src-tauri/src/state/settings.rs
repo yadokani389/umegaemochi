@@ -8,6 +8,13 @@ pub struct Settings {
     pub auto_fullscreen: bool,
     pub auto_hide_cursor: bool,
     pub using_sports_news: Vec<String>,
+    pub nightmode_range: NightmodeRange,
+}
+
+#[derive(Debug, Copy, Clone, PartialEq, serde::Serialize, serde::Deserialize)]
+pub struct NightmodeRange {
+    pub start: chrono::NaiveTime,
+    pub end: chrono::NaiveTime,
 }
 
 impl Default for Settings {
@@ -20,6 +27,10 @@ impl Default for Settings {
             auto_fullscreen: false,
             auto_hide_cursor: false,
             using_sports_news: Vec::new(),
+            nightmode_range: NightmodeRange {
+                start: chrono::NaiveTime::from_hms_opt(22, 0, 0).unwrap(),
+                end: chrono::NaiveTime::from_hms_opt(6, 30, 0).unwrap(),
+            },
         }
     }
 }

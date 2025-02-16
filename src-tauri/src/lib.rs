@@ -1,5 +1,5 @@
 mod commands;
-mod daily_reload;
+mod periodic;
 mod server;
 mod state;
 
@@ -50,7 +50,9 @@ pub fn run() {
             app.manage(app_state);
             tauri::async_runtime::spawn(async move { server::start_server(handle).await });
             let handle = app.handle().clone();
-            tauri::async_runtime::spawn(async move { daily_reload::start_job(handle).await });
+            tauri::async_runtime::spawn(async move { periodic::start_daily_reload(handle).await });
+            let handle = app.handle().clone();
+            tauri::async_runtime::spawn(async move { periodic::start_control_nightmode(handle).await });
             let handle = app.handle().clone();
             tauri::async_runtime::spawn(async move {
                 state::disaster_info::check_disaster_updates(handle).await

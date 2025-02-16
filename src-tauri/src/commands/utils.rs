@@ -40,7 +40,7 @@ pub fn get_server_address() -> Result<String, String> {
         port_number
     );
 
-    println!("Listening on {}", local_addr);
+    println!("Listening on {local_addr}");
 
     Ok(local_addr)
 }
@@ -52,8 +52,8 @@ pub fn stringify(e: impl ToString) -> String {
 #[tauri::command]
 pub fn get_settings(
     state: tauri::State<std::sync::Mutex<crate::state::AppState>>,
-) -> Result<crate::state::settings::Settings, String> {
-    Ok(state.lock().unwrap().settings.data.clone())
+) -> crate::state::settings::Settings {
+    state.lock().unwrap().settings.data.clone()
 }
 
 #[tauri::command]
@@ -64,8 +64,8 @@ pub fn get_version() -> String {
 #[tauri::command]
 pub fn get_todos(
     state: tauri::State<std::sync::Mutex<crate::state::AppState>>,
-) -> Result<Vec<crate::state::todo::Todo>, String> {
-    Ok(state.lock().unwrap().todo.data.values().cloned().collect())
+) -> Vec<crate::state::todo::Todo> {
+    state.lock().unwrap().todo.data.values().cloned().collect()
 }
 
 #[tauri::command]
