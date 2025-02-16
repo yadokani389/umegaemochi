@@ -13,5 +13,5 @@ export type Settings = {
   auto_fullscreen: boolean;
   auto_hide_cursor: boolean;
   using_sports_news: string[];
-  using_sound_when_disaster: boolean;
+  use_sound_when_disaster: boolean;
 };

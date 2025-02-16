@@ -8,7 +8,7 @@ defineProps<{
 }>();
 
 async function notifyWithSound() {
-  const playSound = (await invoke<Settings>('get_settings')).using_sound_when_disaster;
+  const playSound = (await invoke<Settings>('get_settings')).use_sound_when_disaster;
   if (playSound) {
     const audio = new Audio(alertSound);
     audio.play();
