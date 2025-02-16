@@ -9,7 +9,7 @@ pub struct Settings {
     pub auto_hide_cursor: bool,
     pub using_sports_news: Vec<String>,
     pub nightmode_range: NightmodeRange,
-    pub using_sound_when_disaster: bool,
+    pub use_sound_when_disaster: bool,
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, serde::Serialize, serde::Deserialize)]
@@ -32,7 +32,7 @@ impl Default for Settings {
                 start: chrono::NaiveTime::from_hms_opt(22, 0, 0).unwrap(),
                 end: chrono::NaiveTime::from_hms_opt(6, 30, 0).unwrap(),
             },
-            using_sound_when_disaster: false,
+            use_sound_when_disaster: false,
         }
     }
 }
