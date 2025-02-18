@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
+import { useMousePressed } from '@vueuse/core';
 
 const currentTime = ref('');
+const imgSrc = ref('/picto/sleep.gif');
 
 const clock = () => {
   const currentDate = new Date();
@@ -13,16 +15,28 @@ const clock = () => {
   currentTime.value = `${year}/${month}/${date}/${hours}:${minutes}`;
 }
 
+const image = ref<HTMLElement | null>(null);
+const { pressed } = useMousePressed({ target: image });
+
+watch(pressed, (newVal) => {
+  if (newVal) {
+    imgSrc.value = '/picto/sleep_angry.png';
+
+    setTimeout(() => {
+      imgSrc.value = '/picto/sleep.gif';
+    }, 10000);
+  }
+});
+
 clock();
 setInterval(clock, 1000);
-
 </script>
 
 <template>
   <div :class="$style.container">
     <div :class="$style.clock">
       {{ currentTime }}
-      <img :class="$style.tabIcon" src="/picto/sleep.gif" />
+      <img :class="$style.tabIcon" :src="imgSrc" ref="image" />
     </div>
   </div>
 </template>
