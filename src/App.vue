@@ -145,7 +145,6 @@ const container = ref<HTMLElement | null>(null);
 
 useSwipe(container, {
   onSwipeEnd(_: TouchEvent, direction: UseSwipeDirection) {
-    console.log(direction);
     if (direction === 'up') {
       prevWidget();
       stopAutoSlide();
