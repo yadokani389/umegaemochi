@@ -187,7 +187,7 @@ watch(mouse, () => {
         </transition-group>
       </div>
       <BaseWidget :class="$style.picto">
-        <WidgetPicto :picto-src="pictoSrc" />
+        <WidgetPicto v-model="pictoSrc" />
       </BaseWidget>
     </div>
     <WindowEmergency :disastar-info="disasterInfo" :class="$style.emergency" v-if="disasterInfo" />

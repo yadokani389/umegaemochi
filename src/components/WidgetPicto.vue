@@ -1,10 +1,33 @@
 <script setup lang="ts">
-defineProps<{ pictoSrc: string }>()
+import { useMousePressed } from '@vueuse/core';
+import { ref, watch } from 'vue';
+
+
+const pictoSrc = defineModel<string>({ required: true });
+const image = ref<HTMLElement | null>(null);
+const { pressed } = useMousePressed({ target: image });
+const noTransition = ref(false);
+
+watch(pressed, (newVal) => {
+  if (newVal) {
+    noTransition.value = true;
+
+    if (pictoSrc.value === '/picto/sleep.gif') {
+      pictoSrc.value = '/picto/sleep_angry.png';
+    } else if (pictoSrc.value === '/picto/news.gif') {
+      pictoSrc.value = '/picto/news_odoroki.png';
+    }
+
+    setTimeout(() => {
+      noTransition.value = false;
+    }, 500);
+  }
+});
 </script>
 
 <template>
-  <transition name="fade" mode="out-in">
-    <img :src="pictoSrc" :key="pictoSrc" />
+  <transition :name="noTransition ? '' : 'fade'" mode="out-in">
+    <img :src="pictoSrc" :key="pictoSrc" ref="image" />
   </transition>
 </template>
 
