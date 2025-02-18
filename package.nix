@@ -1,19 +1,32 @@
-{ lib, stdenv, cargo-tauri, glib-networking, nodejs, openssl, pkg-config, pnpm_9
-, rustPlatform, webkitgtk_4_1, wrapGAppsHook4, }:
+{
+  lib,
+  stdenv,
+  cargo-tauri,
+  glib-networking,
+  nodejs,
+  openssl,
+  pkg-config,
+  pnpm_9,
+  rustPlatform,
+  webkitgtk_4_1,
+  wrapGAppsHook4,
+}:
 
 stdenv.mkDerivation (finalAttrs: {
   pname = "umegaemochi";
 
-  version = "0.7.4";
+  version = "0.7.5";
 
   src = lib.fileset.toSource {
     root = ./.;
-    fileset = lib.fileset.difference ./. (lib.fileset.unions [
-      (lib.fileset.maybeMissing ./result)
-      ./package.nix
-      ./flake.nix
-      ./flake.lock
-    ]);
+    fileset = lib.fileset.difference ./. (
+      lib.fileset.unions [
+        (lib.fileset.maybeMissing ./result)
+        ./package.nix
+        ./flake.nix
+        ./flake.lock
+      ]
+    );
   };
 
   pnpmDeps = pnpm_9.fetchDeps {
@@ -24,8 +37,7 @@ stdenv.mkDerivation (finalAttrs: {
   cargoRoot = "src-tauri";
   buildAndTestSubdir = finalAttrs.cargoRoot;
 
-  cargoDeps =
-    rustPlatform.importCargoLock { lockFile = ./src-tauri/Cargo.lock; };
+  cargoDeps = rustPlatform.importCargoLock { lockFile = ./src-tauri/Cargo.lock; };
 
   nativeBuildInputs = [
     cargo-tauri.hook
@@ -36,7 +48,11 @@ stdenv.mkDerivation (finalAttrs: {
     wrapGAppsHook4
   ];
 
-  buildInputs = [ glib-networking openssl webkitgtk_4_1 ];
+  buildInputs = [
+    glib-networking
+    openssl
+    webkitgtk_4_1
+  ];
 
   meta = {
     license = lib.licenses.mit;
