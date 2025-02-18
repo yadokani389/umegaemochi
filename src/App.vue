@@ -3,7 +3,7 @@ import { ref, computed, watch, reactive } from 'vue'
 import { useMouseInElement, useSwipe, UseSwipeDirection } from '@vueuse/core';
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from '@tauri-apps/api/event';
-import { getCurrentWindow, LogicalPosition } from '@tauri-apps/api/window';
+import { getCurrentWindow } from '@tauri-apps/api/window';
 import BaseWidget from "./components/BaseWidget.vue";
 import WidgetWeather from "./components/WidgetWeather.vue";
 import WidgetNews from "./components/WidgetNews.vue";
@@ -135,7 +135,6 @@ async function init() {
   }
   if (settings.auto_hide_cursor) {
     getCurrentWindow().setCursorVisible(false);
-    getCurrentWindow().setCursorPosition(new LogicalPosition(0, 0));
   }
 }
 
