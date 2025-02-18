@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { DisasterInfo, Settings } from '../types';
 import { invoke } from '@tauri-apps/api/core';
+import { type } from '@tauri-apps/plugin-os';
 import alertSound from '../assets/sounds/meka_mi_radar03.mp3';
 
 defineProps<{
@@ -9,7 +10,7 @@ defineProps<{
 
 async function notifyWithSound() {
   const playSound = (await invoke<Settings>('get_settings')).use_sound_when_disaster;
-  if (playSound) {
+  if (playSound && type() !== 'linux') {
     const audio = new Audio(alertSound);
     audio.play();
   }
