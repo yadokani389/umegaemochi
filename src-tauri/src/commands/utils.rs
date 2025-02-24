@@ -1,3 +1,5 @@
+use tauri::Manager;
+
 #[tauri::command]
 pub async fn get_yahoo_news(url: String) -> Result<Vec<String>, String> {
     nestify::nest! {
@@ -31,8 +33,14 @@ pub async fn get_yahoo_news(url: String) -> Result<Vec<String>, String> {
 }
 
 #[tauri::command]
-pub fn get_server_address() -> Result<String, String> {
-    let port_number = 33117;
+pub fn get_server_address(handle: tauri::AppHandle) -> Result<String, String> {
+    let port_number = handle
+        .state::<std::sync::Mutex<crate::state::AppState>>()
+        .lock()
+        .unwrap()
+        .settings
+        .data
+        .server_port;
 
     let local_addr = format!(
         "{}:{}",

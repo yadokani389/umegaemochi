@@ -10,6 +10,7 @@ pub struct Settings {
     pub using_sports_news: Vec<String>,
     pub nightmode_range: NightmodeRange,
     pub use_sound_when_disaster: bool,
+    pub server_port: u16,
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, serde::Serialize, serde::Deserialize)]
@@ -33,6 +34,7 @@ impl Default for Settings {
                 end: chrono::NaiveTime::from_hms_opt(6, 30, 0).unwrap(),
             },
             use_sound_when_disaster: false,
+            server_port: 33117,
         }
     }
 }
