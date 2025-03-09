@@ -4,8 +4,8 @@ mod server;
 mod state;
 
 use commands::utils::{
-    complete_todo, get_server_address, get_settings, get_sports_news, get_todos, get_version,
-    get_yahoo_news, get_exchange_rate,
+    complete_todo, get_exchange_rate, get_server_address, get_settings, get_sports_news, get_todos,
+    get_version, get_yahoo_news,
 };
 
 use std::sync::Mutex;
@@ -52,7 +52,9 @@ pub fn run() {
             let handle = app.handle().clone();
             tauri::async_runtime::spawn(async move { periodic::start_daily_reload(handle).await });
             let handle = app.handle().clone();
-            tauri::async_runtime::spawn(async move { periodic::start_control_nightmode(handle).await });
+            tauri::async_runtime::spawn(
+                async move { periodic::start_control_nightmode(handle).await },
+            );
             let handle = app.handle().clone();
             tauri::async_runtime::spawn(async move {
                 state::disaster_info::check_disaster_updates(handle).await

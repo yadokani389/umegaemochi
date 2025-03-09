@@ -118,7 +118,18 @@ async fn get_widgets() -> impl IntoResponse {
 }
 
 async fn get_sports_news() -> impl IntoResponse {
-    Json(["プロ野球", "高校野球", "サッカー", "スポーツ", "ゴルフ", "ラグビー", "テニス", "バスケ", "バレー", "水泳"]) 
+    Json([
+        "プロ野球",
+        "高校野球",
+        "サッカー",
+        "スポーツ",
+        "ゴルフ",
+        "ラグビー",
+        "テニス",
+        "バスケ",
+        "バレー",
+        "水泳",
+    ])
 }
 
 async fn get_version() -> impl IntoResponse {

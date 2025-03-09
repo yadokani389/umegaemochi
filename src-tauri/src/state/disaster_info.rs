@@ -71,9 +71,7 @@ pub async fn check_disaster_updates(handle: tauri::AppHandle) -> Result<(), Stri
         for entry in &feed.entries {
             if entry.title.contains("震源") {
                 let report = fetch_report(&entry.id).await.map_err(stringify)?;
-                if update_state_if_needed(&handle, report)
-                    .map_err(stringify)?
-                {
+                if update_state_if_needed(&handle, report).map_err(stringify)? {
                     break;
                 }
             }
@@ -86,9 +84,7 @@ pub async fn check_disaster_updates(handle: tauri::AppHandle) -> Result<(), Stri
             .map_err(stringify)?
             .disaster_info
             .as_ref()
-            .map_or(false, |info| {
-                info.occurred < chrono::Local::now() - chrono::Duration::hours(1)
-            })
+            .is_some_and(|info| info.occurred < chrono::Local::now() - chrono::Duration::hours(1))
         {
             handle.emit("disaster_clear", ()).map_err(stringify)?;
             handle
@@ -128,9 +124,11 @@ fn update_state_if_needed(
         return Ok(false);
     }
 
-    if state.disaster_info.as_ref().map_or(false, |info| {
-        report.body.earthquake.origin_time <= info.occurred
-    }) {
+    if state
+        .disaster_info
+        .as_ref()
+        .is_some_and(|info| report.body.earthquake.origin_time <= info.occurred)
+    {
         return Ok(false);
     }
 
