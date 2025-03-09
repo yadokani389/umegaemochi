@@ -27,3 +27,4 @@ dist-ssr
 .envrc
 kls_database.db
 keystore.properties
+.pre-commit-config.yaml

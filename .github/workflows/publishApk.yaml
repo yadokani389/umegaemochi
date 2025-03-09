@@ -25,6 +25,19 @@ jobs:
         with:
           name: yadokani389
 
+      - name: Restore binary cache
+        uses: ./.github/actions/binary-cache
+        with:
+          package: .#devShells.x86_64-linux.android
+
+      - name: Enable direnv
+        run: echo "use flake .#android" > .envrc
+
+      - uses: aldoborrero/direnv-nix-action@v2
+        with:
+          use_nix_profile: true
+          nix_channel: nixpkgs
+
       - name: Rust cache
         uses: swatinem/rust-cache@v2
         with:
@@ -38,8 +51,13 @@ jobs:
           base64 -d <<< "${{ secrets.ANDROID_KEY_BASE64 }}" > $RUNNER_TEMP/keystore.jks
           echo "storeFile=$RUNNER_TEMP/keystore.jks" >> keystore.properties
 
+      - name: Install frontend dependencies
+        run: pnpm i
+
       - name: Build
-        run: nix develop .#android -c bash -c "export -n ANDROID_SDK_ROOT && pnpm i && cargo tauri android build"
+        run: |
+          export -n ANDROID_SDK_ROOT
+          cargo tauri android build
 
       - name: Get app version
         run: echo "APP_VERSION=$(jq -r .version src-tauri/tauri.conf.json)" >> $GITHUB_ENV
